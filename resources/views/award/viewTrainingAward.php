@@ -1,0 +1,1 @@
+Query someone's training award (MB, S303, GF)

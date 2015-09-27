@@ -1,0 +1,56 @@
+/***
+ ***  FLARES -- 206acu
+ *** 
+ */
+ 
+ 
+/* Palette
+ * RED #c0392b				// Perhaps consider also #B04632
+ * GREEN #27ae60
+ * ORANGE #e67e22
+ * INFO #2a84be
+ */ 
+ 
+.memberview-image {
+	max-width: 200px;
+	max-height: 200px;
+}
+
+
+.memberadd-spreadsheet {
+	border-collapse: collapse;
+	width: 100%;
+}
+.memberadd-spreadsheet td, 
+.memberadd-spreadsheet th {
+	border: 1px solid #bbb;
+}
+.memberadd-spreadsheet th {
+	padding: 5px;
+}
+.memberadd-spreadsheet input[type],
+.memberadd-spreadsheet select {
+	border: none;
+	padding: 5px;
+	width: 100%;
+}
+
+input[type].ng-dirty.ng-invalid,
+.ng-submitted input[type].ng-invalid,
+select.ng-dirty.ng-invalid,
+.ng-submitted select.ng-invalid {
+	border: 1px solid #c0392b;
+}
+
+.memberadd-spreadsheet input[type][required].ng-dirty.ng-valid,
+.ng-submitted .memberadd-spreadsheet input[type][required].ng-valid,
+.memberadd-spreadsheet select[required].ng-dirty.ng-valid,
+.ng-submitted .memberadd-spreadsheet select[required].ng-valid  {
+	border: 1px solid #27ae60;
+}
+
+
+footer {
+	padding-top: 2em;
+	color: #95a5a6;
+}
