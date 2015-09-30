@@ -26,19 +26,19 @@
 			</div>
 		  <ul class="nav navbar-nav">
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
+			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="/members">Search</a></li>
 				<li><a href="/members/stats">View Statistics</a></li>
 				<li role="separator" class="divider"></li>
-				<li><a href="/members/new">Onboard New Members</a></li>
-				<li><a href="/members/mass">Mass Edit</a></li>
+				<li><a href="/members/new">New Onboarding</a></li>
+				<li><a href="/members/mass">Mass Actions</a></li>
 				<li role="separator" class="divider"></li>
-				<li><a href="/members/add">View Documents</a></li>
+				<li><a href="/members/reports">Reporting</a></li>
 			  </ul>
 			</li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Attendance <span class="caret"></span></a>
+			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Attendance <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">Mark Roll</a></li>
 				<li><a href="#">View the Roll</a></li>
@@ -51,21 +51,21 @@
 			  </ul>
 			</li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Awards <span class="caret"></span></a>
+			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Awards <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">Mark Roll</a></li>
 				<li><a href="#">Review Roll</a></li>
 			  </ul>
 			</li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">System Users</a></li>
 				<li><a href="#">Audit</a></li>
 			  </ul>
 			</li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
+			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">System Users</a></li>
 				<li><a href="#">Audit</a></li>
@@ -108,6 +108,15 @@
 							scope.workflow.path.tab = attr.ariaControls;
 						});
 					}
+                });
+            }
+        };
+		
+	}).directive('dropdownToggle', function(){
+        return { 
+            link: function (scope, element, attr) {
+                element.click(function(e) {
+                    e.preventDefault();
                 });
             }
         };

@@ -6,6 +6,9 @@
 @section('title', 'Member View')
 
 @section('heading')
+<div class="alert alert-info" ng-show="!workflow.isMemberRequested">
+	<strong>No Member ID specified:</strong> Please go back and request the member record again
+</div>
 <div class="alert alert-warning" ng-cloak ng-show="member.errorNotFound">
 	<strong>Member Lookup failed:</strong> The user with Regt# @{{member.regtNum}} couldn't be found.
 </div>
@@ -13,7 +16,7 @@
 	<strong>Member Lookup failed:</strong> There was a server-side error and this record could not be retrieved
 </div>
 
-<div class="page-header" ng-if="member">
+<div class="page-header" ng-show="member.regt_num">
 
 	<!-- EDIT BUTTON -->
 	<div style="float: right">
@@ -27,7 +30,7 @@
 
 
 @section('memberDisplay')
-<div class="hidden-xs">
+<div class="hidden-xs" ng-show="member.regt_num">
 	<div class="row">
 		<div class="col-sm-2"> 
 			<dl>
@@ -47,14 +50,14 @@
 				<dd>@{{member.is_fully_enrolled | yesNo}}</dd>
 			</dl>
 		</div>
-		<div class="col-sm-3"> 
+		<div class="col-sm-6"> 
 			<p>(Progress bar)</p>
 		</div>
 	</div>
 	<hr>
 </div>
 
-<div ng-show="member">
+<div ng-show="member.regt_num">
 	<div class="row">
 		<div class="col-sm-3 col-sm-push-9">
 			<h4>Profile picture</h4>
@@ -72,6 +75,7 @@
 				<a href="#" class="list-group-item">Assign award</a>
 				<a href="#" class="list-group-item">Promote</a>
 				<a href="#" class="list-group-item">Change posting</a>
+				<a href="#" class="list-group-item list-group-item-warning">Discharge</a>
 			</div>
 			<h4>Record info</h4>
 			<dl>
@@ -110,7 +114,7 @@
 									</tr>
 									<tr>
 										<td>Given Name</td>
-										<td display-mode="view">@{{member.last_name | markBlanks}}</td>
+										<td display-mode="view">@{{member.first_name | markBlanks}}</td>
 										<td display-mode="edit"><input type="text" ng-model="member.first_name"></td>
 									</tr>
 									<tr>
@@ -125,7 +129,7 @@
 									<tr>
 										<td>DOB</td>
 										<td display-mode="view">@{{member.dob | date}}</td>
-										<td display-mode="edit"><input type="date" ng-model="member.dob"></td>
+										<td display-mode="edit"><input type="date" ng-model="member.dob" placeholder="yyyy-MM-dd"></td>
 									</tr>
 									<tr>
 										<td>School</td>
@@ -206,14 +210,11 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<h3>Member Details</h3>
+								<p><em>Member details can be edited through the Actions menu</em></p>
 								<table class="table member-record-view">
 									<tr>
 										<td>Regimental Number</td>
 										<td>@{{member.regt_num | markBlanks}}</td>
-									</tr>
-									<tr>
-										<td>Role Classification</td>
-										<td>@{{member.role_class | markBlanks}}</td>
 									</tr>
 									<tr>
 										<td>Years of Service</td>
@@ -236,9 +237,11 @@
 										<td>@{{member.coms_username | markBlanks}} @{{member.coms_id}}</td>
 									</tr>
 								</table>	
+								<p><em>Use Mass Actions to update Forums and COMS usernames</em></p>
 							</div>
 							<div class="col-sm-6">
 								<h3>Unit Qualifications</h3>
+								<p><em>To update qualifications, go to Assign Awards.</em></p>
 								<table class="table member-record-view">
 									<tr>
 										<td>Maroon Beret Award</td>
@@ -263,25 +266,38 @@
 					<section>
 						<h3>Health and Medical</h3>
 						<p>
-							<span class="label label-default" ng-class="{'label-warning': member.is_med_hmp}">Requires HMP: @{{member.is_med_hmp | yesNo}}</span>
-							<span class="label label-default" ng-class="{'label-danger': member.is_med_lifethreat}">Life threatening: @{{member.is_med_lifethreat | yesNo}}</span>
+							<span class="label label-default" ng-class="{'label-warning': !!+member.is_med_hmp }">Requires HMP: @{{member.is_med_hmp | yesNo}}</span>
+							<span class="label label-default" ng-class="{'label-danger': !!+member.is_med_lifethreat}">Life threatening: @{{member.is_med_lifethreat | yesNo}}</span>
 						</p>
 						<table class="table member-record-view">
+							<tr display-mode="edit">
+								<td>Requires HMP</td>
+								<td>
+									<label class="radio-inline"><input type="radio" ng-model="member.is_med_hmp" value="1"> Yes</label>
+									<label class="radio-inline"><input type="radio" ng-model="member.is_med_hmp" value="0"> No</label>
+								</td>
+							</tr>
+							<tr display-mode="edit">
+								<td>Allergies life threatening?</td>
+								<td>
+									<label class="radio-inline"><input type="radio" ng-model="member.is_med_lifethreat" value="1"> Yes</label>
+									<label class="radio-inline"><input type="radio" ng-model="member.is_med_lifethreat" value="0"> No</label>
+								</td>
+							</tr>
 							<tr>
 								<td>Allergies</td>
-								<td>@{{member.med_allergies | markBlanks}}</td>
+								<td display-mode="view">@{{member.med_allergies | markBlanks}}</td>
+								<td display-mode="edit"><input type="text" ng-model="member.med_allergies"></td>
 							</tr>
 							<tr>
 								<td>Medical Conditions</td>
-								<td>@{{member.med_cond | markBlanks}}</td>
+								<td display-mode="view">@{{member.med_cond | markBlanks}}</td>
+								<td display-mode="edit"><input type="text" ng-model="member.med_cond"></td>
 							</tr>
 							<tr>
 								<td>Special Dietary Requirements (SDR)</td>
-								<td>@{{member.sdr | markBlanks}}</td>
-							</tr>
-							<tr>
-								<td>Medical Conditions</td>
-								<td>@{{member.med_cond | markBlanks}}</td>
+								<td display-mode="view">@{{member.sdr | markBlanks}}</td>
+								<td display-mode="edit"><input type="text" ng-model="member.sdr"></td>
 							</tr>
 						</table>
 					</section>
@@ -289,6 +305,9 @@
 				
 				<div role="tabpanel" class="tab-pane" id="iddocs">
 					<section>
+						<div display-mode="edit" style="float: right">
+							<label class="checkbox-inline"><input type="checkbox" ng-model="member.is_fully_enrolled" ng-true-value="1" ng-false-value="0"> All enrolment documents uploaded?</label>
+						</div>
 						<h3>Documents</h3>
 						<p>Work in progress</p>
 					</section>
@@ -298,23 +317,34 @@
 						<table class="table member-record-view">
 							<tr>
 								<td>Has been printed?</td>
-								<td>@{{member.is_idcard_printed | yesNo}}</td>
-							</tr>
-							<tr>
-								<td>Expiry Date</td>
-								<td>@{{member.idcard_expiry | markBlanks}}</td>
+								<td display-mode="view">@{{member.is_idcard_printed | yesNo}}</td>
+								<td display-mode="edit">
+									<label class="radio-inline"><input type="radio" ng-model="member.is_idcard_printed" value="1"> Yes</label>
+									<label class="radio-inline"><input type="radio" ng-model="member.is_idcard_printed" value="0"> No</label>
+								</td>
 							</tr>
 							<tr>
 								<td>Returned to Bn</td>
-								<td>@{{member.idcard_at_bn | yesNo}}</td>
+								<td display-mode="view">@{{member.idcard_at_bn | yesNo}}</td>
+								<td display-mode="edit">
+									<label class="radio-inline"><input type="radio" ng-model="member.idcard_at_bn" value="1"> Yes</label>
+									<label class="radio-inline"><input type="radio" ng-model="member.idcard_at_bn" value="0"> No</label>
+								</td>
+							</tr>
+							<tr>
+								<td>Expiry Date</td>
+								<td display-mode="view">@{{member.idcard_expiry | date}}</td>
+								<td display-mode="edit"><input type="date" ng-model="member.idcard_expiry"></td>
 							</tr>
 							<tr>
 								<td>Serial Number</td>
-								<td>@{{member.idcard_serial_num | markBlanks}}</td>
+								<td display-mode="view">@{{member.idcard_serial_num | markBlanks}}</td>
+								<td display-mode="edit"><input type="text" ng-model="member.idcard_serial_num"></td>
 							</tr>
 							<tr>
 								<td>Remarks</td>
-								<td>@{{member.idcard_remarks | markBlanks}}</td>
+								<td display-mode="view">@{{member.idcard_remarks | markBlanks}}</td>
+								<td display-mode="edit"><textarea ng-model="member.idcard_remarks" rows="4"></textarea></td>
 							</tr>
 						</table>
 					</section>
@@ -362,7 +392,8 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 			mode: 'view',		// by default
 			tab: 'details'			
 		},
-		isMemberLoaded: false;
+		isMemberRequested: false,
+		isMemberLoaded: false
 	};
 	$scope.workflow.isView = function(){
 		return this.path.mode === 'view';
@@ -376,27 +407,55 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 	
 	var updatePath = function(){
 		var swp = $scope.workflow.path;
-		var newPath = $location.path([swp.id, swp.mode, swp.tab].join('/'));
+		if (swp.id){
+			$location.path([swp.id, swp.mode, swp.tab].join('/'));
+		}
 	};
 	var processMemberRecord = function(member){
 		if (!member.photo_url){
 			member.photo_url = '/img/anon.png';
 		}
-		if (member.dob){
-			var dob = Date.parse(member.dob);
-			if (!isNaN(dob)){
-				member.dob = new Date(dob);
-				// member.dob = member.dob;
-			}
-			else {
-				member.dob = null;
-			}
-		}
+		
+		// Convert dates to JS objects
+		angular.forEach(['dob', 'idcard_expiry', 'created_at', 'updated_at'], function(datePropKey){
+			if (this[datePropKey]){
+				var timestamp = Date.parse(this[datePropKey]);
+				if (!isNaN(timestamp)){
+					this[datePropKey] = new Date(this[datePropKey]);
+				}
+				else {
+					this[datePropKey] = null;
+				}
+			}	
+		}, member);
+		
 		$scope.member = member;
 		$scope.originalMember = angular.extend({}, member);
 	};
 	var updateMemberRecord = function(){
-		console.log('saving');
+		var hasChanges = false;
+		var payload = {
+			member: {}
+		};
+		
+		angular.forEach($scope.member, function(value, key){
+			if ($scope.originalMember[key] !== value){
+				// Value has changed
+				hasChanges = true;
+				payload.member[key] = value;
+			}
+		});
+		
+		if (hasChanges){
+			$http.patch('/api/member/'+$scope.workflow.path.id, payload).then(function(response){
+				console.log('Save successful');
+			}, function(response){
+				// Save failed. Why?
+				alert('Warning: Couldn\'t save this record. Check your connection.');
+				console.warn('Error: member update', response);
+			});			
+		}
+		
 	};
 	
 	$scope.edit = function(){
@@ -416,6 +475,7 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 	$scope.cancelEdit = function(){
 		if ($scope.workflow.isMemberLoaded){
 			$scope.member = angular.extend({}, $scope.originalMember);
+			$scope.workflow.path.mode = 'view';
 			return;
 		}
 		console.warn('Cannot cancel - member record was never loaded');
@@ -426,44 +486,51 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		updatePath();
 	});
 	
-	$scope.$watchCollection('member', function(newCollection){
-		// If member record has changed
-		console.log('newcollection is', newCollection);
-		if ($scope.workflow.isMemberLoaded){
-			// Store changed props
-			// $scope.memberChangedProps.push();
-		}
-	});
-	
 	
 	// Read the url
 	// get rid of any leading slash
 	var path = $location.path();
 	var pathFrags = (path.indexOf('/') === 0 ? path.substring(1) : path).split('/');		
-	$scope.workflow.path.id = pathFrags[0];
-	$scope.workflow.path.mode = pathFrags[1] ? pathFrags[1] : 'view';
-	$scope.workflow.path.tab = pathFrags[2] ? pathFrags[2] : 'details';
-	
-	// Retrieve this member
-	if ($scope.workflow.path.id){
-		$http.get('/api/member/'+$scope.workflow.path.id).then(function(response){
-			// Process then store in VM
-			processMemberRecord(response.data);
-			$scope.workflow.isMemberLoaded = true;
-			
-			// activate the correct tab
-			$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
-			
-		}, function(response){
-			if (response.status == 404){
-				$scope.member.errorNotFound = true;
-			}
-			else {
-				$scope.member.errorServerSide = true;
-			}
-		});
+	if (pathFrags.length > 0 && pathFrags[0].length > 0){
+		$scope.workflow.isMemberRequested = true;
+		$scope.workflow.path.id = pathFrags[0];
+		$scope.workflow.path.mode = pathFrags[1] ? pathFrags[1] : 'view';
+		$scope.workflow.path.tab = pathFrags[2] ? pathFrags[2] : 'details';
+		
+		// Retrieve this member
+		if ($scope.workflow.path.id){
+			$http.get('/api/member/'+$scope.workflow.path.id).then(function(response){
+				// Process then store in VM
+				processMemberRecord(response.data);
+				$scope.workflow.isMemberLoaded = true;
+				
+				// activate the correct tab
+				$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
+				
+			}, function(response){
+				if (response.status == 404){
+					$scope.member.errorNotFound = true;
+				}
+				else {
+					$scope.member.errorServerSide = true;
+				}
+			});
+		}
 	}
 	
+	
+	//======================
+	// Save-your-change niceties
+	window.onbeforeunload = function(event){
+		if ($scope.workflow.isEdit()){
+			var message = 'You are editing this member record, and will lose any unsaved changes.';
+			return message;
+		}
+	};
+		
+	$scope.$on('$destroy', function() {
+		delete window.onbeforeunload;
+	});
 	
 	
 });
@@ -483,7 +550,6 @@ flaresApp.directive('displayMode', function(){
 			}
 			
 			scope.$watch(expr, function(newValue){
-				console.log('memberView directiving watchChange', newValue);
 				if (newValue !== attr.displayMode){
 					element.hide();
 					return;
@@ -498,13 +564,9 @@ flaresApp.directive('displayMode', function(){
 // Custom Filters for Member View/Edit
 flaresApp.filter('yesNo', function(){
 	return function(input){
-		return input ? 'Yes' : 'No';
+		return input && input !== '0' ? 'Yes' : 'No';
 	}
 }).filter('markBlanks', function(){
-	return function(input){
-		return input ? input : '--';
-	}
-}).filter('date', function(){
 	return function(input){
 		return input ? input : '--';
 	}

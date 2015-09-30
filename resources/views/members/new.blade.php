@@ -468,26 +468,6 @@ flaresApp.directive('detailedMember', function($parse){
 	};	
 });
 flaresApp.controller('memberAddController', function($scope, $http){
-	
-	//======================
-	// Save-your-change niceties
-	window.onbeforeunload = function(event){
-		if ($scope.workflow.stage > 1){
-			if ($scope.workflow.stage < 4){
-				var message = 'You will lose any unsaved member details.';
-				return message;
-			}
-			if ($scope.workflow.stage < 6){
-				var message = 'Although members are saved, the onboarding process is not yet complete.';
-				return message;
-			}
-		}
-	};
-	
-	$scope.$on('$destroy', function() {
-		delete window.onbeforeunload;
-	});
-	
 	//======================
 	// Vars which are related to overall onboarding process
 	$scope.onboardingContext = {
@@ -774,6 +754,27 @@ flaresApp.controller('memberAddController', function($scope, $http){
 	for (var i=0; i<numDefaultRecordsToShow; i++){
 		$scope.addNewRecord();
 	}
+
+	//======================
+	// Save-your-change niceties
+	window.onbeforeunload = function(event){
+		if ($scope.workflow.stage > 1){
+			if ($scope.workflow.stage < 4){
+				var message = 'You will lose any unsaved member details.';
+				return message;
+			}
+			if ($scope.workflow.stage < 6){
+				var message = 'Although members are saved, the onboarding process is not yet complete.';
+				return message;
+			}
+		}
+	};
+	
+	$scope.$on('$destroy', function() {
+		delete window.onbeforeunload;
+	});
+	
+
 	
 });
 
