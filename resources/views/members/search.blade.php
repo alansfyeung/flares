@@ -20,7 +20,7 @@
 				<label class="control-label col-sm-3">Rank</label>
 				<div class="col-sm-9">
 					<select class="form-control" ng-model="searchParams.rank">
-						<option ng-repeat="rank in formData.ranks" value="@{{rank.id}}">@{{rank.name}}</option>
+						<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
 					</select>
 				</div>
 			</div>
@@ -86,36 +86,81 @@
 				<th>Given Names</th>
 				<th>Rank</th>
 				<th>Sex</th>
-				<th>Operations</th>
+				<th>Age</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="result in results" ng-class="{danger: !result.is_active}">
+			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active}" launch-contextmenu="@{{result.regt_num}}">
 				<td>@{{result.regt_num}}</td>
 				<td>@{{result.last_name}}</td>
 				<td>@{{result.first_name}}</td>
 				<td>@{{result.rank}}</td>
 				<td>@{{result.sex}}</td>
-				<td><a href="/member#!/@{{result.regt_num}}/view">View Member</a></td>
+				<td>@{{result.ageDetails}}</td>
+				<!-- <td><a href="/member#!/@{{result.regt_num}}/view">View Member</a></td> -->
 			</tr>
 		</tbody>
 	</table>
 </section>
 @endsection
 
+@section('memberSearchModal')
+<div class="modal" id="memberSearchContextMenu" tabindex="-1" role="dialog" aria-labelledby="activeMemberTitle">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="activeMemberTitle">@{{activeMember.last_name}}, @{{activeMember.first_name}} <small>@{{activeMember.regt_num}}</small></h4>
+			</div>
+			<div class="modal-body text-center">
+				<a href="/member#!/@{{activeMember.regt_num}}/view" id="viewActiveMember" class="btn btn-block btn-primary activemember-view">View/Edit member details</a>
+				<button class="btn btn-block btn-default">Find roll entries [TBA]</button>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-block btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+@endsection
+
+
 @section('content')
 	@yield('memberSearch')
+	@yield('memberSearchModal')
 @endsection
 
 
 @section('ng-script')
 <script>
 var flaresApp = angular.module('flaresApp', []);
-
+flaresApp.directive('launchContextmenu', function(){
+	return { 
+		link: function (scope, element, attr) {
+			element.click(function(e) {
+				e.preventDefault();
+				// Find and set the active member
+				var lookupRegtNum = attr.launchContextmenu;
+				angular.forEach(scope.results, function(result){
+					if (result.regt_num === lookupRegtNum){
+						scope.$apply(function(){
+							scope.activeMember = result;
+							console.log(scope.activeMember);
+							$('#memberSearchContextMenu').on('show.bs.modal', function (event) {
+								var modal = $(this);
+								modal.find('.modal-title').text(scope.activeMember.last_name + ', ' + scope.activeMember.first_name);
+								modal.find('.activemember-view').attr('href', '/member#!/'+scope.activeMember.regt_num+'/view');
+							}).modal();
+						});
+					}
+				});
+			});
+		}
+	};	
+});
 flaresApp.controller('memberSearchController', function($scope, $http, $location){
 	$scope.results = [];
+	$scope.activeMember = null;
 	$scope.formData = {
-		// ranks: ['', 'REC', 'CDT', 'CDTLCPL', 'CDTCPL', 'CDTSGT', 'CDTWO2', 'CDTWO1', 'CUO']
 		ranks: [
 			{ id: '', name: 'Any rank' },
 			{ id: 'REC', name: 'Recruit' },
@@ -148,17 +193,44 @@ flaresApp.controller('memberSearchController', function($scope, $http, $location
 		$http.get('/api/member/search', {
 			params: $scope.searchParams
 		}).then(function(response){
-			// console.log(response);
 			$scope.results = response.data;
+			
+			var MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.2425;
+			angular.forEach($scope.results, function(result){
+				if (result.dob && !isNaN(new Date(result.dob))){
+					var ageTurningThisYear = (new Date()).getFullYear() - (new Date(result.dob)).getFullYear();
+					result.age = Math.floor((Date.now() - (new Date(result.dob)).getTime()) / MS_PER_YEAR);
+					result.ageDetails = result.age + ' (' + ageTurningThisYear + ')';					
+				}
+				else {
+					result.age = '0';
+					result.ageDetails = '??';
+					
+				}
+			});
+			
 		}, function(response){
 			console.log('Error - member search', response);
 		});
 	};
 	
-	// submit the search if stuff was given
+	//==================
+	// submit the search if params were already given
 	if (typeof $location.search() === 'object' && Object.keys($location.search()).length > 0){
 		$scope.submitSearch();
 	}
+	
+	
+	//==================
+	// Fetch reference data for platoons and ranks
+	
+	$http.get('/api/refdata').then(function(response){
+		if (response.data.ranks){
+			$scope.formData.ranks = response.data.ranks;
+			$scope.formData.ranks.unshift({abbr: '', name: 'Any rank'});
+		}
+	});
+	
 	
 });
 	

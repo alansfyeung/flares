@@ -11,12 +11,31 @@
  * INFO #2a84be
  */ 
  
+/* View/Edit Member Screen*/
 .memberview-image {
 	max-width: 200px;
 	max-height: 200px;
 }
+.member-record-view td {
+	width: 50%;
+}
+
+.member-record-view input,
+.member-record-view select {
+	padding: 8px;
+	display: block;
+	border: none;	
+	width: 100%;
+}
+.member-record-view input,
+.member-record-view select,
+.member-record-view [contenteditable] {
+	border-bottom: 2px solid skyblue;
+	background: azure;
+}
 
 
+/* Member onboarding scren */
 .memberadd-spreadsheet {
 	border-collapse: collapse;
 	width: 100%;
@@ -48,6 +67,10 @@ select.ng-dirty.ng-invalid,
 .ng-submitted .memberadd-spreadsheet select[required].ng-valid  {
 	border: 1px solid #27ae60;
 }
+
+
+
+
 
 
 footer {

@@ -96,35 +96,16 @@
 		$locationProvider.html5Mode(false).hashPrefix('!');
 		
 	});
-	flaresBase.directive('bsShowTab', function(){
-        return {
+	flaresBase.directive('bsShowTab', function($location){
+        return { 
             link: function (scope, element, attr) {
                 element.click(function(e) {
                     e.preventDefault();
                     $(element).tab('show');		// Show the BS3 tab
-                });
-            }
-        };
-		
-	}).directive('detailedMember', function($parse){
-        return {
-            link: function (scope, element, attr) {
-				scope.$watch('workflow.detailedMember.regt_num', function(value){
-					// Toggle the activeness on the listgroup element
-					if (attr.detailedMember === value){
-						$(element).addClass('active');
-					}
-					else {
-						$(element).removeClass('active');
-					}
-				});
-                element.click(function(e) {
-                    e.preventDefault();
-					if (attr.detailedMember){
+					
+					if (scope.workflow){
 						scope.$apply(function(){
-							console.log('calling', attr.detailedMember);
-							scope.workflow.setDetailedMember(attr.detailedMember);
-							// $parse(attr.detailedMember).call();
+							scope.workflow.path.tab = attr.ariaControls;
 						});
 					}
                 });

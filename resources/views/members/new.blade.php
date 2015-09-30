@@ -21,7 +21,7 @@
 	
 		<div class="col-sm-8">
 			<div class="form-group">
-				<label class="control-label col-sm-4">Type</label>
+				<label class="control-label col-sm-4">Default Type</label>
 				<div class="col-sm-8">
 					<select class="form-control" ng-model="onboardingContext.name">
 						<option ng-repeat="type in formData.onboardingTypes" value="@{{type.id}}">@{{type.name}}</option>
@@ -68,20 +68,23 @@
 				<!-- Note: We don't give an option for forums account creation -->
 			</div>
 			
+			
 		</div>
 		
 		<div class="col-sm-4">
 			<div class="well">
-			
-				<div class="form-group">
-					<div class="col-sm-12">
-						<button type="submit" class="btn btn-primary">Continue</button>
-					</div>
-				</div>
+				<h4>Defaults</h4>
+				<p><strong>New Recruitment: </strong> Recruit, Member, 3PL</p>
+				<p><strong>Transfer: </strong> Cadet, Member, 1PL</p>
 			</div>
 		</div>
-		
 	</div>
+	
+	<hr>
+	<div class="text-right">
+		<button type="submit" class="btn btn-primary">Continue</button>
+	</div>
+	
 </form>
 @endsection
 
@@ -142,35 +145,45 @@
 <div class="alert alert-info">
 	<strong><span class="glyphicon glyphicon-info-sign"></span> Generated Results:</strong> Review the generated member records. Click Confirm to discard any invalid records, or Back to edit any of the invalid records.
 </div>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Regimental Number</th>
-			<th>Name</th>
-			<th>Save result</th>
-		</tr>
-	<thead>
-	<tbody>
-		<tr ng-repeat="member in newMembers">
-			<td>@{{member.regtNum}}</td>
-			<td>@{{member.data.last_name}}, @{{member.data.first_name}}</td>
-			<td><span class="label" ng-class="{'label-success': member.isSaved, 'label-danger': !member.isSaved}">@{{member.isSaved ? 'OK' : 'NOT OK'}}</span></td>
-		</tr>
-	</tbody>
-</table>
 <div class="row">
-	<div class="col-sm-6">@{{newMembers.length}} total new members </div>
-	<div class="col-sm-6 text-right">
-		<button type="button" class="btn btn-default" ng-click="workflow.prev()">Back</button>
-		<button type="button" class="btn btn-primary" ng-click="workflow.confirmNewRecords()" ng-disabled="!workflow.allNewMembersSaved">Confirm</button>
+	<div class="col-sm-9">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Regimental Number</th>
+					<th>Last Name</th>
+					<th>Given Names</th>
+					<th>Save result</th>
+				</tr>
+			<thead>
+			<tbody>
+				<tr ng-repeat="member in newMembers">
+					<td>@{{member.regtNum}}</td>
+					<td>@{{member.data.last_name}}</td>
+					<td>@{{member.data.first_name}}</td>
+					<td><span class="label" ng-class="{'label-success': member.isSaved && member.lastPersistTime, 'label-danger': !member.isSaved && member.lastPersistTime, 'label-warning': !member.lastPersistTime}">@{{member.lastPersistTime ? (member.isSaved ? 'OK' : 'NOT OK') : 'Pending'}}</span></td>
+				</tr>
+			</tbody>
+		</table>	
 	</div>
+	<div class="col-sm-3">
+		<div class="well">
+			@{{newMembers.length}} total new member@{{newMembers.length === 1 ? '' : 's'}}
+		</div>
+	</div>	
+</div>
+
+<hr>
+<div class="text-right">
+	<button type="button" class="btn btn-default" ng-click="workflow.prev()">Back</button>
+	<button type="button" class="btn btn-primary" ng-click="workflow.confirmNewRecords()" ng-disabled="!workflow.allNewMembersSaved">Confirm</button>
 </div>
 @endsection
 
 
 @section('memberAdd-memberDetails')
 <div class="alert alert-info">
-	<strong>Member Detail entry:</strong> Add detailed information for each new member
+	<strong><span class="glyphicon glyphicon-info-sign"></span> Member Detail entry:</strong> Add detailed information for each new member
 </div>
 <div class="row">
 	<div class="col-sm-3">
@@ -185,7 +198,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Regt Num</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" ng-model="workflow.detailedMember.regtNum" disabled />
+					<input type="text" class="form-control" ng-model="workflow.detailedMember.regtNum" readonly />
 				</div>
 			</div>
 			<div class="form-group">
@@ -295,24 +308,55 @@
 				<label class="control-label col-sm-3">Custodial arrangement</label>
 				<div class="col-sm-9">
 					<input type="email" class="form-control" ng-model="workflow.detailedMember.data.parent_custodial" placeholder="e.g. Full custody to mother"/>
-					<span id="helpBlock" class="help-block">Only add information if there is a special child custody arrangement (such as court-enforced)</span>
+					<span id="helpBlockParentCustodial" class="help-block">Only add information if there is a special child custody arrangement (such as court-enforced)</span>
 				</div>
 			</div>
 
+			<hr>
+			<h3>Health</h3>
+			<div class="form-group">
+				<label class="control-label col-sm-3">Allergies</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" ng-model="workflow.detailedMember.data.med_allergies" placeholder="e.g. Peanuts, bee stings"/>
+					<span id="helpBlockMedAllergies" class="help-block">Enter as comma-separated values</span>
+				</div>
+				<label class="checkbox-inline col-sm-3"><input type="checkbox" ng-model="workflow.detailedMember.data.is_med_lifethreat" ng-true-value="1" ng-false-value="0"> Any life threatening?</label>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3">Special Dietary Requirements</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" ng-model="workflow.detailedMember.data.sdr" placeholder="e.g. Vegetarian, No gluten"/>
+					<span id="helpBlockSdr" class="help-block">Enter as comma-separated values</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3">Medical conditions</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" ng-model="workflow.detailedMember.data.med_cond" placeholder="e.g. Diabetic"/>
+					<span id="helpBlockMedAllergies" class="help-block">Enter as comma-separated values</span>
+				</div>
+				<label class="checkbox-inline col-sm-3"><input type="checkbox" ng-model="workflow.detailedMember.data.is_med_hmp" ng-true-value="1" ng-false-value="0"> Requires HMP?</label>
+			</div>
 
 			<hr>
 			<div class="row">
 				<div class="col-sm-offset-3 col-sm-9">
-					<button type="submit" class="btn btn-primary" ng-disabled="!workflow.detailedMember.regtNum"><span class="glyphicon glyphicon-floppy-disk"></span> Save this member</button>
+					<p>
+						<button type="submit" class="btn btn-primary" ng-disabled="!workflow.detailedMember.regtNum"><span class="glyphicon glyphicon-floppy-disk"></span> Save changes</button>
+					</p>
+					<p ng-show="workflow.detailedMember.isUpdated" title="Last updated at @{{workflow.detailedMember.lastPersistTime}}"><span class="glyphicon glyphicon-floppy-saved"></span> Saved</p>
 					<!-- <button type="button" class="btn btn-default" ng-click="workflow.nextDetailedRecord()">Next member</button> -->
+					<p></p>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="col-sm-3">
-		<div class="well">
-			<button type="submit" class="btn btn-primary" ng-disabled="!workflow.detailedMember.regtNum"><span class="glyphicon glyphicon-floppy-disk"></span> Save this member</button>
-			<!-- <button type="button" class="btn btn-block btn-default" ng-click="workflow.nextDetailedRecord()">Next member</button> -->
+		<div class="well" ng-show="workflow.detailedMember.regtNum">
+			<h4>@{{workflow.detailedMember.regtNum}}</h4>
+			<p>@{{workflow.detailedMember.data.last_name}}, @{{workflow.detailedMember.data.first_name}}</p>
+			<p><button type="button" class="btn btn-primary" ng-click="workflow.submitDetailedRecord()" ng-disabled="!workflow.detailedMember.regtNum"><span class="glyphicon glyphicon-floppy-disk"></span> Save changes</button><p>
+			<p ng-show="workflow.detailedMember.isUpdated" title="Last updated at @{{workflow.detailedMember.lastPersistTime}}"><span class="glyphicon glyphicon-floppy-saved"></span> Saved</p>
 		</div>
 	</div>
 	
@@ -354,7 +398,7 @@
 			<thead>
 			<tbody>
 				<tr ng-repeat="member in newMembers">
-					<td>@{{member.regtNum}}</td>
+					<td><a href="/member/#!/@{{member.regtNum}}/view" target="_blank">@{{member.regtNum}}</a></td>
 					<td>@{{member.data.last_name}}, @{{member.data.first_name}}</td>
 				</tr>
 			</tbody>
@@ -362,14 +406,14 @@
 		
 		<hr>
 		<div class="text-right">
-			<a href="/" class="btn btn-primary">Return to dashboard</a>
+			<a href="/" class="btn btn-success">Return to dashboard</a>
 		</div>
 		
 		
 	</div>
 	<div class="col-sm-3">
 		<div class="well">
-			<a href="/" class="btn btn-primary">Return to dashboard</a>
+			TBA - more info
 		</div>
 	</div>
 </div>
@@ -399,15 +443,60 @@
 <script>
 
 var flaresApp = angular.module('flaresApp', ['flaresBase']);
+flaresApp.directive('detailedMember', function($parse){
+	return {
+		link: function (scope, element, attr) {
+			scope.$watch('workflow.detailedMember.regtNum', function(value){
+				// Toggle the activeness on the listgroup element
+				if (attr.detailedMember === value){
+					$(element).addClass('active');
+				}
+				else {
+					$(element).removeClass('active');
+				}
+			});
+			element.click(function(e) {
+				e.preventDefault();
+				if (attr.detailedMember){
+					scope.$apply(function(){
+						scope.workflow.setDetailedMember(attr.detailedMember);
+						// $parse(attr.detailedMember).call();
+					});
+				}
+			});
+		}
+	};	
+});
 flaresApp.controller('memberAddController', function($scope, $http){
 	
-	// Tracks vars related to overall onboarding process
+	//======================
+	// Save-your-change niceties
+	window.onbeforeunload = function(event){
+		if ($scope.workflow.stage > 1){
+			if ($scope.workflow.stage < 4){
+				var message = 'You will lose any unsaved member details.';
+				return message;
+			}
+			if ($scope.workflow.stage < 6){
+				var message = 'Although members are saved, the onboarding process is not yet complete.';
+				return message;
+			}
+		}
+	};
+	
+	$scope.$on('$destroy', function() {
+		delete window.onbeforeunload;
+	});
+	
+	//======================
+	// Vars which are related to overall onboarding process
 	$scope.onboardingContext = {
 		hasOverrides: false,
 		name: 'newRecruitment',				
 		thisYear: (new Date()).getFullYear(),
 		thisCycle: '1',
-		newRank: '',
+		newRank: 'REC',
+		newPosting: 'MBR',
 		newPlatoon: '3PL',
 	};
 	
@@ -561,11 +650,6 @@ flaresApp.controller('memberAddController', function($scope, $http){
 	
 	//======================
 	// Workflow Screen navigation
-	
-	$scope.workflow.submitContextDetails = function(){
-		
-	};
-	
 	$scope.workflow.submitNewRecords = function(){
 		// Validation
 		if($scope.memberBasicForm.$invalid){
@@ -576,7 +660,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 		// Submission
 		var numResolved = 0;
 		var checkAllResolved = function(){
-			return $scope.workflow.stage === 2 && numResolved === $scope.newMembers.length;
+			return numResolved === $scope.newMembers.length;
 		};
 		
 		angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
@@ -592,14 +676,10 @@ flaresApp.controller('memberAddController', function($scope, $http){
 				$http.post('/api/member', payload).then(function(response){
 					console.log(response.data);		// Debug
 					
+					newMember.lastPersistTime = (new Date()).toTimeString();
 					if (response.data.recordId){
-						console.log('saved', newMember);
 						newMember.regtNum = response.data.recordId;	
 						newMember.isSaved = true;
-						newMember.lastPersistTime = +(new Date());
-					}
-					else {
-						console.warn('not saved', response.data.regtNumError);
 					}
 					
 					numResolved++;
@@ -654,11 +734,9 @@ flaresApp.controller('memberAddController', function($scope, $http){
 				console.log(response.data);		// Debug
 				
 				if (response.data.recordId){
-					detailedMember.lastPersistTime = +(new Date());
-					console.log('updated', detailedMember);
-				}
-				else {
-					console.log('not saved', response.data.updateError);
+					detailedMember.lastPersistTime = (new Date()).toTimeString();
+					detailedMember.isUpdated = true;	
+					console.log('Updated:', detailedMember);
 				}
 			}, function(response){
 				console.warn('Error: member add', response);
