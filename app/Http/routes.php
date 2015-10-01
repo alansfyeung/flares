@@ -45,8 +45,11 @@
 	 */
 	Route::get('api/member/search', 'MemberController@index');		// search endpoint (alias)
 	Route::resource('api/member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-	Route::resource('api/awards', 'AwardsController');
-	Route::resource('api/systemuser', 'SystemUserController');
+	Route::resource('api/member.picture', 'MemberPictureController', ['only' => ['store', 'show', 'destroy']]);
+	Route::resource('api/member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
+	// Route::resource('api/member.documents', 'MemberDocumentController');
+	// Route::resource('api/awards', 'AwardsController');
+	// Route::resource('api/systemuser', 'SystemUserController');
 	 
 	// Ref data routes
 	Route::get('api/refdata', 'RefDataController@all');

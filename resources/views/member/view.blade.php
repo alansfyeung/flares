@@ -7,11 +7,11 @@
 
 @section('heading')
 <!-- Loading failure warnings -->
-<div class="alert alert-info" ng-show="!workflow.isMemberRequested">
+<div class="alert alert-info" ng-cloak ng-show="!workflow.isMemberRequested">
 	<strong>No Member ID specified:</strong> Please go back and request the member record again
 </div>
 <div class="alert alert-warning" ng-cloak ng-show="member.errorNotFound">
-	<strong>Member Lookup failed:</strong> The user with Regt# @{{member.regtNum}} couldn't be found.
+	<strong>Member Lookup failed:</strong> The user with Regt# &diams;@{{workflow.path.id}} couldn't be found.
 </div>
 <div class="alert alert-danger" ng-cloak ng-show="member.errorServerSide">
 	<strong>Member Lookup failed:</strong> There was a server-side error and this record could not be retrieved
@@ -19,7 +19,7 @@
 
 
 <!-- page main header -->
-<div class="page-header" ng-show="member.regt_num">
+<div class="page-header" ng-cloak ng-show="member.regt_num">
 
 	<!-- EDIT BUTTON -->
 	<div style="float: right" ng-show="!(member.deleted_at || workflow.isDischarge())">
@@ -35,14 +35,14 @@
 	<h4>Incomplete Member Record</h4>
 	<p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
 	<p>
-		<button type="button" class="btn btn-danger">Delete this record, it's not needed</button>
-		<button type="button" class="btn btn-default">Mark as active</button>
+		<button type="button" class="btn btn-danger" ng-click="permanentDelete()" ng-disabled="workflow.isAsync">Delete this record, it's not needed</button>
+		<button type="button" class="btn btn-default" ng-click="activate()" ng-disabled="workflow.isAsync">Activate member</button>
 	</p>
 </div>
 
 <div class="alert alert-warning" ng-if="workflow.isMemberLoaded && member.deleted_at">
 	<h4>Discharged Member</h4>
-	<p>This member has been discharged. You cannot edit this member record.</p>
+	<p>This member has been discharged so this record cannot be edited.</p>
 </div>
 
 
@@ -135,21 +135,27 @@
 					</ul>				
 				</div>
 			</div>
-			<h4>Actions</h4>
 			
-			<!-- For fully active members -->
-			<div class="list-group" ng-show="member.is_active && !member.deleted_at">
-				<a href="#" class="list-group-item">Record Leave</a>
-				<a href="#" class="list-group-item">Assign award</a>
-				<a href="#" class="list-group-item">Promote</a>
-				<a href="#" class="list-group-item">Change posting</a>
-				<button type="button" class="list-group-item list-group-item-warning" ng-click="confirmDischarge()">Discharge</button>
-			</div>
-			
-			<!-- For discharged/inactive members -->
-			<div class="list-group" ng-show="!member.is_active || member.deleted_at">
-					<button type="button" class="list-group-item list-group-item-success" ng-show="member.deleted_at" ng-click="">Reactivate</button>
-			</div>
+			<section>
+				<h4>Actions</h4>
+				<!-- For fully active members -->
+				<div class="list-group" ng-show="member.is_active && !member.deleted_at">
+					<a href="#" class="list-group-item">Record Leave</a>
+					<a href="#" class="list-group-item">Assign award</a>
+					<a href="#" class="list-group-item">Promote</a>
+					<a href="#" class="list-group-item">Change posting</a>
+					<button type="button" class="list-group-item list-group-item-warning" ng-click="confirmDischarge()">Discharge</button>
+				</div>
+				<!-- For inactive members -->
+				<div class="list-group" ng-show="!member.is_active">
+					<button type="button" class="list-group-item" ng-click="">Activate</button>
+					<button type="button" class="list-group-item list-group-item-danger" ng-click="">Remove permanently</button>
+				</div>
+				<!-- For discharged members -->
+				<div class="list-group" ng-show="member.deleted_at">
+					<button type="button" class="list-group-item" ng-click="">Reactivate --- (WIP)</button>
+				</div>
+			</section>
 			
 			<h4>Record audit info</h4>
 			<dl ng-show="member.deleted_at">
@@ -428,8 +434,33 @@
 					</section>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="postings">
-					<h3>Postings</h3>
-					<p>Work in progress</p>
+					<section>
+						<h3>Promotions and Postings</h3>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Status</th>
+									<th>Rank</th>
+									<th>Effective Date</th>
+									<th>Platoon</th>
+									<th>Posting</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="postingPromo in member.posting_promo" ng-class="{'warning': postingPromo.is_discharge}">
+									<td>
+										<span class="glyphicon glyphicon-time" title="Recorded by @{{postingPromo.recorded_by}}, at @{{postingPromo.created_at}}"></span>
+										<span class="glyphicon glyphicon-ban-circle" title="Discharged" ng-show="!!+postingPromo.is_discharge"></span>
+									</td>
+									<td><span class="glyphicon glyphicon-hourglass" ng-show="!!+postingPromo.is_acting" title="Acting Rank"></span> @{{postingPromo.new_rank | markBlanks}}</td>
+									<td>@{{postingPromo.effective_date | date}}</td>
+									<td>@{{postingPromo.new_platoon | markBlanks}}</td>
+									<td>@{{postingPromo.new_posting | markBlanks}}</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="attendance">
 					<h3>Attendance</h3>
@@ -499,7 +530,7 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 	};
 	var retrieveMember = function(){
 		if ($scope.workflow.path.id){
-			$http.get('/api/member/'+$scope.workflow.path.id+'?detail=high').then(function(response){
+			$http.get('/api/member/'+$scope.workflow.path.id, {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
 				processMemberRecord(response.data);
 				$scope.workflow.isMemberLoaded = true;
@@ -556,13 +587,13 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		});
 		
 		if (hasChanges){
-			$http.patch('/api/member/'+$scope.workflow.path.id, payload).then(function(response){
+			$http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
 				console.log('Save successful');
 			}, function(response){
 				// Save failed. Why?
 				alert('Warning: Couldn\'t save this record. Check your connection.');
 				console.warn('Error: member update', response);
-			});			
+			});
 		}
 		
 	};
@@ -590,6 +621,31 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		console.warn('Cannot cancel - member record was never loaded');
 	};
 	
+	$scope.activate = function(){
+		var sw = $scope.workflow;
+		if ($scope.member.regt_num){
+			var payload = {
+				member: {
+					is_active: 1
+				}
+			};	
+			sw.isAsync = true;
+			$http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
+				console.log('Activation successful');
+				retrieveMember();
+				
+			}, function(response){
+				// Save failed. Why?
+				alert('Warning: Couldn\'t activate this record. Check your connection.');
+				console.warn('Error: member update', response);
+				
+			}).finally(function(){
+				sw.isAsync = false;
+				
+			});
+		}
+	};
+	
 	$scope.confirmDischarge = function(){
 		$scope.workflow.path.mode = 'discharge';
 		$scope.workflow.path.tab = 'confirm';
@@ -604,22 +660,49 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 			$scope.confirmDischarge();
 			return;
 		}
-		
 		sw.isAsync = true;
-		$http.delete('/api/member/'+$scope.workflow.path.id).then(function(response){
+		
+		$http.post('/api/member/'+$scope.member.regt_num+'/posting', {context: $scope.dischargeContext}).then(function(response){
+			console.log('Success: Created discharge record');
 			
-			sw.isAsync = false;
-			retrieveMember();
-			
-			// Revert
-			$scope.workflow.path.mode = 'view';
-			$scope.workflow.path.tab = 'details';
+			$http.delete('/api/member/'+$scope.member.regt_num).then(function(response){
+				retrieveMember();
+				$scope.workflow.path.mode = 'view';		// Revert
+				$scope.workflow.path.tab = 'details';
+				
+			}, function(response){
+				console.warn('ERROR: Discharge process failed', response);
+				alert('Error occurred during discharge process (2)');
+				
+			}).finally(function(){
+				sw.isAsync = false;
+				
+			});
 		}, function(response){
-			console.warn('ERROR: Discharge process failed', response);
-			alert('Error occurred during discharge process');
+			console.warn('ERROR: Discharge posting record failed -- member was not discharged as a result', response);
+			alert('Error occurred during discharge process (1)');
 		});
 		
-		
+	};
+	
+	$scope.permanentDelete = function(){
+		var sw = $scope.workflow;
+		if ($scope.member.regt_num && !$scope.member.is_active){
+			sw.isAsync = true;
+			$http.delete('/api/member/'+$scope.member.regt_num, {params: { remove: 'permanent' }}).then(function(response){
+				$scope.member = {};  // Clear all traces of the old member
+				sw.isMemberLoaded = false;
+				retrieveMember();		// Then this should result in a "Member not found"
+				
+			}, function(response){
+				console.warn('ERROR: Permanent delete process failed', response);
+				alert('Error occurred during deletion process.');
+				
+			}).finally(function(){
+				sw.isAsync = false;
+				
+			});
+		}
 	};
 	
 	

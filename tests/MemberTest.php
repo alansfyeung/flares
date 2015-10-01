@@ -123,7 +123,7 @@ class MemberTest extends TestCase
 	
 	
 	/**
-     *  Test soft deletions
+     *  Test soft deletions 1
      */
 	public function testDischargeMember(){
 		
@@ -143,7 +143,7 @@ class MemberTest extends TestCase
 				'regt_num' => $memberId,
 				'first_name' => $member['first_name'],
 				'last_name' => $member['last_name'],
-				'is_discharge' => 1
+				// 'is_discharge' => 1		// Discharge record is now handled by separate api call
 			]);
 			
 		// And that it shows up in the relevant Index searches
@@ -170,6 +170,57 @@ class MemberTest extends TestCase
 			// ]);
 		
 	}
+	
+	/**
+     *  Test soft deletions 2
+     */
+	public function testDischargeMemberWithTerminatingRank(){
+		
+		// Fetch a list of dummy members
+		// Create member 
+		$members = $this->newMemberRecords();
+		$member = $members[array_rand($members)];
+		$memberId = $this->persistMember($member);
+		
+		// Create the discharge PostingPromo record
+		$payload = [
+			'context' => [
+				'effectiveDate' => '2012-01-02',
+				'isCustomRank' => true,
+				'dischargeRank' => 'CDTSGT'
+			]
+		];
+		$resp = $this->call('POST', "/api/member/$memberId/posting", $payload);
+		$this->assertEquals(200, $resp->status());
+		
+		// Soft Delete this record
+		$resp = $this->call('DELETE', "/api/member/$memberId");
+		$this->assertEquals(200, $resp->status());
+		
+		// Check that it still turns if queried directly
+		$this->get("/api/member/$memberId?detail=high")
+			->seeJson([
+				'regt_num' => $memberId,
+				'first_name' => $member['first_name'],
+				'last_name' => $member['last_name'],
+				'is_discharge' => 1,
+				'new_rank' => 'CDTSGT',
+				'effective_date' => '2012-01-02'
+			]);
+			
+		// And that it shows up in the relevant Index searches
+		$this->get("/api/member?regt_num=$memberId")
+			->seeJson([]);		// Expect no results
+			
+		$this->get("/api/member?regt_num=$memberId&discharged=only")
+			->seeJson([
+				'regt_num' => $memberId,
+				'first_name' => $member['first_name'],
+				'last_name' => $member['last_name']
+			]);		// Expect Us.
+		
+	}
+	
 	
 	/**
      *  Test proper (permanent) deletions

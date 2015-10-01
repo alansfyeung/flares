@@ -155,7 +155,7 @@ class MemberController extends MemberControllerBase
 		
 		// Fetch the first match
 		// detail -- [ high | med | low ]
-		$member = Member::withTrashed()->where('regt_num', $id)->firstOrFail();
+		$member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
 		$detailLevel = $request->input('detail', 'low');
 		
 		if ($detailLevel == 'high' || $detailLevel == 'med'){	
@@ -219,21 +219,27 @@ class MemberController extends MemberControllerBase
 		
 		try {
 			if ($removeMode == 'permanent'){
-				$deletionMember = Member::findOrFail($id);
-				foreach ($deletionMember->postings as $posting){
-					$posting->delete();
+				$deletionMember = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
+				
+				// Todo: future permissions check
+				$permissionsCheck = true;
+				if ($permissionsCheck || $deletionMember->is_active === 0){		// Allow anybody to delete inactive records
+					foreach ($deletionMember->postings as $posting){
+						$posting->delete();
+					}
+					$deleted = $deletionMember->forceDelete();
 				}
-				$deleted = $deletionMember->forceDelete();
+				else {
+					$deletionNotPossibleError = ['code' => 'PERM', 'reason' => 'You don\'t have permission to permanently delete this record'];
+				}
 			}
 			else {
 				// Soft delete -- read overrides from context
-				$context = $request->input('context', []);
-				$this->generateDischargePostingRecord($id, $context);
 				$deleted = Member::findOrFail($id)->delete();
-			}			
+			}
 		}
 		catch (Exception $ex){
-			$deletionNotPossible = ['code' => 'EX', 'reason' => $ex->getMessage()];
+			$deletionNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
 		}
 		
 		return response()->json([
