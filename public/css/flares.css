@@ -44,6 +44,14 @@
 	width: auto;
 }
 
+.uploader-drop-zone {
+	border: 6px dashed steelblue;
+	background: aliceblue;
+}
+.uploader-not-ready.uploader-drop-zone {
+	border: 6px solid red;
+}
+
 
 /* Member onboarding scren */
 .memberadd-spreadsheet {

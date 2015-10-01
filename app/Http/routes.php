@@ -36,6 +36,8 @@
 		Route::get('member', function(){
 			return view('member.view');
 		});
+
+		
 	});
 	
 	
@@ -45,8 +47,13 @@
 	 */
 	Route::get('api/member/search', 'MemberController@index');		// search endpoint (alias)
 	Route::resource('api/member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-	Route::resource('api/member.picture', 'MemberPictureController', ['only' => ['store', 'show', 'destroy']]);
 	Route::resource('api/member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
+	
+	Route::get('api/member/{memberId}/picture', 'MemberPictureController@show');
+	Route::get('api/member/{memberId}/picture/new', 'MemberPictureController@check');
+	Route::post('api/member/{memberId}/picture/new', 'MemberPictureController@store');
+	Route::delete('api/member/{memberId}/picture', 'MemberPictureController@delete');
+	
 	// Route::resource('api/member.documents', 'MemberDocumentController');
 	// Route::resource('api/awards', 'AwardsController');
 	// Route::resource('api/systemuser', 'SystemUserController');

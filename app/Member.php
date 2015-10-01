@@ -9,7 +9,7 @@ class Member extends Model
 {
 	use SoftDeletes;
 	
-    protected $table = 'master';
+    protected $table = 'member';
 	protected $primaryKey = 'regt_num';
 	protected $dates = ['deleted_at'];
 	
@@ -23,6 +23,9 @@ class Member extends Model
 	// Scopes
 	public function postings(){
 		return $this->hasMany('App\PostingPromo', 'regt_num'); 
+	}
+	public function pictures(){
+		return $this->hasMany('App\MemberPicture', 'regt_num'); 
 	}
 	
 }

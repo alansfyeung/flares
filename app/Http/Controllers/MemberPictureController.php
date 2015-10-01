@@ -3,85 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 use DB;
-use App\Member;
+use App\MemberPicture;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class MemberPictureController extends MemberControllerBase
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index()
+{		
+	private $tmpDir;			// Use the PHP default
+	
+	public function __construct(){
+		$this->tmpDir = sys_get_temp_dir();
+	}
+	
+	public function check(){
+		$config = new \Flow\Config();
+		$config->setTempDir($this->tmpDir);		
+		$file = new \Flow\FileReadable($config);
+		
+		if ($file->checkChunk()) {
+			return response('', Response::HTTP_OK);				// 200
+		} 
+		return response('', Response::HTTP_NO_CONTENT);		// 204
+	}
+	
+    public function store(Request $request, $memberId)
+    {	
+		$config = new \Flow\Config();
+		$config->setTempDir($this->tmpDir);
+		$file = new \Flow\FileReadable($config);
+
+		if ($file->validateChunk()) {
+			$file->saveChunk();
+		} 
+		else {
+			// error, invalid chunk upload request, retry
+			return response('', Response::HTTP_BAD_REQUEST);		// 400
+		}
+
+		// Check for completion
+		if ($file->validateFile()) {
+			$blob = $file->saveToStream();
+			
+			$mp = new MemberPicture();
+			$mp->regt_num = $memberId;
+			$mp->photo_blob = $blob;	
+			$mp->save();
+			
+			return response('Upload OK', Response::HTTP_CREATED);		// 201
+		}
+		return response('', Response::HTTP_ACCEPTED);		// 202
+    }
+
+    public function show($memberId)
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
     public function destroy($id)
     {
         //

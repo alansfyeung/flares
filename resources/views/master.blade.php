@@ -15,7 +15,7 @@
 	<script src="/js/angular-route.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body flow-prevent-drop>
 	@section('header')
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
@@ -94,7 +94,6 @@
 	<script>
 	var flaresBase = angular.module('flaresBase', []).config(function($locationProvider) {
 		$locationProvider.html5Mode(false).hashPrefix('!');
-		
 	});
 	flaresBase.directive('bsShowTab', function($location){
         return { 
@@ -112,7 +111,17 @@
             }
         };
 		
-	}).directive('dropdownToggle', function(){
+	});
+	flaresBase.directive('spreadsheetNav', function(){
+		return {
+			link: function(scope, element, attr){
+				element.keydown(function(e){
+					// console.log(e.keyCode);
+				});
+			}
+		};
+	});
+	flaresBase.directive('dropdownToggle', function(){
         return { 
             link: function (scope, element, attr) {
                 element.click(function(e) {
@@ -121,15 +130,6 @@
             }
         };
 		
-	}).directive('spreadsheetNav', function(){
-		return {
-			link: function(scope, element, attr){
-				element.keydown(function(e){
-					// console.log(e.keyCode);
-				});
-			}
-		};
-	
 	});
 	</script>
 	
