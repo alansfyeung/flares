@@ -15,7 +15,6 @@ abstract class MemberControllerBase extends Controller
 	 *  Onboarding functionality
 	 */
 	 
-	 
 	protected function getContextDefaults($contextName = 'newRecruitment'){
 		// Allowed $contextName values are: 
 		// newRecruitment, newTransfer, newVolunteerStaff, newAdultCadetStaff
@@ -134,10 +133,11 @@ abstract class MemberControllerBase extends Controller
 		 
 		// TODO check for overrides to the above values in $opts
 		$effectiveDate = date('Y-m-d');
-		$recordedBy = 'YeungA';
+		$promoAuth = 'OC';
+		$recordedBy = 'YeungA';				// TODO: Temp, replce this recorded by
 		
-		// Extract the overrides
 		if (is_array($opts)){
+			// overwrite vars above with the overrides
 			extract($opts);
 		}
 		
@@ -147,10 +147,37 @@ abstract class MemberControllerBase extends Controller
 			'new_platoon' => $newPlatoon,
 			'new_posting' => $newPosting,
 			'new_rank' => $newRank,
-			'promo_auth' => 'OC',
+			'promo_auth' => $promoAuth,
 			'recorded_by' => $recordedBy
 		];
 		$id = DB::table('posting_promo')->insertGetId($postingRecord);		
+		return $id;
+	}
+	
+	protected function generateDischargePostingRecord($id, $opts = 0){
+		/*
+		 * We need to add a promo_posting record that is ticked as "is_discharge"
+		 */
+		
+		$effectiveDate = date('Y-m-d');
+		$promoAuth = 'OC';
+		$recordedBy = 'YeungA';				// TODO: Temp, replce this value dynamically 
+		$dischargeRank = null;
+		
+		if (is_array($opts)){
+			// overwrite vars above with the overrides
+			extract($opts);
+		} 
+		 
+		$postingRecord = [
+			'is_discharge' => 1,
+			'regt_num' => $id,
+			'effective_date' => $effectiveDate,
+			'new_rank' => $dischargeRank,
+			'promo_auth' => 'OC',
+			'recorded_by' => $recordedBy
+		];
+		$id = DB::table('posting_promo')->insertGetId($postingRecord);		// TODO - use the PostingPromo model to do this
 		return $id;
 	}
 	

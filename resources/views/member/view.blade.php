@@ -6,6 +6,7 @@
 @section('title', 'Member View')
 
 @section('heading')
+<!-- Loading failure warnings -->
 <div class="alert alert-info" ng-show="!workflow.isMemberRequested">
 	<strong>No Member ID specified:</strong> Please go back and request the member record again
 </div>
@@ -16,26 +17,92 @@
 	<strong>Member Lookup failed:</strong> There was a server-side error and this record could not be retrieved
 </div>
 
+
+<!-- page main header -->
 <div class="page-header" ng-show="member.regt_num">
 
 	<!-- EDIT BUTTON -->
-	<div style="float: right">
+	<div style="float: right" ng-show="!(member.deleted_at || workflow.isDischarge())">
 		<button class="btn btn-default" ng-class="{'btn-success': workflow.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': workflow.isView(), 'glyphicon-floppy-disk': workflow.isEdit()}"></span> @{{workflow.isEdit() ? 'Save Details' : 'Edit Details'}}</button>
 		<button class="btn btn-default" ng-show="workflow.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</div>
 	
-	<h1>@{{member.last_name}}, @{{member.first_name}} <small>&ndash; @{{member.regt_num}}</small></h1>
+	<h1>@{{member.last_name}}, @{{member.first_name}} &nbsp;<small>&diams; @{{member.regt_num}}</small></h1>
 </div>
+
+<!-- Inactive and discharged warnings -->
+<div class="alert alert-danger" ng-if="workflow.isMemberLoaded && !member.is_active">
+	<h4>Incomplete Member Record</h4>
+	<p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
+	<p>
+		<button type="button" class="btn btn-danger">Delete this record, it's not needed</button>
+		<button type="button" class="btn btn-default">Mark as active</button>
+	</p>
+</div>
+
+<div class="alert alert-warning" ng-if="workflow.isMemberLoaded && member.deleted_at">
+	<h4>Discharged Member</h4>
+	<p>This member has been discharged. You cannot edit this member record.</p>
+</div>
+
+
 @endsection
 
 
 @section('memberDisplay')
-<div class="hidden-xs" ng-show="member.regt_num">
+<div ng-show="member.regt_num && workflow.isDischarge()">
 	<div class="row">
+		<form class="form-horizontal col-sm-6">
+			<h3>Discharge member</h3>
+			
+			<div class="form-group">
+				<label class="control-label col-sm-3">Discharge Date</label>
+				<div class="col-sm-9">
+					<input type="date" class="form-control" ng-model="dischargeContext.effectiveDate"/>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="control-label col-sm-3">Discharge with different rank</label>
+				<div class="col-sm-9">
+					<div class="checkbox">
+						<label><input type="checkbox" ng-model="dischargeContext.isCustomRank" aria-label="Discharge with different rank"> Tick to select a different terminating rank</label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group" ng-show="dischargeContext.isCustomRank">
+				<label class="control-label col-sm-3">Terminating rank</label>
+				<div class="col-sm-9">
+					<select class="form-control" ng-model="dischargeContext.dischargeRank">
+						<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="alert alert-info" ng-show="workflow.isAsync">
+				<span class="glyphicon glyphicon-info-sign"></span> Working on your request.
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-9 col-sm-push-3">
+					<button type="button" class="btn btn-warning" ng-click="discharge()" ng-disabled="workflow.isAsync">Continue with Discharge</button>
+					<button type="button" class="btn btn-default" ng-click="cancelDischarge()" ng-disabled="workflow.isAsync">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<div ng-show="member.regt_num && !workflow.isDischarge()">
+
+	<!-- Member quick statuses row -->
+	<div class="row hidden-xs">
 		<div class="col-sm-2"> 
 			<dl>
 				<dt>Member Status</dt>
-				<dd><span class="label" ng-class="{'label-success': member.is_active, 'label-warning': !member.is_active}">@{{member.is_active ? 'Active member' : 'Inactive member'}}</span></dd>
+				<dd><span member-status></span></dd>
 			</dl>
 		</div>
 		<div class="col-sm-2"> 
@@ -55,9 +122,8 @@
 		</div>
 	</div>
 	<hr>
-</div>
-
-<div ng-show="member.regt_num">
+	
+	<!-- Member info tabs & panel -->
 	<div class="row">
 		<div class="col-sm-3 col-sm-push-9">
 			<h4>Profile picture</h4>
@@ -70,18 +136,30 @@
 				</div>
 			</div>
 			<h4>Actions</h4>
-			<div class="list-group">
+			
+			<!-- For fully active members -->
+			<div class="list-group" ng-show="member.is_active && !member.deleted_at">
 				<a href="#" class="list-group-item">Record Leave</a>
 				<a href="#" class="list-group-item">Assign award</a>
 				<a href="#" class="list-group-item">Promote</a>
 				<a href="#" class="list-group-item">Change posting</a>
-				<a href="#" class="list-group-item list-group-item-warning">Discharge</a>
+				<button type="button" class="list-group-item list-group-item-warning" ng-click="confirmDischarge()">Discharge</button>
 			</div>
-			<h4>Record info</h4>
+			
+			<!-- For discharged/inactive members -->
+			<div class="list-group" ng-show="!member.is_active || member.deleted_at">
+					<button type="button" class="list-group-item list-group-item-success" ng-show="member.deleted_at" ng-click="">Reactivate</button>
+			</div>
+			
+			<h4>Record audit info</h4>
+			<dl ng-show="member.deleted_at">
+				<dt>Date marked discharged</dt>
+				<dd>@{{member.deleted_at | date:'medium'}}</dd>
+			</dl>
 			<dl>
 				<dt>Date created</dt>
 				<dd>@{{member.created_at | date:'medium'}}</dd>
-				<dt>Last Updated</dt>
+				<dt>Last updated</dt>
 				<dd>@{{member.updated_at | date:'medium'}}</dd>
 			<dl>
 		</div>
@@ -364,9 +442,7 @@
 			</div>		
 			
 		</div>
-		
 	</div>
-	
 </div>
 @endsection
 
@@ -383,23 +459,33 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 	
 	$scope.member = {};
 	$scope.originalMember = {};
+	
+	$scope.dischargeContext = {		// viewmodel for the discharge screen
+		effectiveDate: new Date(),
+		isCustomRank: false,
+		dischargeRank: 'REC'
+	};
 	$scope.formData = {
-		sexes: ['M','F'],
+		sexes: ['M','F']
 	}
 	$scope.workflow = {
 		path: {
 			id: 0,
 			mode: 'view',		// by default
-			tab: 'details'			
+			tab: 'details'
 		},
 		isMemberRequested: false,
-		isMemberLoaded: false
+		isMemberLoaded: false,
+		isAsync: false
 	};
 	$scope.workflow.isView = function(){
 		return this.path.mode === 'view';
 	};
 	$scope.workflow.isEdit = function(){
 		return this.path.mode === 'edit';
+	};
+	$scope.workflow.isDischarge = function(){
+		return this.path.mode === 'discharge';
 	};
 	$scope.workflow.toggleMode = function(){
 		this.path.mode = this.isView() ? 'edit' : 'view';
@@ -411,13 +497,36 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 			$location.path([swp.id, swp.mode, swp.tab].join('/'));
 		}
 	};
+	var retrieveMember = function(){
+		if ($scope.workflow.path.id){
+			$http.get('/api/member/'+$scope.workflow.path.id+'?detail=high').then(function(response){
+				// Process then store in VM
+				processMemberRecord(response.data);
+				$scope.workflow.isMemberLoaded = true;
+				
+				// activate the correct tab
+				$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
+				
+			}, function(response){
+				if (response.status == 404){
+					$scope.member.errorNotFound = true;
+				}
+				else {
+					$scope.member.errorServerSide = true;
+				}
+			});
+		}
+		else {
+			console.warn('Member ID not specified');
+		}
+	};
 	var processMemberRecord = function(member){
 		if (!member.photo_url){
 			member.photo_url = '/img/anon.png';
 		}
 		
 		// Convert dates to JS objects
-		angular.forEach(['dob', 'idcard_expiry', 'created_at', 'updated_at'], function(datePropKey){
+		angular.forEach(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], function(datePropKey){
 			if (this[datePropKey]){
 				var timestamp = Date.parse(this[datePropKey]);
 				if (!isNaN(timestamp)){
@@ -481,6 +590,39 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		console.warn('Cannot cancel - member record was never loaded');
 	};
 	
+	$scope.confirmDischarge = function(){
+		$scope.workflow.path.mode = 'discharge';
+		$scope.workflow.path.tab = 'confirm';
+	};
+	$scope.cancelDischarge = function(){
+		$scope.workflow.path.mode = 'view';
+		$scope.workflow.path.tab = 'details';
+	};
+	$scope.discharge = function(){
+		var sw = $scope.workflow;
+		if (!sw.isDischarge()){
+			$scope.confirmDischarge();
+			return;
+		}
+		
+		sw.isAsync = true;
+		$http.delete('/api/member/'+$scope.workflow.path.id).then(function(response){
+			
+			sw.isAsync = false;
+			retrieveMember();
+			
+			// Revert
+			$scope.workflow.path.mode = 'view';
+			$scope.workflow.path.tab = 'details';
+		}, function(response){
+			console.warn('ERROR: Discharge process failed', response);
+			alert('Error occurred during discharge process');
+		});
+		
+		
+	};
+	
+	
 	$scope.$watchCollection('workflow.path', function(){
 		// Change the URL path if workflow details are updated (e.g. tab click)
 		updatePath();
@@ -497,26 +639,18 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		$scope.workflow.path.mode = pathFrags[1] ? pathFrags[1] : 'view';
 		$scope.workflow.path.tab = pathFrags[2] ? pathFrags[2] : 'details';
 		
-		// Retrieve this member
-		if ($scope.workflow.path.id){
-			$http.get('/api/member/'+$scope.workflow.path.id).then(function(response){
-				// Process then store in VM
-				processMemberRecord(response.data);
-				$scope.workflow.isMemberLoaded = true;
-				
-				// activate the correct tab
-				$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
-				
-			}, function(response){
-				if (response.status == 404){
-					$scope.member.errorNotFound = true;
-				}
-				else {
-					$scope.member.errorServerSide = true;
-				}
-			});
-		}
+		retrieveMember();
 	}
+	
+	
+	//==================
+	// Fetch reference data for platoons and ranks
+	
+	$http.get('/api/refdata').then(function(response){
+		if (response.data.ranks){
+			$scope.formData.ranks = response.data.ranks;
+		}
+	});
 	
 	
 	//======================
@@ -559,6 +693,27 @@ flaresApp.directive('displayMode', function(){
 		}
 	};
 });
+flaresApp.directive('memberStatus', function(){
+	return {
+		link: function(scope, element, attr){
+			scope.$watchGroup(['member.is_active', 'member.deleted_at'], function(){
+				if (!scope.member.is_active){
+					element.removeClass().addClass('label label-danger');
+					element.text('Inactive');
+				}
+				else if (scope.member.deleted_at){
+					element.removeClass().addClass('label label-warning');
+					element.text('Discharged');
+				}
+				else {
+					element.removeClass().addClass('label label-success');
+					element.text('Active');
+				}
+				// '<span class="label" ng-class="{'label-success': member.is_active, 'label-danger': !member.is_active}">';				
+			});
+		}
+	};
+})
 
 // ==================
 // Custom Filters for Member View/Edit

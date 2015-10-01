@@ -43,8 +43,8 @@
 	/* 
 	 * FLARES Resource Controller ( access via AJAX )
 	 */
-	Route::get('api/member/search', 'MemberController@index');		// Search endpoint
-	Route::resource('api/member', 'MemberController', ['only' => ['store', 'show', 'update', 'destroy']]);
+	Route::get('api/member/search', 'MemberController@index');		// search endpoint (alias)
+	Route::resource('api/member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 	Route::resource('api/awards', 'AwardsController');
 	Route::resource('api/systemuser', 'SystemUserController');
 	 

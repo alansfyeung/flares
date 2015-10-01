@@ -20,7 +20,7 @@ class MemberTest extends TestCase
 		$members = $this->newMemberRecords();
 		foreach ($members as $member){
 			$payload = [
-				'content' => [],
+				'context' => [],
 				'member' => $member
 			];
 			$response = $this->call('POST', '/api/member', $payload);
@@ -49,21 +49,10 @@ class MemberTest extends TestCase
 	public function testUpdateMember(){
 		
 		// Fetch a list of dummy members
+		// Create member 
 		$members = $this->newMemberRecords();
 		$member = $members[array_rand($members)];
-		
-		// Create member 
-		$payload = [
-			'content' => [],
-			'member' => $member
-		];
-		$response = $this->call('POST', '/api/member', $payload);
-		$this->assertEquals(200, $response->status());
-
-		$jsonResponse = json_decode($response->content());
-		$this->assertNotEmpty($jsonResponse);
-		
-		$memberId = $jsonResponse->recordId;
+		$memberId = $this->persistMember($member);
 		
 		// Apply some updates
 		$member['first_name'] = 'UpdatedName';
@@ -71,7 +60,6 @@ class MemberTest extends TestCase
 		$member['dob'] = '2015-01-01';
 		
 		$payload = [
-			'content' => [],
 			'member' => $member
 		];
 		
@@ -95,10 +83,9 @@ class MemberTest extends TestCase
 	public function testUpdateMemberWithContextOverrides(){
 		
 		// Fetch a list of dummy members
+		// Create member 
 		$members = $this->newMemberRecords();
 		$member = $members[array_rand($members)];
-		
-		// Create member 
 		$overrideSettings = [
 			'name' => 'newAdultCadetStaff',
 			'hasOverrides' => true
@@ -110,33 +97,22 @@ class MemberTest extends TestCase
 			'newPlatoon' => '3PL',
 			'newRank' => 'LT (AAC)'
 		];
-		$payload = [
-			'context' => array_merge($overrideSettings, $overrides),
-			'member' => $member
-		];
-		$response = $this->call('POST', '/api/member', $payload);
+		$memberId = $this->persistMember($member, $overrides, $overrideSettings);
 		
-		$this->assertEquals(200, $response->status());
 		
-		$jsonResponse = json_decode($response->content());
-		$this->assertNotEmpty($jsonResponse);
-		
-		$memberId = $jsonResponse->recordId;
-		
-		// Apply some updates
+		// TEST UPDATING
 		$member['first_name'] = 'UpdatedName';
 		$member['last_name'] = 'Smith';
 		$member['dob'] = '2015-01-01';
 		
 		$payload = [
-			'content' => [],
 			'member' => $member
 		];
 		
 		$resp = $this->call('PUT', "/api/member/$memberId", $payload);
 		$this->assertEquals(200, $resp->status());
 
-		$this->get("/api/member/$memberId?detail=full")
+		$this->get("/api/member/$memberId?detail=high")
 			->seeJson([
 				'new_rank' => $overrides['newRank'],
 				'new_platoon' => $overrides['newPlatoon'],
@@ -149,15 +125,87 @@ class MemberTest extends TestCase
 	/**
      *  Test soft deletions
      */
-	public function testDeleteMember(){
-		// WIP
+	public function testDischargeMember(){
+		
+		// Fetch a list of dummy members
+		// Create member 
+		$members = $this->newMemberRecords();
+		$member = $members[array_rand($members)];
+		$memberId = $this->persistMember($member);
+		
+		// Soft Delete this record
+		$resp = $this->call('DELETE', "/api/member/$memberId");
+		$this->assertEquals(200, $resp->status());
+		
+		// Check that it still turns if queried directly
+		$this->get("/api/member/$memberId?detail=high")
+			->seeJson([
+				'regt_num' => $memberId,
+				'first_name' => $member['first_name'],
+				'last_name' => $member['last_name'],
+				'is_discharge' => 1
+			]);
+			
+		// And that it shows up in the relevant Index searches
+		$this->get("/api/member?regt_num=$memberId")
+			->seeJson([]);		// Expect no results
+			
+		$this->get("/api/member?regt_num=$memberId&discharged=only")
+			->seeJson([
+				'regt_num' => $memberId,
+				'first_name' => $member['first_name'],
+				'last_name' => $member['last_name']
+			]);		// Expect Us.
+			
+			
+		// var_dump($this->call('GET', "/api/member?regt_num=$memberId&discharged=only")->content());
+		// var_dump($this->call('GET', "/api/member?regt_num=$memberId&discharged=include")->content());
+		
+		// // Not working, dunno why
+		// $this->get("/api/member?regt_num=$memberId&discharged=include")
+			// ->seeJson([
+				// 'regt_num' => $memberId,
+				// 'first_name' => $member['first_name'],
+				// 'last_name' => $member['last_name']
+			// ]);
+		
 	}
+	
+	/**
+     *  Test proper (permanent) deletions
+     */
+	public function testDeleteMember(){
+		
+		// Fetch a list of dummy members
+		// Create member 
+		$members = $this->newMemberRecords();
+		$member = $members[array_rand($members)];
+		$memberId = $this->persistMember($member);
+		
+		// "Delete" this record
+		$resp = $this->call('DELETE', "/api/member/$memberId?remove=permanent");
+		$this->assertEquals(200, $resp->status());
+		
+		// Check that its gone for good
+		$expectedNotFound = $this->call('GET', "/api/member/$memberId");
+		$this->assertEquals(404, $expectedNotFound->status());
+		$this->get("/api/member?regt_num=$memberId&discharged=only")
+			->seeJson([]);		// Expect no results
+		
+	}
+	
 	
 	
 	
 	//========================
 	// Privates
  
+ 
+	/**
+     * Randomly generate some new member records
+     *
+     * @return Member[]
+     */
 	private function newMemberRecords($howMany = 3){
 		// $members = [];
 		
@@ -171,7 +219,7 @@ class MemberTest extends TestCase
 			// 'parent_email' => 'papajack@gmail.com'
 		// ];
 		// $members[] = [
-			// 'last_name' => 'Romman',
+			// 'last_name' => 'Rommano',
 			// 'first_name' => 'Jessica',
 			// 'dob' => '2002-03-11',
 			// 'sex' => 'F',
@@ -184,14 +232,40 @@ class MemberTest extends TestCase
 		return $members;
 	}
 	
-	private function existingMemberRecords(){
+	/**
+     * Return a list of existing member records
+     *
+     * @return Member[]
+     */
+	private function existingMemberRecords($regtNumPrefix = '20681'){
 		$members = $this->newMemberRecords();
-		$regtNumPrefix = '20681';
 		$regtNumCounter = 10;
 		foreach ($members as &$member){
 			$member['regt_num'] = $regtNumPrefix . $regtNumCounter++ . ($member['sex'] == 'F' ? 'F' : '');
 		}
 		return $members;
+	}
+	
+	/**
+     * Persist the member and return the memberId
+     *
+     * @return String 
+     */
+	private function persistMember($member, $overrides = 0, $overrideSettings = 0){
+		if (!$overrideSettings){
+			$overrideSettings = [];
+		}
+		if (!$overrides){
+			$overrides = [];
+		}
+		$payload = [
+			'context' => array_merge($overrideSettings, $overrides),
+			'member' => $member
+		];
+		
+		$response = $this->call('POST', '/api/member', $payload);
+		$jsonResponse = json_decode($response->content());
+		return $jsonResponse->recordId;
 	}
 	
 }

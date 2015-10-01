@@ -17,14 +17,6 @@
 	
 		<div class="col-sm-6 col-md-4">
 			<div class="form-group">
-				<label class="control-label col-sm-3">Rank</label>
-				<div class="col-sm-9">
-					<select class="form-control" ng-model="searchParams.rank">
-						<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
 				<label class="control-label col-sm-3">Surname</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" ng-model="searchParams.last_name" placeholder="Any last names"/>
@@ -36,15 +28,6 @@
 					<input type="text" class="form-control" ng-model="searchParams.first_name" placeholder="Any given names"/>
 				</div>
 			</div>			
-		</div>
-		
-		<div class="col-sm-6 col-md-4">
-			<div class="form-group">
-				<label class="control-label col-sm-3">Regt Number</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control" ng-model="searchParams.regt_num" placeholder="Any regt number"/>
-				</div>
-			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-3">Sex</label>
 				<div class="col-sm-9">
@@ -53,10 +36,29 @@
 					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="F"/> Female</label>
 				</div>
 			</div>
+		</div>
+		
+		<div class="col-sm-6 col-md-4">
 			<div class="form-group">
-				<label class="control-label col-sm-3">Active</label>
-				<div class="col-sm-9 checkbox">
-					<label><input type="checkbox" ng-model="searchParams.is_active" ng-true-value="'1'" ng-false-value="'0'"/> Show active only</label>
+				<label class="control-label col-sm-3">Rank</label>
+				<div class="col-sm-9">
+					<select class="form-control" ng-model="searchParams.rank">
+						<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3">Regt Num</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" ng-model="searchParams.regt_num" placeholder="Any regt number"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3">Discharged</label>
+				<div class="col-sm-9">
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value=""/> Don't include</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="include"/> Include</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="only"/> Only</label>
 				</div>
 			</div>
 		</div>
@@ -90,7 +92,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active}" launch-contextmenu="@{{result.regt_num}}">
+			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}" launch-contextmenu="@{{result.regt_num}}">
 				<td>@{{result.regt_num}}</td>
 				<td>@{{result.last_name}}</td>
 				<td>@{{result.first_name}}</td>
@@ -109,7 +111,10 @@
 	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="activeMemberTitle">@{{activeMember.last_name}}, @{{activeMember.first_name}} <small>@{{activeMember.regt_num}}</small></h4>
+				<h4 class="modal-title" id="activeMemberTitle">
+					<span>@{{activeMember.last_name}}, @{{activeMember.first_name}}</span>
+				</h4>
+				<h5 class="modal-subtitle">@{{activeMember.regt_num}}</h5>
 			</div>
 			<div class="modal-body text-center">
 				<a href="/member#!/@{{activeMember.regt_num}}/view" id="viewActiveMember" class="btn btn-block btn-primary activemember-view">View/Edit member details</a>
@@ -148,6 +153,17 @@ flaresApp.directive('launchContextmenu', function(){
 							$('#memberSearchContextMenu').on('show.bs.modal', function (event) {
 								var modal = $(this);
 								modal.find('.modal-title').text(scope.activeMember.last_name + ', ' + scope.activeMember.first_name);
+								var $modalMemberStatus = $('<span class="label">');
+								if (scope.activeMember.is_deleted){
+									$modalMemberStatus.addClass('label-warning').text('Discharged');
+								}
+								else if (!scope.activeMember.is_active || scope.activeMember.is_active === '0'){
+									$modalMemberStatus.addClass('label-danger').text('Inactive');
+								}
+								else {
+									$modalMemberStatus.addClass('label-success').text('Active');
+								}
+								modal.find('.modal-subtitle').text(scope.activeMember.regt_num + '  ').append($modalMemberStatus);
 								modal.find('.activemember-view').attr('href', '/member#!/'+scope.activeMember.regt_num+'/view');
 							}).modal();
 						});
@@ -176,7 +192,8 @@ flaresApp.controller('memberSearchController', function($scope, $http, $location
 		last_name: '',
 		sex: '',
 		regt_num: '',
-		is_active: ''
+		is_active: '',
+		discharged: ''
 	}, typeof $location.search() === 'object' && $location.search());
 	
 	$scope.submitSearch = function(){
@@ -210,7 +227,7 @@ flaresApp.controller('memberSearchController', function($scope, $http, $location
 			});
 			
 		}, function(response){
-			console.log('Error - member search', response);
+			console.warn('Error - member search', response);
 		});
 	};
 	

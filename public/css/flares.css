@@ -18,6 +18,7 @@
 }
 .member-record-view td {
 	width: 50%;
+	word-break: break-word;
 }
 
 .member-record-view input,

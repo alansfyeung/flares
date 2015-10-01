@@ -17,7 +17,18 @@ class MemberController extends MemberControllerBase
      * @return Response
      */
     public function index(Request $request){
-        $query = Member::select();
+		
+		// discharged -- [ none | include | only ]
+		$withDischarged = $request->input('discharged', 'none');
+		if ($withDischarged == 'include'){
+			$query = Member::withTrashed();
+		}
+		if ($withDischarged == 'only'){
+			$query = Member::onlyTrashed();
+		}
+		else {
+			$query = Member::select();
+		}
 		
 		foreach($request->only('rank', 'last_name', 'first_name', 'regt_num') as $name => $input){
 			$input = trim($input);
@@ -26,7 +37,7 @@ class MemberController extends MemberControllerBase
 				$query->orderBy($name, 'asc');
 			}
 		}
-		foreach($request->only('sex', 'is_active') as $name => $input){
+		foreach($request->only('sex') as $name => $input){			// ('sex', 'is_active')
 			$input = trim($input);
 			if (!empty($input)){
 				$query->where($name, $input);
@@ -39,44 +50,39 @@ class MemberController extends MemberControllerBase
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create(){
-        // =================
-		// FLARES doesn't use this
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
      * @return Response
      */
     public function store(Request $request){
-		$postData = $request->all();
 		$recordId = 0;
 		$initialPostingId = 0;
 		$idNotPossibleError = [];
 		
 		// Deal with the context data
 		$context = $this->getContextDefaults();
-		if (is_array($postData) && array_key_exists('context', $postData)){
-			$contextDefaults = $this->getContextDefaults($postData['context']['name']);
+		if ($request->has('context')){
+			$postDataContext = $request->input('context');
+			if (array_key_exists('name', $postDataContext)){
+				$contextDefaults = $this->getContextDefaults($postDataContext['name']);
+			}
+			else {
+				$contextDefaults = $this->getContextDefaults();
+			}
 			
-			if ($postData['context']['hasOverrides']){
+			if (array_key_exists('hasOverrides', $postDataContext)){
 				$massOverrideKeys = ['newRank', 'newPlatoon', 'newPosting'];
 				foreach ($massOverrideKeys as $overrideKey){
-					if (array_key_exists($overrideKey, $postData['context'])){
-						$contextDefaults[$overrideKey] = $postData['context'][$overrideKey];
+					if (array_key_exists($overrideKey, $postDataContext)){
+						$contextDefaults[$overrideKey] = $postDataContext[$overrideKey];
 					}
 				}
-				if (array_key_exists('thisYear', $postData['context'])){
-					$contextDefaults['thisYear'] = substr($postData['context']['thisYear'], 2, 2);
+				if (array_key_exists('thisYear', $postDataContext)){
+					$contextDefaults['thisYear'] = substr($postDataContext['thisYear'], 2, 2);
 				}
-				if (array_key_exists('thisCycle', $postData['context'])){
-					$contextDefaults['thisCycle'] = substr($postData['context']['thisCycle'], 0, 1);
+				if (array_key_exists('thisCycle', $postDataContext)){
+					$contextDefaults['thisCycle'] = substr($postDataContext['thisCycle'], 0, 1);
 				}
 			}
 			
@@ -92,19 +98,18 @@ class MemberController extends MemberControllerBase
 		// }
 		
 		// Deal with the member data
-		if (is_array($postData) && array_key_exists('member', $postData)){
-			// $newMember = $postData['member'];
-			// foreach ($postData['newMembers'] as $newMember){
+		if ($request->has('member')){
+			$postDataMember = $request->input('member');
 			try {
 				// Get their regimental number
-				$newRegtNum = $this->generateStandardRegtNumber($context) . ($postData['member']['sex'] == 'F' ? 'F' : '');	
+				$newRegtNum = $this->generateStandardRegtNumber($context) . ($postDataMember['sex'] == 'F' ? 'F' : '');	
 				
 				if (!empty($newRegtNum)){
 					
 					// Assign regt num, create new record, and generate initial posting
-					$postData['member']['regt_num'] = $newRegtNum;
+					$postDataMember['regt_num'] = $newRegtNum;
 					
-					$newMember = Member::create($postData['member']);
+					$newMember = Member::create($postDataMember);
 					// $newMember = new Member();
 					// $newMember->fill();
 					// $newMember->createWithRegtNum($newRegtNum);
@@ -137,7 +142,7 @@ class MemberController extends MemberControllerBase
 			]);
 		}
 		
-		return abort(400);		
+		return abort(400);
     }
 
     /**
@@ -148,40 +153,24 @@ class MemberController extends MemberControllerBase
      */
     public function show(Request $request, $id){
 		
-		$detailLevel = 0;
-		$getParams = $request->all();
-		if (is_array($getParams) && array_key_exists('detail', $getParams)){
-			$detailLevel = $getParams['detail'];
-		}
-		
-		// var_dump($getParams);
-		// var_dump($detailLevel);
-		
 		// Fetch the first match
-		$member = Member::findOrFail($id);
+		// detail -- [ high | med | low ]
+		$member = Member::withTrashed()->where('regt_num', $id)->firstOrFail();
+		$detailLevel = $request->input('detail', 'low');
 		
-		if ($detailLevel === 'full'){	
+		if ($detailLevel == 'high' || $detailLevel == 'med'){	
 			$ret = $member->toArray();
 			$ret['posting_promo'] = $member->postings->toArray();
 			return response()->json($ret);
 		}
 		else {
+			//  when $detailLevel == low)
 			return response()->json($member->toArray()); 
 		}
 
 		return abort(404);		// Didn't find any record
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id){
-        // =================
-		// FLARES doesn't use this
-    }
 
     /**
      * Update the specified resource in storage.
@@ -217,23 +206,41 @@ class MemberController extends MemberControllerBase
 
     /**
      * Remove the specified resource from storage.
+	 * Defaults to a soft delete; add ?remove=permanent to do hard delete
      *
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id){
-        $postData = $request->all();
-		$updated = [];
-		$updateNotPossible = [];
+    public function destroy(Request $request, $id){
+		// remove -- [ discharge | permanent ]
+		$removeMode = $request->input('remove', 'discharge');
+		$updated = 0;
+		$deletionNotPossibleError = [];
 		
-		if (is_array($postData) && array_key_exists('member', $postData)){
-			$updated[] = Member::find($id)->delete();
-			// $updated[] = DB::table('master')->where('regt_num', $id)->update(['is_active' => 0]);
-			return response()->json([
-				'success' => $updated,
-				'regtNumError' => $updateNotPossible
-			]);
+		try {
+			if ($removeMode == 'permanent'){
+				$deletionMember = Member::findOrFail($id);
+				foreach ($deletionMember->postings as $posting){
+					$posting->delete();
+				}
+				$deleted = $deletionMember->forceDelete();
+			}
+			else {
+				// Soft delete -- read overrides from context
+				$context = $request->input('context', []);
+				$this->generateDischargePostingRecord($id, $context);
+				$deleted = Member::findOrFail($id)->delete();
+			}			
 		}
+		catch (Exception $ex){
+			$deletionNotPossible = ['code' => 'EX', 'reason' => $ex->getMessage()];
+		}
+		
+		return response()->json([
+			'success' => $deleted,
+			'deletionMode' => $removeMode,
+			'deletionError' => $deletionNotPossibleError
+		]);
 		
 		return abort(400);		// $request should've been an array of arrays..        
     }
