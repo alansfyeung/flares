@@ -50,9 +50,10 @@
 	Route::resource('api/member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
 	
 	Route::get('api/member/{memberId}/picture', 'MemberPictureController@show');
-	Route::get('api/member/{memberId}/picture/new', 'MemberPictureController@check');
+	Route::get('api/member/{memberId}/picture/exists', 'MemberPictureController@exists');
+	Route::get('api/member/{memberId}/picture/new', 'MemberPictureController@chunkCheck');
 	Route::post('api/member/{memberId}/picture/new', 'MemberPictureController@store');
-	Route::delete('api/member/{memberId}/picture', 'MemberPictureController@delete');
+	Route::delete('api/member/{memberId}/picture', 'MemberPictureController@destroy');
 	
 	// Route::resource('api/member.documents', 'MemberDocumentController');
 	// Route::resource('api/awards', 'AwardsController');

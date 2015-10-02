@@ -19,21 +19,21 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Surname</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" ng-model="searchParams.last_name" placeholder="Any last names"/>
+					<input type="text" class="form-control" name="search-surname" ng-model="searchParams.last_name" tabindex="1" placeholder="Any last names"/>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-3">Given Names</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" ng-model="searchParams.first_name" placeholder="Any given names"/>
+					<input type="text" class="form-control" name="search-given-names" ng-model="searchParams.first_name" tabindex="2" placeholder="Any given names"/>
 				</div>
 			</div>			
 			<div class="form-group">
 				<label class="control-label col-sm-3">Sex</label>
 				<div class="col-sm-9">
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value=""/> Any</label>
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="M"/> Male</label>
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="F"/> Female</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="" tabindex="5"/> Any</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="M" tabindex="6"/> Male</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.sex" value="F" tabindex="7"/> Female</label>
 				</div>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Rank</label>
 				<div class="col-sm-9">
-					<select class="form-control" ng-model="searchParams.rank">
+					<select class="form-control" ng-model="searchParams.rank" tabindex="3">
 						<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
 					</select>
 				</div>
@@ -50,15 +50,15 @@
 			<div class="form-group">
 				<label class="control-label col-sm-3">Regt Num</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" ng-model="searchParams.regt_num" placeholder="Any regt number"/>
+					<input type="text" class="form-control" name="search-regt-num" ng-model="searchParams.regt_num" tabindex="4" placeholder="Any regt number"/>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-3">Discharged</label>
 				<div class="col-sm-9">
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value=""/> Don't include</label>
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="include"/> Include</label>
-					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="only"/> Only</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="" tabindex="8"/> Don't include</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="include" tabindex="9"/> Include</label>
+					<label class="radio-inline"><input type="radio" ng-model="searchParams.discharged" value="only" tabindex="10"/> Only</label>
 				</div>
 			</div>
 		</div>
@@ -67,7 +67,7 @@
 			<div class="well">
 				<div class="form-group">
 					<div class="col-sm-12">
-						<button type="submit" class="btn btn-primary">Search</button>
+						<button type="submit" class="btn btn-primary" tabindex="11">Search</button>
 					</div>				
 				</div>
 			</div>
@@ -138,6 +138,7 @@
 @section('ng-script')
 <script>
 var flaresApp = angular.module('flaresApp', []);
+
 flaresApp.directive('launchContextmenu', function(){
 	return { 
 		link: function (scope, element, attr) {
@@ -173,6 +174,7 @@ flaresApp.directive('launchContextmenu', function(){
 		}
 	};	
 });
+
 flaresApp.controller('memberSearchController', function($scope, $http, $location){
 	$scope.results = [];
 	$scope.activeMember = null;
@@ -248,6 +250,7 @@ flaresApp.controller('memberSearchController', function($scope, $http, $location
 		}
 	});
 	
+	angular.element('[name=search-surname]').focus();
 	
 });
 	

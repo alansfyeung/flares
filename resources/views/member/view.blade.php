@@ -22,7 +22,7 @@
 <div class="page-header" ng-cloak ng-show="member.regt_num">
 
 	<!-- EDIT BUTTON -->
-	<div style="float: right" ng-show="!(member.deleted_at || workflow.isDischarge())">
+	<div class="pull-right" ng-show="!(member.deleted_at || workflow.isDischarge())">
 		<button class="btn btn-default" ng-class="{'btn-success': workflow.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': workflow.isView(), 'glyphicon-floppy-disk': workflow.isEdit()}"></span> @{{workflow.isEdit() ? 'Save Details' : 'Edit Details'}}</button>
 		<button class="btn btn-default" ng-show="workflow.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</div>
@@ -129,21 +129,42 @@
 		
 			<!-- Display Picture -->
 			<section ng-controller="pictureController" flow-init flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
-				<table>
-					<tr ng-repeat="file in $flow.files">
-						<td>@{{$index+1}}</td>
-						<td>@{{file.name}}</td>
-						<td>@{{file.msg}}</td>
-					</tr>
-				</table>
 				
 				<h4>Profile picture</h4>
 				<div class="thumbnail" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{'uploader-drop-zone': uploader.dropzone, 'uploader-not-ready': !uploader.ready()}"><!-- Member image and quick links -->
-					<img ng-src="@{{member.photo_url}}" alt="@{{member.last_name}}" class="memberview-image">
+				
+					<img ng-src="@{{memberImage.url}}" alt="@{{member.last_name}}" class="image-rounded memberview-image" ng-show="!uploader.uploading">
+					
+					<div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
+						<h3 ng-show="file.isUploading()">Uploading</h3>
+						<h3 class="text-success" ng-show="file.isComplete()">Successful</h3>
+						<div class="thumbnail">
+							<img flow-img="file" />
+							<div class="caption">@{{file.name}} (@{{Math.floor(file.size/1024)}} KB)</div>
+						</div>
+						<div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+							<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + '%'}" ng-class="{'progress-bar-success': file.isComplete()}">
+							<span class="sr-only">1% Complete</span>
+							</div>
+						</div>
+					</div>
+					
 					<div class="caption">
-						<p class="text-center" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()">
-							<span class="btn btn-default" flow-btn>Upload File</span> or Drag/Drop
-						</p>
+						<div class="text-center" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()">
+							<em>Drag/Drop or </em>
+							<div class="btn-group">
+								<span class="btn btn-default" flow-btn>Upload File</span> 
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="caret"></span>
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-right">
+									<li><a href="@{{memberImage.url}}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li>
+									<li><a ng-click="deleteLast()"><span class="glyphicon glyphicon-step-backward"></span> Rewind (@{{memberImage.count}})</a></li>
+									<li><a ng-click="deleteAll()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete all</span></a></li>
+								</ul>
+							</div>
+						</div>
 		
 					</div>
 				</div>
@@ -402,7 +423,7 @@
 				
 				<div role="tabpanel" class="tab-pane" id="iddocs">
 					<section>
-						<div display-mode="edit" style="float: right">
+						<div display-mode="edit" class="pull-right">
 							<label class="checkbox-inline"><input type="checkbox" ng-model="member.is_fully_enrolled" ng-true-value="1" ng-false-value="0"> All enrolment documents uploaded?</label>
 						</div>
 						<h3>Documents</h3>
@@ -497,11 +518,12 @@
 
 @section('ng-script')
 
-<script src="/js/ng-flow-standalone.min.js"></script>
+<script src="/js/flow/ng-flow-standalone.min.js"></script>
+
 <script>
 var flaresApp = angular.module('flaresApp', ['flaresBase', 'flow']);
 
-flaresApp.controller('memberController', function($scope, $http, $location){
+flaresApp.controller('memberController', function($scope, $http, $location, memberApiService){
 	
 	$scope.member = {};
 	$scope.originalMember = {};
@@ -570,10 +592,6 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 		}
 	};
 	var processMemberRecord = function(member){
-		if (!member.photo_url){
-			member.photo_url = '/img/anon.png';
-		}
-		
 		// Convert dates to JS objects
 		angular.forEach(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], function(datePropKey){
 			if (this[datePropKey]){
@@ -770,9 +788,20 @@ flaresApp.controller('memberController', function($scope, $http, $location){
 	
 });
 
-flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){
+flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
+
+	var imageResizer = function(fileObj){	// fileObj is an instance of FlowFile
+		console.log(fileObj);
+		console.log('TODO ImageResizer: file size is ' + Math.floor(fileObj.file.size/1024) + ' KB');
+	};
+
 	// $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
-	flowFactoryProvider.defaults = { headers: {} };
+	flowFactoryProvider.defaults = { 
+		headers: {},
+		initFileFn: imageResizer,
+		singleFile: true,
+		allowDuplicateUploads: true,
+	};
 	flowFactoryProvider.defaults.headers[$httpProvider.defaults.xsrfHeaderName] = (function(cookieName){
 		var c = document.cookie.split('; ');
 		for (var i = 0; i < c.length; i++){
@@ -783,30 +812,99 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 		}
 	}($httpProvider.defaults.xsrfCookieName));
 	
-}]).controller('pictureController', function($scope){
+}]).controller('pictureController', function($scope, $http, $timeout){
+	
+	var maxImageSize = 1024 * 1024;		// 1MB max file size
+	var maxImageSizeDesc = '1MB';
+	var defaultImage = '/img/anon.png';
+	var reloadMemberImage = function(){
+		var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
+		$http.get(memberPictureRequestUrl+'/exists').then(function(response){
+			if (response.status === 200){
+				if (response.data.exists){
+					var cacheDefeater = Date.now();
+					$scope.memberImage.url = memberPictureRequestUrl + '?' + Date.now();
+					$scope.memberImage.isDefault = false;			
+				}
+				else {
+					$scope.memberImage.resetToDefault();
+				}
+				$scope.memberImage.count = response.data.count;
+			}
+		}, function(response){
+			console.warn('WARN: Image not found for '+$scope.member.regt_num, response.status);
+			$scope.memberImage.resetToDefault();
+		});
+	};	
+	
+	$scope.memberImage = {
+		url: defaultImage,
+		isDefault: true,
+		count: 0
+	};
+	$scope.memberImage.resetToDefault = function(){
+		this.url = defaultImage;
+		this.isDefault = true;
+	};
+		
 	$scope.uploader = {
 		uploading: false,
 		dropzone: false,
 		ready: function(){
 			return $scope.member.regt_num && $scope.workflow.isImageUploadable();
 		}
-			
 	};
 	
 	$scope.uploadStart = function(){
 		$scope.uploader.uploading = true;
 	};
-	
 	$scope.uploadFinish = function(){
-		$scope.$files = [];
-		$scope.uploader.uploading = false;
+		if ($scope.$flow.files.length > 0){			// If any upload took place
+			$scope.memberImage.resetToDefault();		// Revert it to the default
+			reloadMemberImage();
+			$timeout(function(){
+				// Allow the upload success message to flash
+				$scope.uploader.uploading = false;
+				$scope.$flow.cancel();			// Clear out the files array
+			}, 4000);
+		}
+		else {
+			$scope.uploader.uploading = false;
+		}
 	};
+	
+	$scope.deleteLast = function(){
+		$http.delete('/api/member/'+$scope.member.regt_num+'/picture').then(function(response){
+			reloadMemberImage();
+		}, function(response){
+			console.warn('ERROR: Last picture could not be rewound');
+			alert('Failed to rewind picture');
+		});
+	};
+	$scope.deleteAll = function(){
+		$http.delete('/api/member/'+$scope.member.regt_num+'/picture', {params: { remove: 'all' }}).then(function(response){
+			reloadMemberImage();
+		}, function(response){
+			console.warn('ERROR: Picture could not be deleted');
+			alert('Failed to delete picture');
+		});
+	};
+	
+	$scope.$on('flow::fileAdded', function (event, $flow, flowFile) {
+		if (flowFile.size > maxImageSize){
+			console.warn('Image is oversize: ', flowFile.size);
+			alert('Your image is too big; the maximum upload size is ' + maxImageSizeDesc);
+			event.preventDefault();  //prevent file from uploading
+		}
+	});
 	
 	$scope.$watch('member.regt_num', function(newValue){
 		if ($scope.member.regt_num){
-			console.log('Old target', $scope.$flow.opts.target);
+			// Attempt to reload the member image
+			reloadMemberImage();
+			// Update the uploader destination
 			$scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
-			console.log('Updated target', $scope.$flow.opts.target);
+			console.log('Updated uploader target', $scope.$flow.opts.target);
 		}
 	});
 	

@@ -13,8 +13,12 @@
  
 /* View/Edit Member Screen*/
 .memberview-image {
-	max-width: 200px;
-	max-height: 200px;
+	max-width: 400px;
+	max-height: 400px;
+}
+.memberview-thumb {
+	max-width: 100px;
+	max-height: 100px;
 }
 .member-record-view td {
 	width: 50%;
@@ -87,7 +91,9 @@ select.ng-dirty.ng-invalid,
 }
 
 
-
+a[ng-click] {
+	cursor: pointer;
+}
 
 
 

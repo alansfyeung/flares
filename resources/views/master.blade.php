@@ -95,6 +95,13 @@
 	var flaresBase = angular.module('flaresBase', []).config(function($locationProvider) {
 		$locationProvider.html5Mode(false).hashPrefix('!');
 	});
+	
+	flaresBase.factory('memberApiService', function($http){
+		return function() {
+			
+		};
+	});
+	
 	flaresBase.directive('bsShowTab', function($location){
         return { 
             link: function (scope, element, attr) {
