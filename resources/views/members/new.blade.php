@@ -590,7 +590,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 				data: {
 					last_name: '',
 					first_name: '',
-					dob: '',
+					dob: new Date(),
 					sex: '',
 					school: '',
 					member_email: '',
@@ -654,7 +654,10 @@ flaresApp.controller('memberAddController', function($scope, $http){
 				};
 				
 				$http.post('/api/member', payload).then(function(response){
-					console.log(response.data);		// Debug
+					if (response.data.error.code){
+						console.warn(response.data.error);
+						return;
+					}
 					
 					newMember.lastPersistTime = (new Date()).toTimeString();
 					if (response.data.recordId){

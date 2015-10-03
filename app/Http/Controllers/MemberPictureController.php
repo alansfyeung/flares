@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Member;
+use App\MemberPicture;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use DB;
-use App\MemberPicture;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -54,12 +55,14 @@ class MemberPictureController extends MemberControllerBase
 			// ]);
 			
 			$mp = new MemberPicture();
-			$mp->regt_num = $memberId;
+			// $mp->regt_num = $memberId;
 			$mp->photo_blob = $blob;
 			$mp->file_name = $file->name();
 			$mp->file_size = $file->size();
 			$mp->mime_type = $mimeType;
-			$mp->save();
+			
+			$member = Member::findOrFail($memberId);
+			$member->pictures()->save($mp);
 			
 			return response('Upload OK', Response::HTTP_CREATED);		// 201
 		}
@@ -135,15 +138,14 @@ class MemberPictureController extends MemberControllerBase
 	// =======
 	// Private
 	
-	private function parseImageMimeType($ext){
+	private function parseImageMimeType($ext)
+	{
 		if (strpos($ext, '.') === 0){
 			// remove leading dot
 			$ext = substr($ext, 1);
 		}
 		
-		// Cleaning
 		$ext = strtolower($ext);
-		
 		switch ($ext){
 			case 'png':
 				return 'image/png';

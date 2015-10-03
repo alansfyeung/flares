@@ -11,11 +11,38 @@ use App\Http\Controllers\Controller;
 
 abstract class MemberControllerBase extends Controller
 {	
+
+	/* ==================================================
+	 *  Statistical functionality
+	 */
+
+	/**
+     * Returns the completion status for this member record
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function status(Request $request, $id)
+	{
+		return response()->json([
+			'completionPercentage' => 100
+		]);
+	}
+
+
+
 	/* ==================================================
 	 *  Onboarding functionality
 	 */
 	 
-	protected function getContextDefaults($contextName = 'newRecruitment'){
+	/**
+     * Retrieve the default settings based on a Context name
+     *
+     * @param  string $contextName
+     * @return Array
+     */ 
+	protected function getContextDefaults($contextName = 'newRecruitment')
+	{
 		// Allowed $contextName values are: 
 		// newRecruitment, newTransfer, newVolunteerStaff, newAdultCadetStaff
 		
@@ -67,7 +94,14 @@ abstract class MemberControllerBase extends Controller
 		
 	}
 	
-	protected function generateStandardRegtNumber($opts = 0){
+	/**
+     * Generate a regimental number
+     *
+     * @param  Array $opts
+     * @return String
+     */ 
+	protected function generateStandardRegtNumber($opts = 0)
+	{
 		/* 
 		 * Regimental numbers take the following format
 		 * 206  prefix for all 
@@ -98,7 +132,7 @@ abstract class MemberControllerBase extends Controller
 		$proposedRegtNum = $prefix . str_pad($nextIndex, 2, '0', STR_PAD_LEFT);
 		$counterNoConflict = 0;
 		while ($counterNoConflict < 10){
-			$res = DB::table('master')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
+			$res = DB::table('member')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
 			if (sizeof($res) > 0){
 				// Is conflicted; try next index
 				$counterNoConflict++;
@@ -125,7 +159,16 @@ abstract class MemberControllerBase extends Controller
 		return $proposedRegtNum;
 	}
 	
-	protected function generateInitialPostingRecord($id, $opts = 0){
+	
+	/**
+     * Generate a regimental number
+     *
+     * @param  String $id
+     * @param  Array $opts
+     * @return String
+     */ 
+	protected function generateInitialPostingRecord($id, $opts = 0)
+	{
 		/*
 		 * Place as: 
 		 * Platoon=3PL, Rank=REC, Posting=MBR
@@ -154,7 +197,15 @@ abstract class MemberControllerBase extends Controller
 		return $id;
 	}
 	
-	protected function generateDischargePostingRecord($id, $opts = 0){
+	/**
+     * Generate a PostingPromo record representing the discharge
+     *
+     * @param  String $id
+     * @param  Array $opts
+     * @return String
+     */ 
+	protected function generateDischargePostingRecord($id, $opts = 0)
+	{
 		/*
 		 * We need to add a promo_posting record that is ticked as "is_discharge"
 		 */

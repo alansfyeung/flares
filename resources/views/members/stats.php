@@ -1,1 +1,0 @@
-Overall stats, including completion, active members compositions, etc

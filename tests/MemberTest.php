@@ -12,12 +12,14 @@ class MemberTest extends TestCase
 	use DatabaseTransactions;
 	use WithoutMiddleware;
 	
+	protected $model = App\Member::class;
+	
     /**
      *  Test multiple member creation via Resource MemberController
      */
     public function testCreateMultipleMembers(){
 		
-		$members = $this->newMemberRecords();
+		$members = $this->newRecords();
 		foreach ($members as $member){
 			$payload = [
 				'context' => [],
@@ -50,8 +52,7 @@ class MemberTest extends TestCase
 		
 		// Fetch a list of dummy members
 		// Create member 
-		$members = $this->newMemberRecords();
-		$member = $members[array_rand($members)];
+		$member = $this->newRecords(1);
 		$memberId = $this->persistMember($member);
 		
 		// Apply some updates
@@ -84,7 +85,7 @@ class MemberTest extends TestCase
 		
 		// Fetch a list of dummy members
 		// Create member 
-		$members = $this->newMemberRecords();
+		$members = $this->newRecords();
 		$member = $members[array_rand($members)];
 		$overrideSettings = [
 			'name' => 'newAdultCadetStaff',
@@ -129,8 +130,7 @@ class MemberTest extends TestCase
 		
 		// Fetch a list of dummy members
 		// Create member 
-		$members = $this->newMemberRecords();
-		$member = $members[array_rand($members)];
+		$member = $this->newRecords(1);
 		$memberId = $this->persistMember($member);
 		
 		// Soft Delete this record
@@ -178,8 +178,7 @@ class MemberTest extends TestCase
 		
 		// Fetch a list of dummy members
 		// Create member 
-		$members = $this->newMemberRecords();
-		$member = $members[array_rand($members)];
+		$member = $this->newRecords(1);
 		$memberId = $this->persistMember($member);
 		
 		// Create the discharge PostingPromo record
@@ -229,8 +228,7 @@ class MemberTest extends TestCase
 		
 		// Fetch a list of dummy members
 		// Create member 
-		$members = $this->newMemberRecords();
-		$member = $members[array_rand($members)];
+		$member = $this->newRecords(1);
 		$memberId = $this->persistMember($member);
 		
 		// "Delete" this record
@@ -257,7 +255,7 @@ class MemberTest extends TestCase
      *
      * @return Member[]
      */
-	private function newMemberRecords($howMany = 3){
+	private function newMemberRecords($howMany = 3){		// Old school, don't use this
 		// $members = [];
 		
 		// $members[] = [
@@ -278,8 +276,6 @@ class MemberTest extends TestCase
 			// 'member_email' => 'jessromman@gmail.com',
 			// 'parent_email' => 'kyleromman@work.com.au'
 		// ];
-		
-		$members = factory(App\Member::class, 3)->make()->toArray();
 		return $members;
 	}
 	

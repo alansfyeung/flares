@@ -44,8 +44,6 @@
 	<h4>Discharged Member</h4>
 	<p>This member has been discharged so this record cannot be edited.</p>
 </div>
-
-
 @endsection
 
 
@@ -98,30 +96,33 @@
 <div ng-show="member.regt_num && !workflow.isDischarge()">
 
 	<!-- Member quick statuses row -->
-	<div class="row hidden-xs">
-		<div class="col-sm-2"> 
-			<dl>
-				<dt>Member Status</dt>
-				<dd><span member-status></span></dd>
-			</dl>
+	<section class="member-quickstatus">
+		<div class="row hidden-xs">
+			<div class="col-sm-2"> 
+				<dl>
+					<dt>Member Status</dt>
+					<dd><span member-status></span></dd>
+					<dd><span hmp-status></span></dd>
+					<dd><span allergy-status></span></dd>
+				</dl>
+			</div>
+			<div class="col-sm-2"> 
+				<dl>
+					<dt>Enrolled Date</dt>
+					<dd>(TBA)</dd>
+				</dl>
+			</div>
+			<div class="col-sm-2"> 
+				<dl>
+					<dt>All documents loaded</dt>
+					<dd>@{{member.is_fully_enrolled | yesNo}}</dd>
+				</dl>
+			</div>
+			<div class="col-sm-6"> 
+				<p>(Progress bar)</p>
+			</div>
 		</div>
-		<div class="col-sm-2"> 
-			<dl>
-				<dt>Enrolled Date</dt>
-				<dd>(TBA)</dd>
-			</dl>
-		</div>
-		<div class="col-sm-2"> 
-			<dl>
-				<dt>All documents loaded</dt>
-				<dd>@{{member.is_fully_enrolled | yesNo}}</dd>
-			</dl>
-		</div>
-		<div class="col-sm-6"> 
-			<p>(Progress bar)</p>
-		</div>
-	</div>
-	<hr>
+	</section>
 	
 	<!-- Member info tabs & panel -->
 	<div class="row">
@@ -137,7 +138,7 @@
 					
 					<div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
 						<h3 ng-show="file.isUploading()">Uploading</h3>
-						<h3 class="text-success" ng-show="file.isComplete()">Successful</h3>
+						<h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3>
 						<div class="thumbnail">
 							<img flow-img="file" />
 							<div class="caption">@{{file.name}} (@{{Math.floor(file.size/1024)}} KB)</div>
@@ -481,7 +482,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="postingPromo in member.posting_promo" ng-class="{'warning': postingPromo.is_discharge}">
+								<tr ng-repeat="postingPromo in member.postings" ng-class="{'warning': postingPromo.is_discharge}">
 									<td>
 										<span class="glyphicon glyphicon-time" title="Recorded by @{{postingPromo.recorded_by}}, at @{{postingPromo.created_at}}"></span>
 										<span class="glyphicon glyphicon-ban-circle" title="Discharged" ng-show="!!+postingPromo.is_discharge"></span>
@@ -625,6 +626,8 @@ flaresApp.controller('memberController', function($scope, $http, $location, memb
 		if (hasChanges){
 			$http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
 				console.log('Save successful');
+				$scope.originalMember = angular.extend({}, $scope.member);
+				
 			}, function(response){
 				// Save failed. Why?
 				alert('Warning: Couldn\'t save this record. Check your connection.');
@@ -955,7 +958,37 @@ flaresApp.directive('memberStatus', function(){
 			});
 		}
 	};
-})
+});
+flaresApp.directive('hmpStatus', function(){
+	return {
+		link: function(scope, element, attr){
+			scope.$watch('member.is_med_hmp', function(){
+				if (!!+scope.member.is_med_hmp){		// Expect is_hmp to either be '0' or '1'
+					element.removeClass().addClass('label label-default');
+					element.text('HMP');
+				}
+				else {
+					element.removeClass().text('');
+				}
+			});
+		}
+	};
+});
+flaresApp.directive('allergyStatus', function(){
+	return {
+		link: function(scope, element, attr){
+			scope.$watch('member.is_med_lifethreat', function(){
+				if (!!+scope.member.is_med_lifethreat){		// Expect is_hmp to either be '0' or '1'
+					element.removeClass().addClass('label label-danger');
+					element.text('Life threatening');
+				}
+				else {
+					element.removeClass().text('');
+				}
+			});
+		}
+	};
+});
 
 // ==================
 // Custom Filters for Member View/Edit

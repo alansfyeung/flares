@@ -17,63 +17,65 @@
 </head>
 <body flow-prevent-drop>
 	@section('header')
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-		    <div class="navbar-header">
-				<a class="navbar-brand" href="/">
-					<img alt="206 FLARES" src="/img/flareslogo.png" style="height: 20px;">
-				</a>
+	<header>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/">
+						<img alt="206 FLARES" src="/img/flareslogo.png" style="height: 20px;">
+					</a>
+				</div>
+			  <ul class="nav navbar-nav">
+				<li class="dropdown">
+				  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="/members">Search</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="/members/new">New Onboarding</a></li>
+					<li><a href="/members/mass">Mass Actions</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="/members/stats">Statistics</a></li>
+					<li><a href="/members/reports">Reporting</a></li>
+				  </ul>
+				</li>
+				<li class="dropdown">
+				  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Activity <span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="/activity/roll">Mark Roll</a></li>
+					<li><a href="#">Check AWOLs</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#">Parade State</a></li>
+					<li><a href="#">View the Roll</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#">Add new activity</a></li>
+					<li><a href="#">Manage activities</a></li>
+				  </ul>
+				</li>
+				<li class="dropdown">
+				  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Awards <span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="#">Mark Roll</a></li>
+					<li><a href="#">Review Roll</a></li>
+				  </ul>
+				</li>
+				<li class="dropdown">
+				  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="#">System Users</a></li>
+					<li><a href="#">Audit</a></li>
+				  </ul>
+				</li>
+				<li class="dropdown">
+				  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="#">System Users</a></li>
+					<li><a href="#">Audit</a></li>
+				  </ul>
+				</li>
+			  </ul>
 			</div>
-		  <ul class="nav navbar-nav">
-			<li class="dropdown">
-			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="/members">Search</a></li>
-				<li><a href="/members/stats">View Statistics</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="/members/new">New Onboarding</a></li>
-				<li><a href="/members/mass">Mass Actions</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="/members/reports">Reporting</a></li>
-			  </ul>
-			</li>
-			<li class="dropdown">
-			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Attendance <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">Mark Roll</a></li>
-				<li><a href="#">View the Roll</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Check AWOLs</a></li>
-				<li><a href="#">Parade State</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Add new activity</a></li>
-				<li><a href="#">Manage activities</a></li>
-			  </ul>
-			</li>
-			<li class="dropdown">
-			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Awards <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">Mark Roll</a></li>
-				<li><a href="#">Review Roll</a></li>
-			  </ul>
-			</li>
-			<li class="dropdown">
-			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">System Users</a></li>
-				<li><a href="#">Audit</a></li>
-			  </ul>
-			</li>
-			<li class="dropdown">
-			  <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">System Users</a></li>
-				<li><a href="#">Audit</a></li>
-			  </ul>
-			</li>
-		  </ul>
-		</div>
-	</nav>
+		</nav>
+	</header>
 	@show
 	
 	

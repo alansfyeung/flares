@@ -22,4 +22,20 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $app;
     }
+	
+	/**
+     * Randomly generate some new records
+     *
+	 * @param howMany
+	 * @param model The class to be factoried
+     * @return Array of {$this->model}
+     */
+	protected function newRecords($howMany = 3, $model = false){
+		if (!$model){
+			$model = $this->model;
+		}
+		$records = factory($model, $howMany)->make()->toArray();
+		return $records;
+	}
+	
 }

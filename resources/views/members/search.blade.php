@@ -79,7 +79,7 @@
 <hr/>
 
 <section class="search-results">
-	<div class="">@{{results.length}} results for search</div>
+	<div class="label label-default">@{{results.length}} results for search</div>
 	<table class="table table-hover" ng-show="results.length > 0">
 		<thead>
 			<tr>

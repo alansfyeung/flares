@@ -23,10 +23,16 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-6">
-						@{{stats.members}}
+						<figure class="dashboard-stat" ng-cloak>
+							<figcaption class="stat-caption">Posted Strength</figcaption>
+							<div class="stat-figure">@{{stats.member.numActive}}</div>						
+						</figure>
 					</div>
 					<div class="col-sm-6">
-						@{{stats.awols}}
+						<figure class="dashboard-stat" ng-cloak>
+							<figcaption class="stat-caption">Total in system</figcaption>
+							<div class="stat-figure">@{{stats.member.numTotal}}</div>
+						</figure>
 					</div>
 				</div>
 			</div>
@@ -49,7 +55,7 @@
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Attendance Admin</h3>
+				<h3 class="panel-title">Activity Admin</h3>
 			</div>
 			<div class="panel-body">
 				<ul>
@@ -61,7 +67,7 @@
 	
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Attendance Ops</h3>
+				<h3 class="panel-title">Activity Ops</h3>
 			</div>
 			<div class="panel-body">
 				<ul>
@@ -86,9 +92,12 @@ var memberSearchApp = angular.module('flaresDashboard', ['flaresBase']);
 memberSearchApp.controller('dashboardController', function($scope, $http){
 	
 	$scope.stats = {
-		members: 54,
-		awols: 4
+		members: {}
 	};
+	
+	$http.get('/api/dashboard').then(function(response){
+		$scope.stats = response.data;
+	});
 	
 });
 	

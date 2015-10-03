@@ -16,14 +16,15 @@ class MemberController extends MemberControllerBase
      *
      * @return Response
      */
-    public function index(Request $request){
+    public function index(Request $request)
+	{
 		
 		// discharged -- [ none | include | only ]
 		$withDischarged = $request->input('discharged', 'none');
 		if ($withDischarged == 'include'){
 			$query = Member::withTrashed();
 		}
-		if ($withDischarged == 'only'){
+		elseif ($withDischarged == 'only'){
 			$query = Member::onlyTrashed();
 		}
 		else {
@@ -55,7 +56,8 @@ class MemberController extends MemberControllerBase
      * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+	{
 		$recordId = 0;
 		$initialPostingId = 0;
 		$idNotPossibleError = [];
@@ -89,17 +91,11 @@ class MemberController extends MemberControllerBase
 			$context = $contextDefaults;
 		}
 		
-		// if (rand(0,2) > 0){
-			// return response()->json([
-				// 'recordId' => 0,
-				// 'initialPostingId' => 0,
-				// 'regtNumError' => ['code' => 'NO_REGT_NUM', 'reason' => 'Test Reason']
-			// ]);
-		// }
-		
-		// Deal with the member data
 		if ($request->has('member')){
+			// Deal with the member data
 			$postDataMember = $request->input('member');
+			
+			DB::beginTransaction();
 			try {
 				// Get their regimental number
 				$newRegtNum = $this->generateStandardRegtNumber($context) . ($postDataMember['sex'] == 'F' ? 'F' : '');	
@@ -108,20 +104,18 @@ class MemberController extends MemberControllerBase
 					
 					// Assign regt num, create new record, and generate initial posting
 					$postDataMember['regt_num'] = $newRegtNum;
-					
 					$newMember = Member::create($postDataMember);
-					// $newMember = new Member();
-					// $newMember->fill();
-					// $newMember->createWithRegtNum($newRegtNum);
-					
-					// print_r($newMember);
-					// print_r($newMember->regt_num);
-					// exit;
 					
 					if ($newMember->regt_num > 0){
-						$idNotPossibleError = [];
-						$recordId = $newRegtNum;
-						$initialPostingId = $this->generateInitialPostingRecord($recordId, $context);
+						$recordId = $newMember->regt_num;
+						$initialPostingId = $this->generateInitialPostingRecord($recordId, $context);	
+					}
+					else {
+						$idNotPossibleError = [
+							'code' => 'CANNOT_SAVE_REGT_NUM', 
+							'valueExpected' => $newRegtNum, 
+							'valueActual' => $newMember->regt_num, 
+							'reason' => 'Looks like the database rejected this regt num'];
 					}
 					
 				}
@@ -131,14 +125,15 @@ class MemberController extends MemberControllerBase
 				
 			}
 			catch (Exception $ex){
+				DB::rollBack();
 				$idNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
 			}	
-			// }
-			
+			DB::commit();
+	
 			return response()->json([
 				'recordId' => $recordId,
 				'initialPostingId' => $initialPostingId,
-				'regtNumError' => $idNotPossibleError
+				'error' => $idNotPossibleError
 			]);
 		}
 		
@@ -151,24 +146,26 @@ class MemberController extends MemberControllerBase
      * @param  int  $id
      * @return Response
      */
-    public function show(Request $request, $id){
-		
+    public function show(Request $request, $id)
+	{
 		// Fetch the first match
 		// detail -- [ high | med | low ]
-		$member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
 		$detailLevel = $request->input('detail', 'low');
 		
-		if ($detailLevel == 'high' || $detailLevel == 'med'){	
-			$ret = $member->toArray();
-			$ret['posting_promo'] = $member->postings->toArray();
-			return response()->json($ret);
+		// Todo: Add $detailLevel == med
+		
+		if ($detailLevel == 'high'){	
+			// Todo: to add more "eager loaded" relationshions, add extra args to Member::with()
+			$member = Member::with('postings')->where('regt_num', $id)->withTrashed()->firstOrFail();
+			return response()->json($member->toArray());
 		}
 		else {
-			//  when $detailLevel == low)
+			//  when $detailLevel == low
+			$member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
 			return response()->json($member->toArray()); 
 		}
 
-		return abort(404);		// Didn't find any record
+		return abort(400);		// Probably a bad request
     }
 
 
@@ -179,7 +176,8 @@ class MemberController extends MemberControllerBase
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+	{
         $postData = $request->all();
 		$updated = 0;
 		$updateNotPossibleError = [];
@@ -187,9 +185,7 @@ class MemberController extends MemberControllerBase
 		if (is_array($postData) && array_key_exists('member', $postData)){
 			try {
 				$updateMember = $postData['member'];
-				// $updated = Member::find($id)->update($updateMember);				
 				$updated = Member::updateOrCreate(['regt_num' => $id], $updateMember);
-				// $updated = DB::table('master')->where('regt_num', $id)->update($updateMember);
 			}
 			catch (Exception $ex){
 				$updateNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
@@ -197,7 +193,7 @@ class MemberController extends MemberControllerBase
 			
 			return response()->json([
 				'recordId' => $updated,
-				'updateError' => $updateNotPossibleError
+				'error' => $updateNotPossibleError
 			]);
 		}
 		
@@ -211,7 +207,8 @@ class MemberController extends MemberControllerBase
      * @param  int  $id
      * @return Response
      */
-    public function destroy(Request $request, $id){
+    public function destroy(Request $request, $id)
+	{
 		// remove -- [ discharge | permanent ]
 		$removeMode = $request->input('remove', 'discharge');
 		$updated = 0;
@@ -251,5 +248,7 @@ class MemberController extends MemberControllerBase
 		return abort(400);		// $request should've been an array of arrays..        
     }
 	
+	
+
 	
 }

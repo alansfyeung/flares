@@ -11,7 +11,30 @@
  * INFO #2a84be
  */ 
  
+ 
+/* Dashboard */
+.dashboard-stat {
+	text-align: center;
+}
+.dashboard-stat .stat-caption {
+	color: #aaa;
+}
+.dashboard-stat .stat-figure {
+	font-size: 3em;
+	line-height: 1;
+	font-weight: bold;
+}
+ 
+ 
 /* View/Edit Member Screen*/
+.member-quickstatus {
+	border-bottom: 1px dashed #ddd;
+	margin-bottom: 20px;
+}
+.member-quickstatus dd {
+	display: inline-block;
+}
+
 .memberview-image {
 	max-width: 400px;
 	max-height: 400px;
@@ -57,6 +80,7 @@
 }
 
 
+
 /* Member onboarding scren */
 .memberadd-spreadsheet {
 	border-collapse: collapse;
@@ -91,11 +115,11 @@ select.ng-dirty.ng-invalid,
 }
 
 
+
+
 a[ng-click] {
 	cursor: pointer;
 }
-
-
 
 footer {
 	padding-top: 2em;

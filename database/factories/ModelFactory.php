@@ -31,3 +31,24 @@ $factory->define(App\Member::class, function (Faker\Generator $faker) {
 		'parent_email' => $faker->companyEmail
     ];
 });
+
+$factory->define(App\Activity::class, function (Faker\Generator $faker) {
+	$isParadeNight = rand(0,1);
+    return [
+		'name' => $faker->lastName,
+		'type' => ['Parade','Bivouac','Activity','Annual Camp'][rand(0,3)],
+		'start_date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
+		'end_date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
+		'desc' => $faker->catchPhrase,
+		'is_parade_night' => $isParadeNight,
+		'is_half_day' => $isParadeNight
+    ];
+});
+
+$factory->define(App\Attendance::class, function (Faker\Generator $faker) {
+    return [
+		'date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
+		'recorded_value' => '0',
+		'is_late' => rand(0,1)
+    ];
+});
