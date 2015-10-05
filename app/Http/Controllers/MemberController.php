@@ -20,7 +20,7 @@ class MemberController extends MemberControllerBase
 	{
 		
 		// discharged -- [ none | include | only ]
-		$withDischarged = $request->input('discharged', 'none');
+		$withDischarged = $request->query('discharged', 'none');
 		if ($withDischarged == 'include'){
 			$query = Member::withTrashed();
 		}
@@ -60,7 +60,7 @@ class MemberController extends MemberControllerBase
 	{
 		$recordId = 0;
 		$initialPostingId = 0;
-		$idNotPossibleError = [];
+		$error = [];
 		
 		// Deal with the context data
 		$context = $this->getContextDefaults();
@@ -111,29 +111,30 @@ class MemberController extends MemberControllerBase
 						$initialPostingId = $this->generateInitialPostingRecord($recordId, $context);	
 					}
 					else {
-						$idNotPossibleError = [
-							'code' => 'CANNOT_SAVE_REGT_NUM', 
-							'valueExpected' => $newRegtNum, 
-							'valueActual' => $newMember->regt_num, 
-							'reason' => 'Looks like the database rejected this regt num'];
+						// $error = [
+							// 'code' => 'CANNOT_SAVE_REGT_NUM', 
+							// 'valueExpected' => $newRegtNum, 
+							// 'valueActual' => $newMember->regt_num, 
+							// 'reason' => 'Looks like the database rejected this regt num'];
+						throw new Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", 'REGT_NUM_ERROR');
 					}
 					
 				}
 				else {
-					$idNotPossibleError = ['code' => 'NO_REGT_NUM', 'reason' => 'Could not generate a regt num'];
+					throw new Exception('Could not generate a regt num', 'REGT_NUM_ERROR');
 				}
 				
 			}
 			catch (Exception $ex){
 				DB::rollBack();
-				$idNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
+				$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
 			}	
 			DB::commit();
 	
 			return response()->json([
 				'recordId' => $recordId,
 				'initialPostingId' => $initialPostingId,
-				'error' => $idNotPossibleError
+				'error' => $error
 			]);
 		}
 		
@@ -178,26 +179,28 @@ class MemberController extends MemberControllerBase
      */
     public function update(Request $request, $id)
 	{
-        $postData = $request->all();
+        // $postData = $request->all();
 		$updated = 0;
 		$updateNotPossibleError = [];
 		
-		if (is_array($postData) && array_key_exists('member', $postData)){
-			try {
-				$updateMember = $postData['member'];
-				$updated = Member::updateOrCreate(['regt_num' => $id], $updateMember);
+		// if (is_array($postData) && array_key_exists('member', $postData)){
+		try {
+			if ($request->has('member')){
+				$postDataUpdate = $request->input('member', []);
+				$updated = Member::updateOrCreate(['regt_num' => $id], $postDataUpdate);
 			}
-			catch (Exception $ex){
-				$updateNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
+			else {
+				throw new Exception('No member value in post data', 'POSTDATA_ERROR');
 			}
-			
-			return response()->json([
-				'recordId' => $updated,
-				'error' => $updateNotPossibleError
-			]);
 		}
-		
-		return abort(400);	
+		catch (Exception $ex){
+			$updateNotPossibleError = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+		}
+				
+		return response()->json([
+			'recordId' => $updated,
+			'error' => $updateNotPossibleError
+		]);
     }
 
     /**
@@ -210,9 +213,9 @@ class MemberController extends MemberControllerBase
     public function destroy(Request $request, $id)
 	{
 		// remove -- [ discharge | permanent ]
-		$removeMode = $request->input('remove', 'discharge');
-		$updated = 0;
-		$deletionNotPossibleError = [];
+		$removeMode = $request->query('remove', 'discharge');
+		$deleted = 0;
+		$error = [];
 		
 		try {
 			if ($removeMode == 'permanent'){
@@ -227,7 +230,7 @@ class MemberController extends MemberControllerBase
 					$deleted = $deletionMember->forceDelete();
 				}
 				else {
-					$deletionNotPossibleError = ['code' => 'PERM', 'reason' => 'You don\'t have permission to permanently delete this record'];
+					throw new Exception('You don\'t have permission to permanently delete this record', 'PERM');
 				}
 			}
 			else {
@@ -236,19 +239,16 @@ class MemberController extends MemberControllerBase
 			}
 		}
 		catch (Exception $ex){
-			$deletionNotPossibleError = ['code' => 'EX', 'reason' => $ex->getMessage()];
+			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
 		}
 		
 		return response()->json([
 			'success' => $deleted,
 			'deletionMode' => $removeMode,
-			'deletionError' => $deletionNotPossibleError
+			'error' => $error
 		]);
 		
 		return abort(400);		// $request should've been an array of arrays..        
     }
-	
-	
-
 	
 }

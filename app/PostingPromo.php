@@ -11,7 +11,7 @@ class PostingPromo extends Model
 	
 	// Relationships
 	public function member(){
-		return $this->belongsTo('App\Member');
+		return $this->belongsTo('App\Member', 'regt_num');
 	}
 	
 }

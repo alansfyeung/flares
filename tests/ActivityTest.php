@@ -69,12 +69,15 @@ class ActivityTest extends TestCase
 		$attRecords = $this->newRecords($numAttTests, App\Attendance::class);
 		foreach ($attRecords as $i => &$att){
 			$att['acty_id'] = $activityId;
-			$att['recorded_by'] = $systemUser->forums_username;
+			// $att['recorded_by'] = $systemUser->forums_username;			// This is done by server side
 			$att['regt_num'] = $members[$i]->regt_num;
 			$response = $this->call('POST', "/api/activity/$activityId/roll", ['attendance' => [$att]]);
-			$jsonResponse = json_decode($response->content());
-			$att['att_id'] = $jsonResponse->recordId[0];			// expected to return an array format;
 			$this->assertEquals(200, $response->status(), 'POST for att record was not 200 OK');
+			
+			$jsonResponse = json_decode($response->content());
+			
+			
+			$att['att_id'] = $jsonResponse->recordId[0];			// expected to return an array format;
 		}
 		
 		// Test/debug
@@ -86,6 +89,7 @@ class ActivityTest extends TestCase
 		$this->assertEquals(200, $response->status(), 'GET for roll was not 200 OK');
 		
 		$roll = json_decode($response->content(), true);
+		$this->assertEquals(count($attRecords), count($roll), 'Unexpected (different) number of att records');
 		
 		$this->assertTrue(is_array($roll));
 		$overallFound = true;
@@ -106,6 +110,7 @@ class ActivityTest extends TestCase
 	}
  
 	/** 
+	 * @group rollmarking
 	 *	Test marking the roll
 	 * - Create the activity
 	 * - Add roll -> make lots of empty attendance records
@@ -115,7 +120,7 @@ class ActivityTest extends TestCase
 	public function testMarkRollForActivity()
 	{
 		$attRecords = $this->testAssignRollToActivity();
-		$this->assertGreaterThan(count($attRecords), 0);
+		$this->assertGreaterThan(0, count($attRecords));
 		
 		foreach ($attRecords as &$att){
 			$attId = $att['att_id'];
@@ -124,7 +129,15 @@ class ActivityTest extends TestCase
 			$response = $this->call('PATCH', "/api/activity/$activityId/roll/$attId", ['attendance' => [
 				'recorded_value' => $att['recorded_value']
 			]]);
+			echo '==========='.PHP_EOL;
+			var_dump("/api/activity/$activityId/roll/$attId");
+			var_dump(json_decode($response->status()));
+			var_dump(json_decode($response->content()));
 			// Check to see roll was marked
+			$test = $this->call('GET', "/api/activity/$activityId/roll/$attId");
+			echo '==========='.PHP_EOL;
+			var_dump(json_decode($test->content()));
+			
 			$roll = $this->get("/api/activity/$activityId/roll/$attId")
 				->seeJson($att);
 		}
@@ -145,7 +158,7 @@ class ActivityTest extends TestCase
 	public function testUpdateAttendance()
 	{
 		$attRecords = $this->testMarkRollForActivity();
-		$this->assertGreaterThan(count($attRecords), 0);
+		$this->assertGreaterThan(0, count($attRecords));
 		
 		foreach ($attRecords as &$att){
 			$attId = $att['att_id'];
