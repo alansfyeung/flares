@@ -129,14 +129,12 @@ class ActivityTest extends TestCase
 			$response = $this->call('PATCH', "/api/activity/$activityId/roll/$attId", ['attendance' => [
 				'recorded_value' => $att['recorded_value']
 			]]);
-			echo '==========='.PHP_EOL;
-			var_dump("/api/activity/$activityId/roll/$attId");
-			var_dump(json_decode($response->status()));
-			var_dump(json_decode($response->content()));
+			// var_dump("/api/activity/$activityId/roll/$attId");
+			// var_dump(json_decode($response->status()));
+			// var_dump(json_decode($response->content()));
 			// Check to see roll was marked
 			$test = $this->call('GET', "/api/activity/$activityId/roll/$attId");
-			echo '==========='.PHP_EOL;
-			var_dump(json_decode($test->content()));
+			// var_dump(json_decode($test->content()));
 			
 			$roll = $this->get("/api/activity/$activityId/roll/$attId")
 				->seeJson($att);
@@ -175,7 +173,7 @@ class ActivityTest extends TestCase
 			// Check to see roll was marked
 			$roll = $this->get("/api/activity/$activityId/roll/$attId")
 				->seeJson([
-					'record_count' => 2		// There should be exactly 2 records
+					'count' => 2		// There should be exactly 2 records
 				])
 				->seeJson([						// This should be the newer record
 					'acty_id' => $att['acty_id'],						// acty_id and
@@ -195,7 +193,7 @@ class ActivityTest extends TestCase
 	public function testAwolListing()
 	{
 		$attRecords = $this->testAssignRollToActivity();
-		$this->assertGreaterThan(count($attRecords), 0);
+		$this->assertGreaterThan(0, count($attRecords));
 		$activityId = $attRecords[0]['acty_id'];
 		
 		// Expect to see none in the AWOL list
@@ -213,17 +211,19 @@ class ActivityTest extends TestCase
 		
 		
 		// Expect to see all in the AWOL list
+		$counter = 0;
 		foreach ($attRecords as $att){
-			$attId = $att['att_id'];			
+			$attId = $att['att_id'];
 			$response = $this->call('PATCH', "/api/activity/$activityId/roll/$attId", ['attendance' => [
 				'recorded_value' => 'A'
 			]]);
 			$jsonResponse = json_decode($response->content());
 			$newAttId = $jsonResponse->recordId;
 			$this->get("/api/activity/$activityId/awol")
-				->dontSee($attId)				// Don't expect the old att record
+				->seeJson(['count' => (++$counter)])					// Don't expect the old att record
 				->seeJson([
 					'att_id' => $newAttId,						// Expect this new att record, which is an AWOL.
+					'prev_att_id' => $attId,						// Expect prev record as well
 					'acty_id' => $att['acty_id'],					// acty_id and 
 					'regt_num' => $att['regt_num'],			// regt_num should have copied over
 				]);		
@@ -231,6 +231,31 @@ class ActivityTest extends TestCase
 		
 	}
 	
+	/** 
+	 *	Test activity update
+	 * - Create the activity
+	 * - Update some details
+	 * - Expect
+	 */
+	public function testActivityUpdate()
+	{
+		$activity = $this->testCreateActivity();
+		$activityId = $activity['att_id'];
+		
+		$anotherActivity = $this->newRecords(1);
+		$response = $this->call('PATCH', "api/activity/$activityId", ['activity' => $anotherActivity]);
+		$this->assertEquals(200, $response->status());
+		
+		$this->get("/api/activity/$activityId")
+			->seeJson([
+				'name' => $anotherActivity['name'],
+				'type' => $anotherActivity['type'],
+				'start_date' => $anotherActivity['start_date'],
+				'end_date' => $anotherActivity['end_date'],
+				'desc' => $anotherActivity['desc']
+			]);
+		
+	}
 	
 	/** 
 	 *	Test activity deletion 1
@@ -257,11 +282,11 @@ class ActivityTest extends TestCase
 	public function testActivityDeletionWithRoll()
 	{
 		$attRecords = $this->testAssignRollToActivity();
-		$this->assertGreaterThan(count($attRecords), 0);
+		$this->assertGreaterThan(0, count($attRecords));
 		
 		$activityId = $attRecords[0]['acty_id'];
 		
-		$this->call('DELETE', "/api/activity/$activityId");
+		$response = $this->call('DELETE', "/api/activity/$activityId");
 		$this->assertEquals(403, $response->status());
 		
 		$this->get("/api/activity/$activityId")

@@ -116,7 +116,7 @@ class MemberController extends MemberControllerBase
 							// 'valueExpected' => $newRegtNum, 
 							// 'valueActual' => $newMember->regt_num, 
 							// 'reason' => 'Looks like the database rejected this regt num'];
-						throw new Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", 'REGT_NUM_ERROR');
+						throw new \Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", 'REGT_NUM_ERROR');
 					}
 					
 				}
@@ -125,12 +125,16 @@ class MemberController extends MemberControllerBase
 				}
 				
 			}
-			catch (Exception $ex){
+			catch (\Exception $ex){
 				DB::rollBack();
 				$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
 			}	
 			DB::commit();
 	
+			if ($error){
+				return response()->json(['error' => $error], 403);
+			}
+			
 			return response()->json([
 				'recordId' => $recordId,
 				'initialPostingId' => $initialPostingId,
@@ -165,8 +169,8 @@ class MemberController extends MemberControllerBase
 			$member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
 			return response()->json($member->toArray()); 
 		}
-
-		return abort(400);		// Probably a bad request
+		
+		return abort(400);		// Probably a _terribly_ bad request
     }
 
 
@@ -181,7 +185,7 @@ class MemberController extends MemberControllerBase
 	{
         // $postData = $request->all();
 		$updated = 0;
-		$updateNotPossibleError = [];
+		$error = [];
 		
 		// if (is_array($postData) && array_key_exists('member', $postData)){
 		try {
@@ -190,17 +194,18 @@ class MemberController extends MemberControllerBase
 				$updated = Member::updateOrCreate(['regt_num' => $id], $postDataUpdate);
 			}
 			else {
-				throw new Exception('No member value in post data', 'POSTDATA_ERROR');
+				throw new \Exception('No member value in post data', 'POSTDATA_ERROR');
 			}
 		}
-		catch (Exception $ex){
-			$updateNotPossibleError = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+		catch (\Exception $ex){
+			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
 		}
-				
-		return response()->json([
-			'recordId' => $updated,
-			'error' => $updateNotPossibleError
-		]);
+		
+		if ($updated){
+			return response()->json(['recordId' => $updated]);
+		}
+		
+		return response()->json(['error' => $error], 400);
     }
 
     /**
@@ -223,14 +228,13 @@ class MemberController extends MemberControllerBase
 				
 				// Todo: future permissions check
 				$permissionsCheck = true;
-				if ($permissionsCheck || $deletionMember->is_active === 0){		// Allow anybody to delete inactive records
-					foreach ($deletionMember->postings as $posting){
-						$posting->delete();
-					}
-					$deleted = $deletionMember->forceDelete();
+				if ($permissionsCheck || $deletionMember->is_active == '0'){		// Allow anybody to delete inactive records
+					$deletionMember->postings()->forceDelete();
+					$deletionMember->forceDelete();			// this returns void
+					$deleted = true;		// we just presume it worked, since we deleted the postings already
 				}
 				else {
-					throw new Exception('You don\'t have permission to permanently delete this record', 'PERM');
+					throw new \Exception('You don\'t have permission to permanently delete this record', 'PERM');
 				}
 			}
 			else {
@@ -238,15 +242,24 @@ class MemberController extends MemberControllerBase
 				$deleted = Member::findOrFail($id)->delete();
 			}
 		}
-		catch (Exception $ex){
+		catch (\Exception $ex){
 			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
 		}
 		
-		return response()->json([
-			'success' => $deleted,
-			'deletionMode' => $removeMode,
-			'error' => $error
-		]);
+		if (!$deleted){
+			return response()->json([
+				'error' => ['code' => 'DELETION_ERROR', 'deletionResult' => print_r($deleted, true), 'reason' => "Could not delete this record $id"]
+			], 401);
+		}
+		elseif ($error){
+			return response()->json(['error' => $error], 403);
+		}
+		else {
+			return response()->json([
+				'success' => $deleted,
+				'deletionMode' => $removeMode,
+			]);
+		}
 		
 		return abort(400);		// $request should've been an array of arrays..        
     }

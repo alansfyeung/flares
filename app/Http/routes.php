@@ -27,9 +27,6 @@
 		Route::get('members', function(){				// Member search page
 			return view('members.search');
 		});
-		Route::get('members/new', function(){			// Member bulk add
-			return view('members.new');
-		});
 		Route::get('members/stats', function(){			// Member Stats
 			return view('members.stats');
 		});
@@ -42,8 +39,11 @@
 	});
 	
 	Route::group(['as' => 'member::'], function(){
+		Route::get('members/new', function(){			// Member bulk add
+			return view('member.newMember');
+		});
 		Route::get('member', function(){
-			return view('member.view');
+			return view('member.viewMember');
 		});
 	});
 	
@@ -51,17 +51,17 @@
 		Route::get('activities', function(){		// dashboard-like overview for all activities
 			return view('activities.overview');
 		});
-		Route::get('activities/new', function(){		// Create new activity
-			return view('activities.new');
-		});
-		Route::get('activities/awol', function(){		// AWOLs dashboard
+		Route::get('activities/awol', function(){		// All activities AWOL dashboard
 			return view('activities.awol');
 		});
 	});
 	
 	Route::group(['as' => 'activity::'], function(){
+		Route::get('activities/new', function(){		// Create new activity
+			return view('activity.newActivity');
+		});
 		Route::get('activity', function(){
-			return view('activity.view');				// View/edit activity details & nom roll
+			return view('activity.viewActivity');				// View/edit activity details & nom roll
 		});
 		Route::get('activity/roll', function(){
 			return view('activity.roll');				// Mark the roll
@@ -104,6 +104,7 @@
 		Route::get('api/refdata/platoons', 'RefDataController@platoons');
 		Route::get('api/refdata/ranks', 'RefDataController@ranks');
 		Route::get('api/refdata/postings', 'RefDataController@postings');
+		Route::get('api/refdata/activity', 'RefDataController@activity');
 
 	});
 	 

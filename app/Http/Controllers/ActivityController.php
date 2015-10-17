@@ -10,6 +10,12 @@ use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
 {
+	const ERR_POSTDATA_MISSING = 4001;
+	const ERR_POSTDATA_FORMAT = 4002;
+	const ERR_HAS_ROLL = 4100;
+	const ERR_EX = 5000;
+	const ERR_DB_PERSIST = 5001;
+	
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +23,7 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Activity::select()->orderBy('created_at', 'desc')->get()->toArray());
     }
 
     /**
@@ -37,12 +43,12 @@ class ActivityController extends Controller
 				$activity = Activity::create($postDataActivity);
 				$recordId = $activity->acty_id;
 			} 
-			catch (Exception $ex){
-				$error = ['code' => 'EX', 'reason' => $ex->getMessage()];
+			catch (\Exception $ex){
+				$error = ['code' => self::ERR_EX, 'reason' => $ex->getMessage()];
 			}
 		} 
 		else {
-			$error = ['code' => 'EMPTY', 'reason' => 'Post data not provided in required format'];
+			$error = ['code' => self::ERR_POSTDATA_FORMAT, 'reason' => 'Post data not provided in required format'];
 		}
 		
 		return response()->json([
@@ -81,7 +87,29 @@ class ActivityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		$updated = 0;
+		$error = [];
+		
+		try {
+			if ($request->has('activity')){
+				$postDataUpdate = $request->input('activity', []);
+				$updated = Activity::findOrFail($id)->fill($postDataUpdate)->save();
+			}
+			else {
+				throw new \Exception('No activity values in post data', self::ERR_POSTDATA_MISSING);
+			}
+		}
+		catch (\Exception $ex){
+			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+		}
+		
+		if ($error){
+			return response()->json(['error' => $error]);
+		}
+		
+		return response()->json([
+			'recordId' => $updated
+		]);
     }
 
     /**
@@ -92,6 +120,28 @@ class ActivityController extends Controller
      */
     public function destroy($id)
     {
-        //
+		$deleted = 0;
+		$error = [];
+		
+		try {
+			$activity = Activity::findOrFail($id);
+			if ($activity->attendances->count() > 0){
+				throw new \Exception('Attendance records exist, cannot delete this activity', self::ERR_HAS_ROLL);
+			}
+			else {
+				$deleted = $activity->delete();
+			}
+		}
+		catch (\Exception $ex){
+			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+		}
+		
+		if ($error){
+			return response()->json(['error' => $error], 403);
+		}
+		
+		return response()->json(['success' => $deleted]);
     }
+	
+	
 }

@@ -6,7 +6,7 @@
 @section('title', 'Dashboard')
 
 @section('heading')
-<div class="page-header">
+<div class="page-header container-fluid">
 	<h1>Dashboard</h1>
 </div>
 @endsection
@@ -86,21 +86,5 @@
 
 
 @section('ng-script')
-<script>
-
-var memberSearchApp = angular.module('flaresDashboard', ['flaresBase']);
-memberSearchApp.controller('dashboardController', function($scope, $http){
-	
-	$scope.stats = {
-		members: {}
-	};
-	
-	$http.get('/api/dashboard').then(function(response){
-		$scope.stats = response.data;
-	});
-	
-});
-	
-
-</script>
+<script src="/app/components/dashboard/flaresDashboard.js"></script>
 @endsection

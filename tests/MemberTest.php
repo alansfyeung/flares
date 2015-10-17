@@ -233,6 +233,7 @@ class MemberTest extends TestCase
 		
 		// "Delete" this record
 		$resp = $this->call('DELETE', "/api/member/$memberId?remove=permanent");
+		// var_dump(json_decode($resp->content()));
 		$this->assertEquals(200, $resp->status());
 		
 		// Check that its gone for good

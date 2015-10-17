@@ -11,7 +11,34 @@
  * INFO #2a84be
  */ 
  
+/* ==============*/
+/* Header, Footer, Nav, Headings */
  
+.navbar {
+    margin-bottom: 0;
+}
+.page-header {
+    margin-top: 0;
+    padding-bottom: 0;
+    background: #8b4346;        /* 206 Maroon Dull */
+    color: white;
+}
+.page-header h1 {
+    font-weight: normal;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.page-header h1 small {
+    color: #CCC;
+}
+.page-header .title-actions {
+    margin: 20px 0 20px 20px;
+}
+.page-header .title-actions.pull-right {
+    margin-left: 0;
+}
+ 
+/* ==============*/
 /* Dashboard */
 .dashboard-stat {
 	text-align: center;
@@ -26,6 +53,7 @@
 }
  
  
+/* =======================*/
 /* View/Edit Member Screen*/
 .member-quickstatus {
 	border-bottom: 1px dashed #ddd;
@@ -43,31 +71,31 @@
 	max-width: 100px;
 	max-height: 100px;
 }
-.member-record-view td {
+.record-view td {
 	width: 50%;
 	word-break: break-word;
 }
 
-.member-record-view input,
-.member-record-view textarea,
-.member-record-view select {
+.record-view input,
+.record-view textarea,
+.record-view select {
 	padding: 8px;
 	display: block;
 	border: none;	
 	width: 100%;
 }
-.member-record-view input,
-.member-record-view textarea,
-.member-record-view select,
-.member-record-view [contenteditable] {
+.record-view input,
+.record-view textarea,
+.record-view select,
+.record-view [contenteditable] {
 	border-bottom: 2px solid skyblue;
 	background: azure;
 }
-.member-record-view textarea {
+.record-view textarea {
 	resize: vertical;
 }
-.member-record-view input[type=radio],
-.member-record-view input[type=checkbox] {
+.record-view input[type=radio],
+.record-view input[type=checkbox] {
 	width: auto;
 }
 
@@ -81,6 +109,7 @@
 
 
 
+/* =======================*/
 /* Member onboarding scren */
 .memberadd-spreadsheet {
 	border-collapse: collapse;

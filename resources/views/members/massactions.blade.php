@@ -7,7 +7,7 @@
 
 
 @section('heading')
-<div class="page-header">
+<div class="page-header container-fluid">
 	<h1>Mass Actions</h1>
 </div>
 @endsection
@@ -18,5 +18,5 @@
 @endsection
 
 @section('ng-script')
-
+<script src="/app/components/member/flaresMemberMassAction.js"></script>
 @endsection

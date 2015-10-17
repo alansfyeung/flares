@@ -12,6 +12,9 @@ use App\Http\Controllers\Controller;
 
 class AttendanceController extends Controller
 {
+	const ERR_POSTDATA_MISSING = 4001;
+	const ERR_DB_PERSIST = 5001;
+	
     /**
      * Display a listing of the resource.
      *
@@ -32,6 +35,32 @@ class AttendanceController extends Controller
 		});
 		
 		return response()->json($atts->toArray());
+    }
+	
+	/**
+     * Show the AWOLs for activity
+     *
+     * @param  int  $activityId
+     * @return Response
+     */
+    public function awol($activityId)
+    {
+        // Select all attendance records which are 
+		$activity = Activity::with(['attendances' => function($query){
+			$query->where('recorded_value', 'A')->orderBy('created_at', 'desc');
+		}])->where('acty_id', $activityId)->firstOrFail();
+		
+		$atts = $activity->attendances;
+		$atts->reject(function($item){
+			// If this att is the ultimate att, then keep it
+			return $item->att_id != $this->chainLookupUltimate($item)->att_id;
+		});
+		
+		return response()->json([
+			'count' => $atts->count(),
+			'awol' => $atts->toArray()
+		]
+		);
     }
 
     /**
@@ -69,10 +98,16 @@ class AttendanceController extends Controller
 			$error = ['code' => 'NO_POSTDATA', 'reason' => 'The post data was provided in the wrong format'];
 		}
 		
-		return response()->json([
-			'recordId' => $recordIds,
-			'error' => $error
-		]);
+		if ($error){
+			return response()->json([
+				'error' => $error
+			]);
+		}
+		else {
+			return response()->json([
+				'recordId' => $recordIds
+			]);			
+		}
     }
 
     /**
@@ -97,11 +132,15 @@ class AttendanceController extends Controller
 		// Get the very last attendance record
 		$ultimate = count($supersedingAtts) > 0 ? end($supersedingAtts) : $att;
 		
+		// How many in the chain
+		$chainCount = count($precedingAtts) + 1 + count($supersedingAtts);
+		
 		return response()->json([
 			'self' => $att,
 			'ultimate' => $ultimate,
 			'preceding' => $precedingAtts,
-			'superseding' => $supersedingAtts
+			'superseding' => $supersedingAtts,
+			'count' => $chainCount
 		]);
 		
     }
@@ -164,7 +203,7 @@ class AttendanceController extends Controller
 				}
 				else {
 					// Payload didn't specify an attendance value. return an error
-					throw new \Exception('No attendance value in payload', 'ERR_POSTDATA');
+					throw new \Exception('No attendance value in payload', self::ERR_POSTDATA_MISSING);
 				}
 			}
 			else {
@@ -178,7 +217,7 @@ class AttendanceController extends Controller
 						$newId = $requestedAtt->att_id;
 					}
 					else {
-						throw new \Exception('Expected is_late value in post data', 'ERR_POSTDATA');
+						throw new \Exception('Expected is_late value in post data', self::ERR_POSTDATA_MISSING);
 					}
 				}
 				elseif ($action == 'leave'){
@@ -246,7 +285,7 @@ class AttendanceController extends Controller
 		}
 		else {
 			// Don't delete
-			$error = ['code' => 'ERR_DB_PERSIST', 'reason' => 'Did not save recorded_value to database'];
+			$error = ['code' => self::ERR_DB_PERSIST, 'reason' => 'Did not save recorded_value to database'];
 		}
 		
 		return response()->json([

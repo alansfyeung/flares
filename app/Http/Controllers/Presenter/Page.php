@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Presenter;
 
 use App\Http\Controllers\Controller;
 
-class PagePresenter extends Controller
+class Page extends Controller
 {
     /**
      * Render the requested view  --- NOT USED
