@@ -53,7 +53,7 @@
 							<li><a href="/activities/new" name="menu.activity.new">New Activity</a></li>
 							<li role="separator" class="divider"></li>
 							<!-- <li><a href="/activity/roll" name="menu.activity.roll">Mark Roll</a></li> -->
-							<li><a href="/activity/awol" name="menu.activity.awol">Check AWOLs</a></li>
+							<li><a href="/activity/awol" name="menu.activity.awol">AWOLs</a></li>
 						  </ul>
 						</li>
 						<li class="dropdown">

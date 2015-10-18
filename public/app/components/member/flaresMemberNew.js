@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
-flaresApp.controller('memberAddController', function($scope, $http){
+flaresApp.controller('memberAddController', function($scope, flaresAPI){
 	//======================
 	// Vars which are related to overall onboarding process
 	$scope.onboardingContext = {
@@ -190,7 +190,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 					member: newMember.data
 				};
 				
-				$http.post('/api/member', payload).then(function(response){
+				flaresAPI.member.post(payload).then(function(response){
 					if (response.data.error.code){
 						console.warn(response.data.error);
 						return;
@@ -224,7 +224,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 		// sets the is_active flag on all saved records
 		angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
 			if (newMember.isSaved){
-				$http.patch('/api/member/'+newMember.regtNum, {
+				flaresAPI.member.patch([newMember.regtNum], {
 					member: {
 						is_active: '1'
 					}
@@ -250,7 +250,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 		// IIFE to update the correct member reference on promise fulfill
 		(function(detailedMember){
 			
-			$http.patch('/api/member/'+detailedMember.regtNum, payload).then(function(response){
+			flaresAPI.member.patch([detailedMember.regtNum], payload).then(function(response){
 				console.log(response.data);		// Debug
 				
 				if (response.data.recordId){
@@ -279,7 +279,7 @@ flaresApp.controller('memberAddController', function($scope, $http){
 	//==================
 	// Fetch reference data for platoons and ranks
 	
-	$http.get('/api/refdata').then(function(response){
+	flaresAPI.refData.getAll().then(function(response){
 		if (response.data.postings){
 			$scope.formData.postings = response.data.postings;
 		}

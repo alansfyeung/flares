@@ -5,38 +5,46 @@
 
 var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
-flaresApp.controller('activityViewEditController', function($scope, $http, $location, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityViewEditController', function($scope, $http, $location, $controller, flaresAPI, flaresLinkBuilder){
     
-    $scope.activity = {};
-    $scope.originalActivity = {};
+    // Add some base 
+    var veController = this;
+    angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
+    
+    $scope.workflow = Object.create(veController.workflow);     // set parent workflow object as proto
+    
+    $scope.activity = Object.create($scope.record);
+    $scope.originalActivity = Object.create($scope.originalRecord);
+    $scope.activityRollStats = {};
     
     $scope.formData = {};
-    $scope.workflow = {
-		path: {
-			id: 0,
-			mode: 'view',		// by default
-			tab: 'details'
-		},
-		isActivityRequested: false,
-		isActivityLoaded: false,
-		isAsync: false
+    
+    $scope.edit = function(){
+		var sw = $scope.workflow;
+		if (sw.isView()){
+			// If in view mode, toggle to Edit mode
+			sw.path.mode = 'edit';
+			return;
+		}
+		if (sw.isEdit()){
+			// Save the changes
+			// send back to view mode
+			updateActivityRecord();
+			sw.path.mode = 'view';
+		}
 	};
-    
-    
-    $scope.$watchCollection('workflow.path', function(){
-		// Change the URL path if workflow details are updated (e.g. tab click)
-		updatePath();
-	});
+	$scope.cancelEdit = function(){
+		if ($scope.workflow.isLoaded){
+			$scope.activity = angular.extend(Object.create($scope.record), $scope.originalActivity);
+			$scope.workflow.path.mode = 'view';
+			return;
+		}
+		console.warn('Cannot cancel - member record was never loaded');
+	};
+	
 	
 	// Read the url
-	// get rid of any leading slash
-	var path = $location.path();
-	var pathFrags = (path.indexOf('/') === 0 ? path.substring(1) : path).split('/');		
-	if (pathFrags.length > 0 && pathFrags[0].length > 0){
-		$scope.workflow.isActivityRequested = true;
-		$scope.workflow.path.id = pathFrags[0];
-		$scope.workflow.path.mode = pathFrags[1] ? pathFrags[1] : 'view';
-		$scope.workflow.path.tab = pathFrags[2] ? pathFrags[2] : 'details';
+	if (veController.loadWorkflowPath()){
 		retrieveActivity();
 	}
     
@@ -47,9 +55,6 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 		if (response.data.types){
 			$scope.formData.activityTypes = response.data.types;
 		}
-        if (response.data.presets){
-			$scope.formData.namePresets = response.data.presets;
-		}
 	});
     
 
@@ -57,7 +62,7 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 	// Save-your-change niceties
 	window.onbeforeunload = function(event){
 		if ($scope.workflow.isEdit()){
-			var message = 'You are editing this member record, and will lose any unsaved changes.';
+			var message = 'You are editing this activity record, and will lose any unsaved changes.';
 			return message;
 		}
 	};
@@ -66,15 +71,23 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 	});
     
     
+    
+    // ================
+    // Filling in dummy data
+    
+    $scope.activityRollStats = {
+        Total: 20,
+        Unmarked: 17,
+        Leave: 2,
+        Sick: 1
+    };
+    
+    
+    
+    
     // ====================
     // Function decs
 
-    function updatePath(){
-		var swp = $scope.workflow.path;
-		if (swp.id){
-			$location.path([swp.id, swp.mode, swp.tab].join('/'));
-		}
-	};
     function retrieveActivity(){
 		if ($scope.workflow.path.id){
 			flaresAPI.activity.get([$scope.workflow.path.id]).then(function(response){
@@ -82,9 +95,9 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 				processActivityRecord(response.data);
 				$scope.workflow.isActivityLoaded = true;
 				
-				// activate the correct tab
-				$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
-				
+                // Load the roll stats
+                
+                
 			}, function(response){
 				if (response.status == 404){
 					$scope.activity.errorNotFound = true;
@@ -95,25 +108,45 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 			});
 		}
 		else {
-			console.warn('Member ID not specified');
+			console.warn('Activity ID not specified');
 		}
-	};
+	}
     function processActivityRecord(activity){
-		// Convert dates to JS objects
-		angular.forEach(['start_date', 'end_date', 'created_at', 'updated_at'], function(datePropKey){
-			if (this[datePropKey]){
-				var timestamp = Date.parse(this[datePropKey]);
-				if (!isNaN(timestamp)){
-					this[datePropKey] = new Date(this[datePropKey]);
-				}
-				else {
-					this[datePropKey] = null;
-				}
-			}
-		}, activity);
-		
+        veController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
 		$scope.activity = activity;
-		$scope.originalActivity = angular.extend({}, activity);
-	};
+		$scope.originalActivity = angular.extend(Object.create($scope.record), activity);
+	}
+    function updateActivityRecord(){
+		var hasChanges = false;
+		var payload = {
+			activity: {}
+		};	
+		angular.forEach($scope.activity, function(value, key){
+			if ($scope.originalActivity[key] !== value){
+				// Value has changed
+				hasChanges = true;
+				payload.activity[key] = value;
+			}
+		});
+		if (hasChanges){
+			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
+			flaresAPI.activity.patch([$scope.activity.acty_id], payload).then(function(response){
+				console.log('Save successful');
+				$scope.originalActivity = angular.extend(Object.create($scope.originalRecord), $scope.activity);
+				
+			}, function(response){
+				// Save failed. Why?
+				alert('Warning: Couldn\'t save this record. Check your internet connection?');
+				console.warn('Error: record update', response);
+			});
+		}
+	}
+    function retrieveActivityNominalRoll(){
+        if ($scope.activity.acty_id){
+            flaresAPI.activity.get([$scope.activity.acty_id, 'roll']).then(function(){
+                
+            });
+        }
+    }
     
 });

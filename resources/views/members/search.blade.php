@@ -86,7 +86,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}" launch-contextmenu="@{{result.regt_num}}">
+			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}"  ng-click="selectMember(result)">
 				<td>@{{result.regt_num}}</td>
 				<td>@{{result.last_name}}</td>
 				<td>@{{result.first_name}}</td>
@@ -101,6 +101,7 @@
 @endsection
 
 @section('memberSearchModal')
+{{-- This blade template section is no longer used --}}
 <div class="modal" id="memberSearchContextMenu" tabindex="-1" role="dialog" aria-labelledby="activeMemberTitle">
 	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
@@ -125,7 +126,6 @@
 
 @section('content')
 	@yield('memberSearch')
-	@yield('memberSearchModal')
 @endsection
 
 

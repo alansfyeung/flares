@@ -49,7 +49,10 @@
 	
 	Route::group(['as' => 'activities::'], function(){
 		Route::get('activities', function(){		// dashboard-like overview for all activities
-			return view('activities.overview');
+			return view('activities.activityOverview');
+		});
+        Route::get('activities/search', function(){		// dedicated search screen with omni bar
+			return view('activities.activitySearch');
 		});
 		Route::get('activities/awol', function(){		// All activities AWOL dashboard
 			return view('activities.awol');

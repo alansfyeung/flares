@@ -1,9 +1,9 @@
-{{-- Activities overview --}}
+{{-- Activity Search --}}
 @extends('master')
 
-@section('ng-app', 'flaresActivityOverview')
-@section('ng-controller', 'memberController')
-@section('title', 'Activities Overview')
+@section('ng-app', 'flaresActivitySearch')
+@section('ng-controller', 'activitySearchController')
+@section('title', 'Search activities')
 
 
 @section('heading')
@@ -11,7 +11,7 @@
     <aside class="title-actions pull-right">
         <a href="/activities/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new</a>
     </aside>
-	<h1>Overview</h1>
+	<h1>Search</h1>
 </div>
 @endsection
 
@@ -39,5 +39,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/activity/flaresActivityOverview.js"></script>
+<script src="/app/components/activity/flaresActivitySearch.js"></script>
 @endsection

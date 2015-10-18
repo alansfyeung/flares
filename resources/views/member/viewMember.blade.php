@@ -2,7 +2,7 @@
 @extends('master')
 
 @section('ng-app', 'flaresMemberViewEdit')
-@section('ng-controller', 'memberController')
+@section('ng-controller', 'memberViewEditController')
 @section('title', 'Member View')
 
 @section('heading')
@@ -21,7 +21,7 @@
 
 @section('alerts')
 <!-- Loading failure warnings -->
-<div class="alert alert-info" ng-cloak ng-show="!workflow.isMemberRequested">
+<div class="alert alert-info" ng-cloak ng-show="!workflow.isRequested">
 	<strong>No Member ID specified:</strong> Please go back and request the member record again
 </div>
 <div class="alert alert-warning" ng-cloak ng-show="member.errorNotFound">
@@ -32,7 +32,7 @@
 </div>
 
 <!-- Inactive and discharged warnings -->
-<div class="alert alert-danger" ng-cloak ng-if="workflow.isMemberLoaded && !member.is_active">
+<div class="alert alert-danger" ng-cloak ng-if="workflow.isLoaded && !member.is_active">
 	<h4>Incomplete Member Record</h4>
 	<p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
 	<p>
@@ -40,7 +40,7 @@
 		<button type="button" class="btn btn-default" ng-click="activate()" ng-disabled="workflow.isAsync">Activate member</button>
 	</p>
 </div>
-<div class="alert alert-warning" ng-cloak ng-if="workflow.isMemberLoaded && member.deleted_at">
+<div class="alert alert-warning" ng-cloak ng-if="workflow.isLoaded && member.deleted_at">
 	<h4>Discharged Member</h4>
 	<p>This member has been discharged so this record cannot be edited.</p>
 </div>
@@ -48,7 +48,7 @@
 
 
 @section('dischargeDisplay')
-<div ng-show="member.regt_num && workflow.isDischarge()">
+<div ng-show="member.regt_num && workflow.isDischarge()" ng-cloak>
 	<div class="row">
 		<form class="form-horizontal col-sm-6">
 			<h3>Discharge member</h3>
@@ -225,11 +225,11 @@
 					
 						<div class="row">
 							<div class="col-sm-6">
-								<h3>Activity Details</h3>
+								<h3>Member Details</h3>
 								<table class="table record-view">
 									<tr>
-										<td>Name</td>
-										<td display-mode="view">@{{activity.last_name | markBlanks}}</td>
+										<td>Surname</td>
+										<td display-mode="view">@{{member.last_name | markBlanks}}</td>
 										<td display-mode="edit"><input type="text" ng-model="member.last_name"></td>
 									</tr>
 									<tr>

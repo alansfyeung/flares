@@ -40,6 +40,7 @@
  
 /* ==============*/
 /* Dashboard */
+
 .dashboard-stat {
 	text-align: center;
 }
@@ -55,6 +56,7 @@
  
 /* =======================*/
 /* View/Edit Member Screen*/
+
 .member-quickstatus {
 	border-bottom: 1px dashed #ddd;
 	margin-bottom: 20px;
@@ -110,7 +112,8 @@
 
 
 /* =======================*/
-/* Member onboarding scren */
+/* Member onboarding screen */
+
 .memberadd-spreadsheet {
 	border-collapse: collapse;
 	width: 100%;
@@ -144,6 +147,35 @@ select.ng-dirty.ng-invalid,
 }
 
 
+/* =======================*/
+/* Activity overview screen */
+
+.activity-colorcode {
+    position: relative;
+    padding: 20px;
+    padding-left: 40px;
+    font-size: 1.25em;
+}
+.activity-colorcode::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    background-color: #bbb;
+}
+.activity-colorcode.success::before {
+    background-color: green;
+}
+.activity-colorcode.warning::before {
+    background-color: orange;
+}
+.activity-colorcode.danger::before {
+    background-color: red;
+}
 
 
 a[ng-click] {

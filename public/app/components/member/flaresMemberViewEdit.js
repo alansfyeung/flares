@@ -1,34 +1,11 @@
 var flaresApp = angular.module('flaresMemberViewEdit', ['flaresBase', 'flow']);
 
-flaresApp.controller('memberController', function($scope, $http, $location, flaresAPI){
-	
-	$scope.member = {};
-	$scope.originalMember = {};
-	
-	$scope.dischargeContext = {		// viewmodel for the discharge screen
-		effectiveDate: new Date(),
-		isCustomRank: false,
-		dischargeRank: 'REC'
-	};
-	$scope.formData = {
-		sexes: ['M','F']
-	}
-	$scope.workflow = {
-		path: {
-			id: 0,
-			mode: 'view',		// by default
-			tab: 'details'
-		},
-		isMemberRequested: false,
-		isMemberLoaded: false,
-		isAsync: false
-	};
-	$scope.workflow.isView = function(){
-		return this.path.mode === 'view';
-	};
-	$scope.workflow.isEdit = function(){
-		return this.path.mode === 'edit';
-	};
+flaresApp.controller('memberViewEditController', function($scope, $location, $controller, flaresAPI){
+    
+    // Add some base 
+    var veController = this;
+    angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
+	$scope.workflow = Object.create(veController.workflow);        // inherit the proto
 	$scope.workflow.isDischarge = function(){
 		return this.path.mode === 'discharge';
 	};
@@ -38,6 +15,18 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 	$scope.workflow.toggleMode = function(){
 		this.path.mode = this.isView() ? 'edit' : 'view';
 	};
+    
+	$scope.member = Object.create($scope.record);
+	$scope.originalMember = Object.create($scope.originalRecord);
+	
+	$scope.dischargeContext = {		// viewmodel for the discharge screen
+		effectiveDate: new Date(),
+		isCustomRank: false,
+		dischargeRank: 'REC'
+	};
+	$scope.formData = {
+		sexes: ['M','F']
+	}
 	
 	$scope.edit = function(){
 		var sw = $scope.workflow;
@@ -54,8 +43,8 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 		}
 	};
 	$scope.cancelEdit = function(){
-		if ($scope.workflow.isMemberLoaded){
-			$scope.member = angular.extend({}, $scope.originalMember);
+		if ($scope.workflow.isLoaded){
+			$scope.member = angular.extend(Object.create($scope.record), $scope.originalMember);
 			$scope.workflow.path.mode = 'view';
 			return;
 		}
@@ -151,23 +140,10 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 	};
 	
 	
-	$scope.$watchCollection('workflow.path', function(){
-		// Change the URL path if workflow details are updated (e.g. tab click)
-		updatePath();
-	});
-	
 	// Read the url
-	// get rid of any leading slash
-	var path = $location.path();
-	var pathFrags = (path.indexOf('/') === 0 ? path.substring(1) : path).split('/');		
-	if (pathFrags.length > 0 && pathFrags[0].length > 0){
-		$scope.workflow.isMemberRequested = true;
-		$scope.workflow.path.id = pathFrags[0];
-		$scope.workflow.path.mode = pathFrags[1] ? pathFrags[1] : 'view';
-		$scope.workflow.path.tab = pathFrags[2] ? pathFrags[2] : 'details';
-		retrieveMember();
-	}
-	
+    if (veController.loadWorkflowPath()){
+        retrieveMember();
+    }
 	
 	//==================
 	// Fetch reference data for platoons and ranks
@@ -205,9 +181,6 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 				processMemberRecord(response.data);
 				$scope.workflow.isMemberLoaded = true;
 				
-				// activate the correct tab
-				$("[bs-show-tab][aria-controls='" + $scope.workflow.path.tab + "']").tab('show');
-				
 			}, function(response){
 				if (response.status == 404){
 					$scope.member.errorNotFound = true;
@@ -222,21 +195,9 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 		}
 	};
 	function processMemberRecord(member){
-		// Convert dates to JS objects
-		angular.forEach(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], function(datePropKey){
-			if (this[datePropKey]){
-				var timestamp = Date.parse(this[datePropKey]);
-				if (!isNaN(timestamp)){
-					this[datePropKey] = new Date(this[datePropKey]);
-				}
-				else {
-					this[datePropKey] = null;
-				}
-			}	
-		}, member);
-		
+        veController.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
 		$scope.member = member;
-		$scope.originalMember = angular.extend({}, member);
+		$scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
 	};
 	function updateMemberRecord(){
 		var hasChanges = false;
@@ -254,7 +215,7 @@ flaresApp.controller('memberController', function($scope, $http, $location, flar
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
 			flaresAPI.member.patch([$scope.member.regt_num], payload).then(function(response){
 				console.log('Save successful');
-				$scope.originalMember = angular.extend({}, $scope.member);
+				$scope.originalMember = angular.extend(Object.create($scope.originalRecord), $scope.member);
 				
 			}, function(response){
 				// Save failed. Why?
@@ -367,7 +328,7 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 			reloadMemberImage();
 			// Update the uploader destination
 			$scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
-			console.log('Updated uploader target', $scope.$flow.opts.target);
+			// console.log('Updated uploader target', $scope.$flow.opts.target);
 		}
 	});
 	
@@ -402,26 +363,6 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 // ==========================================
 // Specific directives for View/Edit screens
 
-flaresApp.directive('displayMode', function(){
-	return { 
-		restrict: 'A',
-		link: function (scope, element, attr) {
-			var expr = 'workflow.path.mode';
-			// console.log('directiving', scope.$eval(expr));
-			if (scope.$eval(expr) !== attr.displayMode){
-				element.hide();
-			}
-			
-			scope.$watch(expr, function(newValue){
-				if (newValue !== attr.displayMode){
-					element.hide();
-					return;
-				}
-				element.show();
-			});
-		}
-	};
-});
 flaresApp.directive('memberStatus', function(){
 	return {
 		link: function(scope, element, attr){
