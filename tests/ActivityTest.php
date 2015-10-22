@@ -89,13 +89,13 @@ class ActivityTest extends TestCase
 		$this->assertEquals(200, $response->status(), 'GET for roll was not 200 OK');
 		
 		$roll = json_decode($response->content(), true);
-		$this->assertEquals(count($attRecords), count($roll), 'Unexpected (different) number of att records');
+		$this->assertEquals(count($attRecords), $roll['count'], 'Unexpected (different) number of att records');
 		
 		$this->assertTrue(is_array($roll));
 		$overallFound = true;
 		foreach ($attRecords as $localAtt){
 			$localAttFound = false;
-			foreach ($roll as $serverReturnedAtt){
+			foreach ($roll['roll'] as $serverReturnedAtt){
 				if ($serverReturnedAtt['att_id'] == $localAtt['att_id']){
 					$localAttFound = true;
 					break;
@@ -270,7 +270,7 @@ class ActivityTest extends TestCase
 		
 		$this->delete("/api/activity/$activityId");
 		$response = $this->call('GET', "/api/activity/$activityId");
-		$this->assertEquals(404, $response->status());
+		$this->assertEquals(404, $response->status(), 'Could not retrieve activity details after update');
 	}
 	
 	/** 

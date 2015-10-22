@@ -33,8 +33,17 @@ class AttendanceController extends Controller
 				}
 			}
 		});
+        
+        $atts->each(function($item){
+            // bind extra info
+            $isBlank = ($item->recorded_value === '0' || $item->recorded_value === 0);
+            $item->is_blank = $isBlank;
+        });
 		
-		return response()->json($atts->toArray());
+		return response()->json([
+            'count' => $atts->count(),
+            'roll' => $atts->toArray()
+        ]);
     }
 	
 	/**
@@ -59,8 +68,7 @@ class AttendanceController extends Controller
 		return response()->json([
 			'count' => $atts->count(),
 			'awol' => $atts->toArray()
-		]
-		);
+		]);
     }
 
     /**
@@ -72,7 +80,6 @@ class AttendanceController extends Controller
     public function store(Request $request, $activityId)
     {
 		$recordIds = [];
-		$error = [];
 		
         // Check for multiple attendance objects in the payload
 		// Input payload must contain an array, even for POSTing single objects
@@ -87,6 +94,9 @@ class AttendanceController extends Controller
 					$recordIds[] = $att->att_id;
 				}
 				DB::commit();
+                return response()->json([
+                    'recordId' => $recordIds
+                ]);
 			}
 			catch (\Exception $ex){
 				$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
@@ -98,16 +108,9 @@ class AttendanceController extends Controller
 			$error = ['code' => 'NO_POSTDATA', 'reason' => 'The post data was provided in the wrong format'];
 		}
 		
-		if ($error){
-			return response()->json([
-				'error' => $error
-			]);
-		}
-		else {
-			return response()->json([
-				'recordId' => $recordIds
-			]);			
-		}
+        return response()->json([
+            'error' => $error
+        ], 400);
     }
 
     /**
@@ -154,7 +157,6 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, $activityId, $attId)
     {
-		$error = [];
 		$oldId = 0;
 		$newId = 0;
 
@@ -253,18 +255,19 @@ class AttendanceController extends Controller
 				}
 					
 			}
+            
+            return response()->json([
+                'attId' => $attId,
+                'requested' => $requestedAtt,
+                'oldRecordId' => $oldId,
+                'recordId' => $newId
+            ]);
 		}
 		catch (\Exception $ex){
-			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+            return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 400);
 		}
-		
-		return response()->json([
-			'attId' => $attId,
-			'requested' => $requestedAtt,
-			'oldRecordId' => $oldId,
-			'recordId' => $newId,
-			'error' => $error
-		]);
     }
 
     /**
@@ -276,22 +279,22 @@ class AttendanceController extends Controller
     public function destroy($activityId, $attId)
     {
 		$deleted = false;
-		$error = [];
 		
         $activity = Activity::findOrFail($activityId);
 		$att = Activity::attendances()->firstOrFail($attId);
 		if ($att->recorded_value != '0'){
 			$deleted = $att->delete();
+            return response()->json([
+                'success' => $deleted
+            ]);
 		}
 		else {
 			// Don't delete
-			$error = ['code' => self::ERR_DB_PERSIST, 'reason' => 'Did not save recorded_value to database'];
+            return response()->json([
+                'error' => ['code' => self::ERR_DB_PERSIST, 'reason' => 'Did not save recorded_value to database']
+            ]);
 		}
 		
-		return response()->json([
-			'success' => $deleted,
-			'error' => $error
-		]);
     }
 	
 	

@@ -24,6 +24,7 @@
     color: white;
 }
 .page-header h1 {
+    font-size: 1.75em;
     font-weight: normal;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -32,10 +33,10 @@
     color: #CCC;
 }
 .page-header .title-actions {
-    margin: 20px 0 20px 20px;
+    margin: 15px;
 }
 .page-header .title-actions.pull-right {
-    margin-left: 0;
+    margin-right: 0px;
 }
  
 /* ==============*/
@@ -154,7 +155,6 @@ select.ng-dirty.ng-invalid,
     position: relative;
     padding: 20px;
     padding-left: 40px;
-    font-size: 1.25em;
 }
 .activity-colorcode::before {
     content: '';
@@ -175,6 +175,13 @@ select.ng-dirty.ng-invalid,
 }
 .activity-colorcode.danger::before {
     background-color: red;
+}
+.activity-colorcode .activity-fullname {
+    font-size: 1.25em;
+}
+
+.activity-rollselector {
+	
 }
 
 

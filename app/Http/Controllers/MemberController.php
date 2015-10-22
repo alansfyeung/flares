@@ -11,6 +11,12 @@ use App\Http\Controllers\Controller;
 
 class MemberController extends MemberControllerBase
 {
+    const ERR_POSTDATA_MISSING = 4001;
+	const ERR_POSTDATA_FORMAT = 4002;
+	const ERR_EX = 5000;
+	const ERR_DB_PERSIST = 5001;
+	const ERR_REGT_NUM = 5002;
+    
     /**
      * Display a listing of the resource.
      *
@@ -46,8 +52,9 @@ class MemberController extends MemberControllerBase
 		}
 		
 		// return var_dump($input);
-		$res = $query->get();
-		return response()->json($res);
+		return response()->json([
+            'members' => $query->get()
+        ]);
     }
 
     /**
@@ -60,7 +67,6 @@ class MemberController extends MemberControllerBase
 	{
 		$recordId = 0;
 		$initialPostingId = 0;
-		$error = [];
 		
 		// Deal with the context data
 		$context = $this->getContextDefaults();
@@ -116,33 +122,32 @@ class MemberController extends MemberControllerBase
 							// 'valueExpected' => $newRegtNum, 
 							// 'valueActual' => $newMember->regt_num, 
 							// 'reason' => 'Looks like the database rejected this regt num'];
-						throw new \Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", 'REGT_NUM_ERROR');
+						throw new \Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", ERR_REGT_NUM);
 					}
 					
 				}
 				else {
-					throw new Exception('Could not generate a regt num', 'REGT_NUM_ERROR');
+					throw new Exception('Could not generate a regt num', ERR_REGT_NUM);
 				}
-				
+                
+                DB::commit();
+                return response()->json([
+                    'recordId' => $recordId,
+                    'initialPostingId' => $initialPostingId
+                ]);
 			}
 			catch (\Exception $ex){
 				DB::rollBack();
-				$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
-			}	
-			DB::commit();
-	
-			if ($error){
-				return response()->json(['error' => $error], 403);
+                return response()->json([
+                    'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+                ], 500);
+                
 			}
-			
-			return response()->json([
-				'recordId' => $recordId,
-				'initialPostingId' => $initialPostingId,
-				'error' => $error
-			]);
 		}
 		
-		return abort(400);
+        return response()->json([
+            'error' => ['code' => ERR_POSTDATA_MISSING, 'reason' => 'Member postdata missing']
+        ], 400);
     }
 
     /**
@@ -158,19 +163,25 @@ class MemberController extends MemberControllerBase
 		$detailLevel = $request->input('detail', 'low');
 		
 		// Todo: Add $detailLevel == med
-		
-		if ($detailLevel == 'high'){	
-			// Todo: to add more "eager loaded" relationshions, add extra args to Member::with()
-			$member = Member::with('postings')->where('regt_num', $id)->withTrashed()->firstOrFail();
-			return response()->json($member->toArray());
-		}
-		else {
-			//  when $detailLevel == low
-			$member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
-			return response()->json($member->toArray()); 
-		}
-		
-		return abort(400);		// Probably a _terribly_ bad request
+		try {
+            if ($detailLevel == 'high'){	
+                // Todo: to add more "eager loaded" relationshions, add extra args to Member::with()
+                $member = Member::with('postings')->where('regt_num', $id)->withTrashed()->firstOrFail();
+            }
+            else {
+                //  when $detailLevel == low
+                $member = Member::where('regt_num', $id)->withTrashed()->firstOrFail();
+            }
+            return response()->json([
+                'member' => $member->toArray()
+            ]);
+        }
+        catch (\Exception $ex){
+            return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 404);
+        }
+    
     }
 
 
@@ -183,9 +194,7 @@ class MemberController extends MemberControllerBase
      */
     public function update(Request $request, $id)
 	{
-        // $postData = $request->all();
 		$updated = 0;
-		$error = [];
 		
 		// if (is_array($postData) && array_key_exists('member', $postData)){
 		try {
@@ -196,16 +205,16 @@ class MemberController extends MemberControllerBase
 			else {
 				throw new \Exception('No member value in post data', 'POSTDATA_ERROR');
 			}
+			return response()->json([
+                'recordId' => $updated
+            ]);
 		}
 		catch (\Exception $ex){
-			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+            return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 400);
 		}
 		
-		if ($updated){
-			return response()->json(['recordId' => $updated]);
-		}
-		
-		return response()->json(['error' => $error], 400);
     }
 
     /**
@@ -220,7 +229,6 @@ class MemberController extends MemberControllerBase
 		// remove -- [ discharge | permanent ]
 		$removeMode = $request->query('remove', 'discharge');
 		$deleted = 0;
-		$error = [];
 		
 		try {
 			if ($removeMode == 'permanent'){
@@ -241,27 +249,24 @@ class MemberController extends MemberControllerBase
 				// Soft delete -- read overrides from context
 				$deleted = Member::findOrFail($id)->delete();
 			}
-		}
-		catch (\Exception $ex){
-			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
-		}
-		
-		if (!$deleted){
-			return response()->json([
-				'error' => ['code' => 'DELETION_ERROR', 'deletionResult' => print_r($deleted, true), 'reason' => "Could not delete this record $id"]
-			], 401);
-		}
-		elseif ($error){
-			return response()->json(['error' => $error], 403);
-		}
-		else {
-			return response()->json([
+            
+            return response()->json([
 				'success' => $deleted,
 				'deletionMode' => $removeMode,
 			]);
 		}
-		
-		return abort(400);		// $request should've been an array of arrays..        
+		catch (\Exception $ex){
+            if (!$deleted){
+                return response()->json([
+                    'error' => ['code' => 'DELETION_ERROR', 'deletionResult' => print_r($deleted, true), 'reason' => "Could not delete this record $id"]
+                ], 401);
+            }
+            else {
+                return response()->json([
+                    'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+                ], 403);
+            }
+		}
     }
 	
 }

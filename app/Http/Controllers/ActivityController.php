@@ -23,7 +23,10 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        return response()->json(Activity::select()->orderBy('created_at', 'desc')->get()->toArray());
+        $activities = Activity::select()->orderBy('created_at', 'desc')->get();
+        return response()->json([
+            'activities' => $activities->toArray()
+        ]);
     }
 
     /**
@@ -35,7 +38,6 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
 		$recordId = 0;
-		$error = [];
 		
 		if ($request->has('activity')){
 			$postDataActivity = $request->input('activity', []);
@@ -44,17 +46,20 @@ class ActivityController extends Controller
 				$recordId = $activity->acty_id;
 			} 
 			catch (\Exception $ex){
-				$error = ['code' => self::ERR_EX, 'reason' => $ex->getMessage()];
+				return response()->json([
+                    'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+                ]);
 			}
 		} 
 		else {
-			$error = ['code' => self::ERR_POSTDATA_FORMAT, 'reason' => 'Post data not provided in required format'];
+			return response()->json([
+                'error' => ['code' => self::ERR_POSTDATA_FORMAT, 'reason' => 'Post data not provided in required format']
+            ], 400);
 		}
 		
 		return response()->json([
-			'recordId' => $recordId,
-			'error' => $error
-		]);
+			'recordId' => $recordId
+        ]);
     }
 
     /**
@@ -67,15 +72,22 @@ class ActivityController extends Controller
     {
 		// detail -- [ high | med | low ]
 		$detailLevel = $request->input('detail', 'low');
-		if ($detailLevel == 'high'){	
-			$activity = Activity::with('attendances')->firstOrFail($id);
-		}
-		else {
-			$activity = Activity::findOrFail($id);
-			return response()->json($activity->toArray());
-		}
-		
-		return abort(400);		// Probably a bad request		
+        try {
+            if ($detailLevel == 'high'){	
+                $activity = Activity::with('attendances')->firstOrFail($id);
+            }
+            else {
+                $activity = Activity::findOrFail($id);
+            }
+            return response()->json([
+                'activity' => $activity->toArray()
+            ]);
+        }
+        catch (\Exception $ex){
+            return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 404);
+        }
     }
 
     /**
@@ -98,18 +110,15 @@ class ActivityController extends Controller
 			else {
 				throw new \Exception('No activity values in post data', self::ERR_POSTDATA_MISSING);
 			}
+            return response()->json([
+                'recordId' => $updated
+            ]);            
 		}
 		catch (\Exception $ex){
-			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+			return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 500);
 		}
-		
-		if ($error){
-			return response()->json(['error' => $error]);
-		}
-		
-		return response()->json([
-			'recordId' => $updated
-		]);
     }
 
     /**
@@ -121,7 +130,6 @@ class ActivityController extends Controller
     public function destroy($id)
     {
 		$deleted = 0;
-		$error = [];
 		
 		try {
 			$activity = Activity::findOrFail($id);
@@ -131,17 +139,13 @@ class ActivityController extends Controller
 			else {
 				$deleted = $activity->delete();
 			}
+            return response()->json(['success' => $deleted]);
 		}
 		catch (\Exception $ex){
-			$error = ['code' => $ex->getCode(), 'reason' => $ex->getMessage()];
+			return response()->json([
+                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+            ], 403);
 		}
-		
-		if ($error){
-			return response()->json(['error' => $error], 403);
-		}
-		
-		return response()->json(['success' => $deleted]);
     }
-	
 	
 }

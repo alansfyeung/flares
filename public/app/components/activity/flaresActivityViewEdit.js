@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
-flaresApp.controller('activityViewEditController', function($scope, $http, $location, $controller, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityViewEditController', function($scope, $location, $controller, flaresAPI, flaresLinkBuilder){
     
     // Add some base 
     var veController = this;
@@ -83,8 +83,6 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
     };
     
     
-    
-    
     // ====================
     // Function decs
 
@@ -141,12 +139,73 @@ flaresApp.controller('activityViewEditController', function($scope, $http, $loca
 			});
 		}
 	}
+});
+
+flaresApp.controller('rollBuilderController', function($scope, flaresAPI){
+	
+    $scope.memberList = []; 
+    $scope.formData = {};
+    
+    
+    retrieveRefData();
+    retrieveMembers();
+    
+    $scope.$watch('$parent.activity.acty_id', function(){
+    	retrieveActivityNominalRoll();
+    });
+    
+
+    
+    // ======================
+    // Function decs
+
+    function retrieveRefData(){
+        flaresAPI.refData.getAll().then(function(response){
+            if (response.data.platoons){
+                $scope.formData.platoons = response.data.platoons;
+                $scope.formData.platoons.unshift({abbr: '', name: 'Any platoon'});
+            }
+            if (response.data.ranks){
+                $scope.formData.ranks = response.data.ranks;
+                $scope.formData.ranks.unshift({abbr: '', name: 'Any rank'});
+            }
+        });
+    }
+    
+    function retrieveMembers(){
+        flaresAPI.member.getAll().then(function(response){
+            if (typeof response.data === 'object'){
+                $scope.memberList = {
+                    isRoll: false,                // is it on the roll? 
+                    isRollBlank: false,         // If this record can be deleted. blank = deletable
+                    data: response.data
+                };
+            }
+        });
+    }
+    
     function retrieveActivityNominalRoll(){
-        if ($scope.activity.acty_id){
-            flaresAPI.activity.get([$scope.activity.acty_id, 'roll']).then(function(){
-                
+        if ($scope.$parent.activity.acty_id){
+            flaresAPI.activity.get([$scope.$parent.activity.acty_id, 'roll']).then(function(response){
+                if (typeof response.data.roll === 'object'){
+                    mapToMemberList(response.data);
+                }
+                console.log(response);
             });
         }
     }
     
+    function mapToMemberList(roll){
+        // For each roll entry, find the corresponding member
+        for (var x in roll){
+            for (var i in $scope.members){
+                if (members[i].data.regt_num === roll[x].regt_num){
+                    members[i].isRoll = true;
+                    members[i].isRollBlank = roll[x].is_deletable;
+                    break;
+                }
+            }
+        }
+    }
+
 });

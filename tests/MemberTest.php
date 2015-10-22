@@ -64,7 +64,7 @@ class MemberTest extends TestCase
 			'member' => $member
 		];
 		
-		$resp = $this->call('PUT', "/api/member/$memberId", $payload);
+		$resp = $this->call('PUT', "/api/member/$memberId", $payload);        
 		$this->assertEquals(200, $resp->status());
 		
 		$this->get("/api/member/$memberId")
@@ -310,10 +310,16 @@ class MemberTest extends TestCase
 			'context' => array_merge($overrideSettings, $overrides),
 			'member' => $member
 		];
+        
 		
 		$response = $this->call('POST', '/api/member', $payload);
 		$jsonResponse = json_decode($response->content());
+
+        if (property_exists($jsonResponse, 'error')){
+            $this->fail('Cannot persist member: '.$jsonResponse->error->reason);
+        }
+        
 		return $jsonResponse->recordId;
 	}
-	
+    
 }

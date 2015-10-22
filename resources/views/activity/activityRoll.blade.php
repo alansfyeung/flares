@@ -1,10 +1,9 @@
-{{-- Activities View existing --}}
+{{-- Roll for an activity --}} 
 @extends('master')
 
-@section('ng-app', 'flaresActivityView')
-@section('ng-controller', 'activityViewEditController')
-@section('title', 'View Activity')
-
+@section('ng-app', 'flaresActivityRollView')
+@section('ng-controller', 'activityRollController')
+@section('title', 'Activity roll')
 
 @section('heading')
 <!-- page main header -->
@@ -84,9 +83,6 @@
                                     <td display-mode="edit"><input type="date" ng-model="activity.end_date"></td>
                                 </tr>
                             </table>
-                            
-                        </div>
-                        <div class="col-sm-6">
                             <h3>Status</h3>
                             <table class="table record-view">
                                 <tr>
@@ -105,8 +101,8 @@
                                     <td display-mode="edit"><input type="checkbox" ng-model="activity.is_parade_night" ng-true-value="1" ng-false-value="0"></td>
                                 </tr>
                             </table>
-                            
-                            {{--
+                        </div>
+                        <div class="col-sm-6">
                             <h3>Nominal roll</h3>
                             <div class="well">
                                 <div class="row">
@@ -118,26 +114,13 @@
                                     </div>
                                 </div>
                             </div>
-                            --}}
                         </div>
                     </div>
                 </section>
             </div>
-            <div role="tabpanel" id="rollbuilder" class="tab-pane">
+            <div role="tabpanel" id="rollbuilder" class="tab-pane active">
                 <section ng-controller="rollBuilderController">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="activity-rollselector">
-                                <table class="table table-striped">
-                                    <tbody>
-                                        <tr ng-repeat="member in members">
-                                            <td><input type="checkbox" ng-model="rollEntry." ng-true-value="1" ng-false-value="0"/></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                
                 </section>
             </div>
         </div>

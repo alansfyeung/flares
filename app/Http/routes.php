@@ -74,40 +74,40 @@
 	/* 
 	 * FLARES Resource Controller ( access via AJAX )
 	 */
-	Route::group(['as' => 'res::'], function(){
+	Route::group(['prefix' => 'api'], function(){
 	
 		// Dashboard API
-		Route::resource('api/dashboard', 'DashboardController', ['only' => ['index', 'show']]);
+		Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 		
 		// Member API -- note that Search alias route MUST go before the resourceful route
-		Route::get('api/member/search', 'MemberController@index');		// search endpoint (alias of 'index')
-		Route::get('api/member/{memberId}/status', 'MemberController@status');
-		Route::get('api/member/{memberId}/picture', 'MemberPictureController@show');
-		Route::get('api/member/{memberId}/picture/exists', 'MemberPictureController@exists');
-		Route::get('api/member/{memberId}/picture/new', 'MemberPictureController@chunkCheck');
-		Route::post('api/member/{memberId}/picture/new', 'MemberPictureController@store');
-		Route::delete('api/member/{memberId}/picture', 'MemberPictureController@destroy');
-		Route::resource('api/member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-		Route::resource('api/member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
+		Route::get('member/search', 'MemberController@index');		// search endpoint (alias of 'index')
+		Route::get('member/{memberId}/status', 'MemberController@status');
+		Route::get('member/{memberId}/picture', 'MemberPictureController@show');
+		Route::get('member/{memberId}/picture/exists', 'MemberPictureController@exists');
+		Route::get('member/{memberId}/picture/new', 'MemberPictureController@chunkCheck');
+		Route::post('member/{memberId}/picture/new', 'MemberPictureController@store');
+		Route::delete('member/{memberId}/picture', 'MemberPictureController@destroy');
+		Route::resource('member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+		Route::resource('member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
 		
 		// Route::resource('api/member.documents', 'MemberDocumentController');
 		// Route::resource('api/awards', 'AwardsController');
 		// Route::resource('api/systemuser', 'SystemUserController');
 		
 		// Activtity API
-		Route::get('api/activity/search', 'ActivityController@index');		// search endpoint (alias of 'index')
-		Route::get('api/activity/{activityId}/awol', 'AttendanceController@awol');		// Get the AWOLs
-		Route::resource('api/activity', 'ActivityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-		Route::resource('api/activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+		Route::get('activity/search', 'ActivityController@index');		// search endpoint (alias of 'index')
+		Route::get('activity/{activityId}/awol', 'AttendanceController@awol');		// Get the AWOLs
+		Route::resource('activity', 'ActivityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+		Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 		
 		 
 		// Ref data routes
-		Route::get('api/refdata', 'RefDataController@all');
-		Route::get('api/refdata/misc', 'RefDataController@misc');
-		Route::get('api/refdata/platoons', 'RefDataController@platoons');
-		Route::get('api/refdata/ranks', 'RefDataController@ranks');
-		Route::get('api/refdata/postings', 'RefDataController@postings');
-		Route::get('api/refdata/activity', 'RefDataController@activity');
+		Route::get('refdata', 'RefDataController@all');
+		Route::get('refdata/misc', 'RefDataController@misc');
+		Route::get('refdata/platoons', 'RefDataController@platoons');
+		Route::get('refdata/ranks', 'RefDataController@ranks');
+		Route::get('refdata/postings', 'RefDataController@postings');
+		Route::get('refdata/activity', 'RefDataController@activity');
 
 	});
 	 

@@ -83,6 +83,9 @@ flaresBase.factory('flaresLinkBuilder', function() {
     };
     FlaresLinkBuilder.prototype.activity = function(){
         this.url += 'activity';
+        this.roll = function(){
+            this.url += '/roll';
+        };
         return this;
     };
     FlaresLinkBuilder.prototype.anonImage = function(){            // wtf is this, it needs a refactor
