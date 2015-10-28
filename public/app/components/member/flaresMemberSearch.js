@@ -11,55 +11,12 @@ flaresApp.run(function($templateCache){
     <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a></div>');
 });
 
-
-// DEPREC: moving this over to Angular-UI 
-// don't copy this piece.
-flaresApp.directive('launchContextmenu', function(){
-	return { 
-		link: function (scope, element, attr) {
-			element.click(function(e) {
-				e.preventDefault();
-				// Find and set the active member
-				var lookupRegtNum = attr.launchContextmenu;
-				angular.forEach(scope.results, function(result){
-					if (result.regt_num === lookupRegtNum){
-						scope.$apply(function(){
-							scope.activeMember = result;
-							console.log(scope.activeMember);
-							$('#memberSearchContextMenu').on('show.bs.modal', function (event) {
-								var modal = $(this);
-								modal.find('.modal-title').text(scope.activeMember.last_name + ', ' + scope.activeMember.first_name);
-								var $modalMemberStatus = $('<span class="label">');
-								if (scope.activeMember.is_deleted){
-									$modalMemberStatus.addClass('label-warning').text('Discharged');
-								}
-								else if (!scope.activeMember.is_active || scope.activeMember.is_active === '0'){
-									$modalMemberStatus.addClass('label-danger').text('Inactive');
-								}
-								else {
-									$modalMemberStatus.addClass('label-success').text('Active');
-								}
-								modal.find('.modal-subtitle').text(scope.activeMember.regt_num + '  ').append($modalMemberStatus);
-								modal.find('.activemember-view').attr('href', '/member#!/'+scope.activeMember.regt_num+'/view');
-							}).modal();
-						});
-					}
-				});
-			});
-		}
-	};	
-});
-
 flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flaresAPI){
 	$scope.results = [];
 	$scope.activeMember = null;
 	$scope.formData = {
 		ranks: [
-			{ id: '', name: 'Any rank' },
-			{ id: 'REC', name: 'Recruit' },
-			{ id: 'CDT', name: 'Cadet' },
-			{ id: 'CDTLCPL', name: 'Lance Corporal' },
-			{ id: 'CDTCPL', name: 'Corporal' }
+			{ id: '', name: 'Any rank' }
 		]
 	};
 	
@@ -87,7 +44,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 		flaresAPI.member.get(['search'], {
 			params: $scope.searchParams
 		}).then(function(response){
-			$scope.results = response.data;
+			$scope.results = response.data.members;
 			
 			var MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.2425;
 			angular.forEach($scope.results, function(result){

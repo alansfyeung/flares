@@ -24,8 +24,27 @@ class MemberController extends MemberControllerBase
      */
     public function index(Request $request)
 	{
+        $members = Member::with('current_posting', 'current_platoon', 'current_rank')->get();
+        $membersFlat = $members->toArray(); 
+        $this->transformMembersPostingPromo($membersFlat);
 		
-		// discharged -- [ none | include | only ]
+		// TODO: pagination
+		return response()->json([
+            // todo: any other way other than manual transforms?
+            // 'members' => $this->transformMemberPostingPromo($members->all())
+            'members' => $membersFlat
+        ]);
+    }
+    
+    
+    /**
+     * Search the resource by providing a querystring
+     *
+     * @return Response
+     */
+    public function search(Request $request)
+	{
+		// ?discharged -- [ none | include | only ]
 		$withDischarged = $request->query('discharged', 'none');
 		if ($withDischarged == 'include'){
 			$query = Member::withTrashed();

@@ -15,7 +15,7 @@
 		<button class="btn btn-default" ng-show="workflow.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</aside>
 	
-	<h1>@{{member.last_name}}, @{{member.first_name}} &nbsp;<small style="display: inline-block">&diams; @{{member.regt_num}}</small></h1>
+	<h1>Member Service Record</h1>
 </div>
 @endsection
 
@@ -95,6 +95,10 @@
 
 @section('memberDisplay')
 <div ng-show="member.regt_num && !workflow.isDischarge()">
+
+    <section>
+        <h2>@{{member.last_name}}, @{{member.first_name}} <br><small style="display: inline-block">&diams; @{{member.regt_num}}</small></h2>
+    </section>
 
 	<!-- Member quick statuses row -->
 	<section class="member-quickstatus">

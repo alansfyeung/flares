@@ -178,7 +178,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			// $http.get('/api/member/'+$scope.workflow.path.id, {params: {detail: 'high'}}).then(function(response){
 			flaresAPI.member.get([$scope.workflow.path.id], {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
-				processMemberRecord(response.data);
+				processMemberRecord(response.data.member);
 				$scope.workflow.isMemberLoaded = true;
 				
 			}, function(response){

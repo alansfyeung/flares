@@ -41,6 +41,10 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 		}
 		console.warn('Cannot cancel - member record was never loaded');
 	};
+    
+    $scope.delete = function(){
+        deleteActivity();
+    };
 	
 	
 	// Read the url
@@ -90,12 +94,13 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 		if ($scope.workflow.path.id){
 			flaresAPI.activity.get([$scope.workflow.path.id]).then(function(response){
 				// Process then store in VM
-				processActivityRecord(response.data);
-				$scope.workflow.isActivityLoaded = true;
-				
-                // Load the roll stats
-                
-                
+                if (response.data.activity){
+                    processActivityRecord(response.data.activity);
+                    $scope.workflow.isActivityLoaded = true;
+                }
+                else {
+                    console.warn('Activity data not loaded');
+                }
 			}, function(response){
 				if (response.status == 404){
 					$scope.activity.errorNotFound = true;
@@ -139,20 +144,27 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 			});
 		}
 	}
+    function deleteActivity(){
+        
+    }
 });
 
 flaresApp.controller('rollBuilderController', function($scope, flaresAPI){
 	
+    $scope.roll = []; 
     $scope.memberList = []; 
     $scope.formData = {};
     
+    $scope.toggleRoll = function(member){
+        member.isRoll = !member.isRoll;
+    };
     
     retrieveRefData();
     retrieveMembers();
     
-    $scope.$watch('$parent.activity.acty_id', function(){
-    	retrieveActivityNominalRoll();
-    });
+    // $scope.$watch('$parent.activity.acty_id', function(){
+    	// retrieveActivityNominalRoll();
+    // });
     
 
     
@@ -174,12 +186,16 @@ flaresApp.controller('rollBuilderController', function($scope, flaresAPI){
     
     function retrieveMembers(){
         flaresAPI.member.getAll().then(function(response){
-            if (typeof response.data === 'object'){
-                $scope.memberList = {
-                    isRoll: false,                // is it on the roll? 
-                    isRollBlank: false,         // If this record can be deleted. blank = deletable
-                    data: response.data
-                };
+            if (response.data.members){
+                for (var x in response.data.members){
+                    $scope.memberList.push({
+                        isRoll: false,                // is it on the roll? 
+                        isRollBlank: false,         // If this record can be deleted. blank = deletable
+                        data: response.data.members[x]
+                    });
+                }
+                retrieveActivityNominalRoll();
+                console.log('Finished loading members, num loaded: ' + response.data.members.length);
             }
         });
     }
@@ -187,21 +203,22 @@ flaresApp.controller('rollBuilderController', function($scope, flaresAPI){
     function retrieveActivityNominalRoll(){
         if ($scope.$parent.activity.acty_id){
             flaresAPI.activity.get([$scope.$parent.activity.acty_id, 'roll']).then(function(response){
-                if (typeof response.data.roll === 'object'){
-                    mapToMemberList(response.data);
+                if (response.data.roll){
+                    mapToMemberList($scope.memberList, response.data.roll);
                 }
-                console.log(response);
+                console.log('Mapped to member list');
             });
         }
     }
     
-    function mapToMemberList(roll){
+    function mapToMemberList(members, roll){
         // For each roll entry, find the corresponding member
         for (var x in roll){
-            for (var i in $scope.members){
-                if (members[i].data.regt_num === roll[x].regt_num){
-                    members[i].isRoll = true;
-                    members[i].isRollBlank = roll[x].is_deletable;
+            for (var i in members){
+                var member = members[i];
+                if (member.data.regt_num === roll[x].regt_num){
+                    member.isRoll = true;
+                    member.isRollBlank = roll[x].is_deletable;
                     break;
                 }
             }

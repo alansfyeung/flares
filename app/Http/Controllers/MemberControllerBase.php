@@ -232,7 +232,48 @@ abstract class MemberControllerBase extends Controller
 		return $id;
 	}
 	
-	
+    
+    /**
+     * Transform a flattened list of members
+     *
+     * @param  Array &$members
+     * @return void
+     */ 
+    protected function transformMembersPostingPromo(&$members)
+    {
+        foreach ($members as &$member){
+            // var_dump($member);
+            if (!empty($member['current_posting'])){
+                $member['current_posting'] = [
+                    'effective_date' => $member['current_posting']['effective_date'],
+                    'posting' => $member['current_posting']['new_posting'],
+                    'is_discharge' => $member['current_posting']['is_discharge']
+                ];
+                // $member->current_posting = [
+                    // 'effective_date' => $member->current_posting->effective_date,
+                    // 'posting' => $member->current_posting->new_posting,
+                    // 'is_discharge' => $member->current_posting->is_discharge
+                // ];
+            }
+            if (!empty($member['current_rank'])){
+                $member['current_rank'] = [
+                    'effective_date' => $member['current_rank']['effective_date'],
+                    'rank' => $member['current_rank']['new_rank'],
+                    'is_acting' => $member['current_rank']['is_acting']
+                ];
+            }
+            if (!empty($member['current_platoon'])){
+                $member['current_platoon'] = [
+                    'effective_date' => $member['current_platoon']['effective_date'],
+                    'platoon' => $member['current_platoon']['new_platoon']
+                ];
+            }
+        }
+    }
+
+    
+    
+    
 	protected function generateForumsAccount(){
 		
 	}

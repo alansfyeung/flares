@@ -185,7 +185,7 @@ select.ng-dirty.ng-invalid,
 }
 
 
-a[ng-click] {
+a[ng-click], a[bs-show-tab] {
 	cursor: pointer;
 }
 

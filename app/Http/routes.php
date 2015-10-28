@@ -80,7 +80,7 @@
 		Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 		
 		// Member API -- note that Search alias route MUST go before the resourceful route
-		Route::get('member/search', 'MemberController@index');		// search endpoint (alias of 'index')
+		Route::get('member/search', 'MemberController@search');
 		Route::get('member/{memberId}/status', 'MemberController@status');
 		Route::get('member/{memberId}/picture', 'MemberPictureController@show');
 		Route::get('member/{memberId}/picture/exists', 'MemberPictureController@exists');
@@ -95,7 +95,7 @@
 		// Route::resource('api/systemuser', 'SystemUserController');
 		
 		// Activtity API
-		Route::get('activity/search', 'ActivityController@index');		// search endpoint (alias of 'index')
+		Route::get('activity/search', 'ActivityController@search');
 		Route::get('activity/{activityId}/awol', 'AttendanceController@awol');		// Get the AWOLs
 		Route::resource('activity', 'ActivityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 		Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
