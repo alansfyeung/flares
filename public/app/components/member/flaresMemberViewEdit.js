@@ -1,6 +1,73 @@
 var flaresApp = angular.module('flaresMemberViewEdit', ['flaresBase', 'flow']);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, flaresAPI){
+flaresApp.run(function($templateCache){
+    $templateCache.put('memberDisplayPictureTemplate.html', '<section ng-controller="pictureController" flow-init> \
+        <div class="modal-header"><h4 class="modal-title">Change member display picture</h4></div> \
+            <div class="modal-body"><div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message"> \
+                <div class="thumbnail member-dp-lg" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{\'uploader-drop-zone\': uploader.dropzone, \'uploader-not-ready\': !uploader.ready()}"> \
+                    <img ng-src="{{memberImage.url}}" alt="{{member.last_name}}" class="image-rounded" ng-show="!uploader.uploading"> \
+                    <div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading"> \
+                        <h3 ng-show="file.isUploading()">Uploading</h3> \
+                        <h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3> \
+                        <div class="thumbnail"> \
+                            <img flow-img="file" /> \
+                            <div class="caption">{{file.name}} ({{Math.floor(file.size/1024)}} KB)</div> \
+                        </div> \
+                        <div class="progress progress-striped" ng-class="{active: file.isUploading()}"> \
+                            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + \'%\'}" ng-class="{\'progress-bar-success\': file.isComplete()}"> \
+                            <span class="sr-only">1% Complete</span> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div> \
+            </div> \
+        </div> \
+        <div class="modal-footer" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()"> \
+            <em>Drag and drop, or </em>&nbsp;&nbsp; \
+            <div class="btn-group"> \
+                <span class="btn btn-default" flow-btn>Upload File</span>  \
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> \
+                    <span class="caret"></span> \
+                    <span class="sr-only">Toggle Dropdown</span> \
+                </button> \
+                <ul class="dropdown-menu dropdown-menu-right"> \
+                    <li><a href="{{memberImage.url}}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li> \
+                    <li><a ng-click="deleteLast()"><span class="glyphicon glyphicon-step-backward"></span> Rewind ({{memberImage.count}})</a></li> \
+                    <li><a ng-click="deleteAll()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete all</span></a></li> \
+                </ul> \
+            </div> \
+            <button class="btn btn-default" ng-click="closeModal()">Done</button> \
+        </div> \
+    </section>');
+});
+
+flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
+
+	function imageResizer(fileObj){	// fileObj is an instance of FlowFile
+		console.log(fileObj);
+		console.log('TODO ImageResizer: file size is ' + Math.floor(fileObj.file.size/1024) + ' KB');
+	};
+
+	// $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
+	flowFactoryProvider.defaults = { 
+		headers: {},
+		initFileFn: imageResizer,
+		singleFile: true,
+		allowDuplicateUploads: true,
+	};
+	flowFactoryProvider.defaults.headers[$httpProvider.defaults.xsrfHeaderName] = (function(cookieName){
+		var c = document.cookie.split('; ');
+		for (var i = 0; i < c.length; i++){
+			var cookie = c[i].split('=');
+			if (cookie[0] === cookieName){
+			  return decodeURIComponent(cookie[1]);
+			}
+		}
+	}($httpProvider.defaults.xsrfCookieName));
+	
+}])
+
+flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flaresAPI){
     
     // Add some base 
     var veController = this;
@@ -138,6 +205,24 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			});
 		}
 	};
+    
+    $scope.displayPictureModal = function(){
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'memberDisplayPictureTemplate.html',
+            controller: 'pictureModalController',
+            scope: $scope,
+            size: 'lg',
+            resolve: {
+                
+            }
+        });
+        modalInstance.result.then(function(selectedItem){
+        }, function(){
+            // Cancellation
+            console.log('Modal dismissed at: ' + new Date());
+        });
+    }
 	
 	
 	// Read the url
@@ -227,34 +312,8 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 });
 
-flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
-
-	function imageResizer(fileObj){	// fileObj is an instance of FlowFile
-		console.log(fileObj);
-		console.log('TODO ImageResizer: file size is ' + Math.floor(fileObj.file.size/1024) + ' KB');
-	};
-
-	// $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
-	flowFactoryProvider.defaults = { 
-		headers: {},
-		initFileFn: imageResizer,
-		singleFile: true,
-		allowDuplicateUploads: true,
-	};
-	flowFactoryProvider.defaults.headers[$httpProvider.defaults.xsrfHeaderName] = (function(cookieName){
-		var c = document.cookie.split('; ');
-		for (var i = 0; i < c.length; i++){
-			var cookie = c[i].split('=');
-			if (cookie[0] === cookieName){
-			  return decodeURIComponent(cookie[1]);
-			}
-		}
-	}($httpProvider.defaults.xsrfCookieName));
-	
-}])
-
-flaresApp.controller('pictureController', function($scope, $http, $timeout, flaresAPI, flaresLinkBuilder){
-	
+flaresApp.controller('pictureController', function($scope, $rootScope, $http, $timeout, flaresAPI, flaresLinkBuilder){
+    
 	var maxImageSize = 1024 * 1024;		// 1MB max file size
 	var maxImageSizeDesc = '1MB';
 	var defaultImage = flaresLinkBuilder.resource().anonImage().getLink();
@@ -272,8 +331,9 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 	$scope.uploader = {
 		uploading: false,
 		dropzone: false,
+        hasUploadTarget: false,
 		ready: function(){
-			return $scope.member.regt_num && $scope.workflow.isImageUploadable();
+			return $scope.uploader.hasUploadTarget && $scope.workflow.isImageUploadable();
 		}
 	};
 	
@@ -283,7 +343,10 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 	$scope.uploadFinish = function(){
 		if ($scope.$flow.files.length > 0){			// If any upload took place
 			$scope.memberImage.resetToDefault();		// Revert it to the default
-			reloadMemberImage();
+            
+			// reloadMemberImage();
+            $rootScope.$broadcast('flares::displayPictureChanged');
+            
 			$timeout(function(){
 				// Allow the upload success message to flash
 				$scope.uploader.uploading = false;
@@ -298,7 +361,8 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 	$scope.deleteLast = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture').then(function(response){
 		flaresAPI.member.delete([$scope.member.regt_num, 'picture']).then(function(response){
-			reloadMemberImage();
+			//reloadMemberImage();
+            $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
 			console.warn('ERROR: Last picture could not be rewound');
 			alert('Failed to rewind picture');
@@ -307,7 +371,8 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 	$scope.deleteAll = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture', {params: { remove: 'all' }}).then(function(response){
 		flaresAPI.member.delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
-			reloadMemberImage();
+			//reloadMemberImage();
+            $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
 			console.warn('ERROR: Picture could not be deleted');
 			alert('Failed to delete picture');
@@ -321,16 +386,18 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
 			event.preventDefault();  //prevent file from uploading
 		}
 	});
-	
-	$scope.$watch('member.regt_num', function(newValue){
-		if ($scope.member.regt_num){
-			// Attempt to reload the member image
-			reloadMemberImage();
-			// Update the uploader destination
-			$scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
-			// console.log('Updated uploader target', $scope.$flow.opts.target);
-		}
+    
+    
+    $scope.$watch('member.regt_num', function(newValue){
+        reloadMemberImage();
+        updateUploaderDestination();
 	});
+    
+    // If the modal uploads a new pic, make sure all other pictureControllers update
+    $scope.$on('flares::displayPictureChanged', function(){
+        reloadMemberImage();
+    });
+    
 	
 	// ===========================
     // Function decs
@@ -338,26 +405,44 @@ flaresApp.controller('pictureController', function($scope, $http, $timeout, flar
     function reloadMemberImage(){
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
-		flaresAPI.member.get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
-			if (response.status === 200){
-				if (response.data.exists){
-					var cacheDefeater = +Date.now();
-                    // Todo: replace the below with a more sturdy flaresLinkBuilder solution
-					$scope.memberImage.url = flaresLinkBuilder.raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
-					$scope.memberImage.isDefault = false;			
-				}
-				else {
-					$scope.memberImage.resetToDefault();
-				}
-				$scope.memberImage.count = response.data.count;
-			}
-		}, function(response){
-			console.warn('WARN: Image not found for '+$scope.member.regt_num, response.status);
-			$scope.memberImage.resetToDefault();
-		});
-	};	
+        if ($scope.member.regt_num){
+            flaresAPI.member.get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
+                if (response.status === 200){
+                    if (response.data.exists){
+                        var cacheDefeater = +Date.now();
+                        // Todo: replace the below with a more sturdy flaresLinkBuilder solution
+                        $scope.memberImage.url = flaresLinkBuilder.raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        $scope.memberImage.isDefault = false;			
+                    }
+                    else {
+                        $scope.memberImage.resetToDefault();
+                    }
+                    $scope.memberImage.count = response.data.count;
+                }
+            }, function(response){
+                console.warn('WARN: Image not found for '+$scope.member.regt_num, response.status);
+                $scope.memberImage.resetToDefault();
+            });
+        }
+	};
+    function updateUploaderDestination(){
+        if ($scope.$flow && $scope.member.regt_num){
+            $scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
+            // console.log('Updated uploader target', $scope.$flow.opts.target);
+            $scope.uploader.hasUploadTarget = true;
+        }
+        else {
+            $scope.uploader.hasUploadTarget = false;
+        }
+    }
 	
     
+});
+
+flaresApp.controller('pictureModalController', function($scope, $modalInstance){
+    $scope.closeModal = function(){
+         $modalInstance.dismiss('cancel');
+    };
 });
 
 // ==========================================

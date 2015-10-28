@@ -9,6 +9,7 @@ flaresApp.run(function($templateCache){
     $templateCache.put('memberContextMenuTemplate.html', '<div class="modal-header"><h4 class="modal-title">{{member.last_name}}, {{member.first_name}}</h4><h5 class="modal-subtitle">{{member.regt_num}} <span class="label" ng-class="memberStatus.labelClassNames">{{memberStatus.label}}</span></h5></div> \
         <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
     <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a></div>');
+    
 });
 
 flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flaresAPI){

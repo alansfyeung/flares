@@ -11,7 +11,7 @@
 
 	<!-- EDIT BUTTON -->
 	<aside class="title-actions pull-right" ng-show="!(member.deleted_at || workflow.isDischarge())">
-		<button class="btn btn-default" ng-class="{'btn-success': workflow.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': workflow.isView(), 'glyphicon-floppy-disk': workflow.isEdit()}"></span> @{{workflow.isEdit() ? 'Save Details' : 'Edit Details'}}</button>
+		<button class="btn btn-default" ng-class="{'btn-success': workflow.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': workflow.isView(), 'glyphicon-floppy-disk': workflow.isEdit()}"></span> @{{workflow.isEdit() ? 'Save' : 'Edit'}}</button>
 		<button class="btn btn-default" ng-show="workflow.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</aside>
 	
@@ -96,86 +96,29 @@
 @section('memberDisplay')
 <div ng-show="member.regt_num && !workflow.isDischarge()">
 
-    <section>
-        <h2>@{{member.last_name}}, @{{member.first_name}} <br><small style="display: inline-block">&diams; @{{member.regt_num}}</small></h2>
-    </section>
+    <div class="row">
+        <div class="col-xs-9 col-sm-9">
+            <h2>
+                @{{member.last_name}}, @{{member.first_name}}  &nbsp;
+                <small style="position: relative; top: -5px;"><span member-status></span><span hmp-status></span><span allergy-status></span></small><br>
+                <small style="display: inline-block">&diams; @{{member.regt_num}}</small>
+            </h2>
+        </div>
+        <div class="col-xs-3 col-sm-3">
+            <!-- Header thumbnail Display Picture -->
+            <section ng-controller="pictureController" ng-click="displayPictureModal()">
+                <div class="thumbnail member-dp">
+                    <img ng-src="@{{memberImage.url}}" alt="@{{member.last_name}}" class="image-rounded memberview-thumb">
+                </div>
+            </section>
 
-	<!-- Member quick statuses row -->
-	<section class="member-quickstatus">
-		<div class="row hidden-xs">
-			<div class="col-sm-2"> 
-				<dl>
-					<dt>Member Status</dt>
-					<dd><span member-status></span></dd>
-					<dd><span hmp-status></span></dd>
-					<dd><span allergy-status></span></dd>
-				</dl>
-			</div>
-			<div class="col-sm-2"> 
-				<dl>
-					<dt>Enrolled Date</dt>
-					<dd>(TBA)</dd>
-				</dl>
-			</div>
-			<div class="col-sm-2"> 
-				<dl>
-					<dt>All documents loaded</dt>
-					<dd>@{{member.is_fully_enrolled | yesNo}}</dd>
-				</dl>
-			</div>
-			<div class="col-sm-6"> 
-				<p>(Progress bar)</p>
-			</div>
-		</div>
-	</section>
+        </div>
+    </div>
 	
 	<!-- Member info tabs & panel -->
 	<div class="row">
-		<div class="col-sm-3 col-sm-push-9">
+		<div class="col-sm-3 col-sm-push-9 hidden-xs">
 		
-			<!-- Display Picture -->
-			<section ng-controller="pictureController" flow-init flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
-				
-				<h4>Profile picture</h4>
-				<div class="thumbnail" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{'uploader-drop-zone': uploader.dropzone, 'uploader-not-ready': !uploader.ready()}"><!-- Member image and quick links -->
-				
-					<img ng-src="@{{memberImage.url}}" alt="@{{member.last_name}}" class="image-rounded memberview-image" ng-show="!uploader.uploading">
-					
-					<div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
-						<h3 ng-show="file.isUploading()">Uploading</h3>
-						<h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3>
-						<div class="thumbnail">
-							<img flow-img="file" />
-							<div class="caption">@{{file.name}} (@{{Math.floor(file.size/1024)}} KB)</div>
-						</div>
-						<div class="progress progress-striped" ng-class="{active: file.isUploading()}">
-							<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + '%'}" ng-class="{'progress-bar-success': file.isComplete()}">
-							<span class="sr-only">1% Complete</span>
-							</div>
-						</div>
-					</div>
-					
-					<div class="caption">
-						<div class="text-center" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()">
-							<em>Drag/Drop or </em>
-							<div class="btn-group">
-								<span class="btn btn-default" flow-btn>Upload File</span> 
-								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<span class="caret"></span>
-									<span class="sr-only">Toggle Dropdown</span>
-								</button>
-								<ul class="dropdown-menu dropdown-menu-right">
-									<li><a href="@{{memberImage.url}}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li>
-									<li><a ng-click="deleteLast()"><span class="glyphicon glyphicon-step-backward"></span> Rewind (@{{memberImage.count}})</a></li>
-									<li><a ng-click="deleteAll()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete all</span></a></li>
-								</ul>
-							</div>
-						</div>
-		
-					</div>
-				</div>
-			</section>
-			
 			<section>
 				<h4>Actions</h4>
 				<!-- For fully active members -->
@@ -211,7 +154,7 @@
 		</div>
 	
 		<div class="col-sm-9 col-sm-pull-3">
-		
+
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
@@ -280,7 +223,7 @@
 							</div>
 							<div class="col-sm-6">
 								<h3>Contact Details</h3>
-								<table class="table member-record-view">
+								<table class="table record-view">
 									<tr>
 										<td>Mobile (member)</td>
 										<td display-mode="view">@{{member.member_mobile | markBlanks}}</td>
@@ -294,7 +237,7 @@
 								</table>
 								
 								<h3>Parental Details</h3>
-								<table class="table member-record-view">
+								<table class="table record-view">
 									<tr>
 										<td>Preferred contact method</td>
 										<td display-mode="view">@{{member.parent_preferred_comm | markBlanks}}</td>
@@ -335,7 +278,7 @@
 							<div class="col-sm-6">
 								<h3>Member Details</h3>
 								<p><em>Member details can be edited through the Actions menu</em></p>
-								<table class="table member-record-view">
+								<table class="table record-view">
 									<tr>
 										<td>Regimental Number</td>
 										<td>@{{member.regt_num | markBlanks}}</td>
@@ -366,7 +309,7 @@
 							<div class="col-sm-6">
 								<h3>Unit Qualifications</h3>
 								<p><em>To update qualifications, go to Assign Awards.</em></p>
-								<table class="table member-record-view">
+								<table class="table record-view">
 									<tr>
 										<td>Maroon Beret Award</td>
 										<td>@{{member.is_qual_mb | yesNo}}</td>
@@ -393,7 +336,7 @@
 							<span class="label label-default" ng-class="{'label-warning': !!+member.is_med_hmp }">Requires HMP: @{{member.is_med_hmp | yesNo}}</span>
 							<span class="label label-default" ng-class="{'label-danger': !!+member.is_med_lifethreat}">Life threatening: @{{member.is_med_lifethreat | yesNo}}</span>
 						</p>
-						<table class="table member-record-view">
+						<table class="table record-view">
 							<tr display-mode="edit">
 								<td>Requires HMP</td>
 								<td>
@@ -438,7 +381,7 @@
 					
 					<section>
 						<h3>ID Card</h3>
-						<table class="table member-record-view">
+						<table class="table record-view">
 							<tr>
 								<td>Has been printed?</td>
 								<td display-mode="view">@{{member.is_idcard_printed | yesNo}}</td>
