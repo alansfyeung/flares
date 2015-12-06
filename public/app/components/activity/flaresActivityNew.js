@@ -56,8 +56,8 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             
             // $http.post('/api/activity', payload).then(function(response){
             flaresAPI.activity.post(payload).then(function(response){
-                if (response.data.error.code){
-                    console.warn(response.data.error);
+                if (response.data.error && response.data.error.code){
+                    console.warn(response.data.error); 
                     return;
                 }
                 if (response.data.recordId){
@@ -81,6 +81,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             createActivity().then(function(data){
                 // Take us to the activity's view
                 // window.location.href = $('[name=menu.activity.overview]').attr('href');
+                // console.log(flaresLinkBuilderflaresLinkBuilder.page().activity(data.recordId).getLink());
                 window.location.href = flaresLinkBuilder.page().activity(data.recordId).getLink();
             });
         }

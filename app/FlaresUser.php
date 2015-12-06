@@ -8,7 +8,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-class SystemUser extends Model implements AuthenticatableContract, CanResetPasswordContract
+class FlaresUser extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable, CanResetPassword;
 
@@ -24,7 +24,7 @@ class SystemUser extends Model implements AuthenticatableContract, CanResetPassw
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'forums_id'];
 
     /**
      * The attributes excluded from the model's JSON form.

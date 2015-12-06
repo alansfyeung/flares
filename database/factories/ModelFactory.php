@@ -47,7 +47,7 @@ $factory->define(App\Activity::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Attendance::class, function (Faker\Generator $faker) {
     return [
-		'date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
+		'date' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'),
 		'recorded_value' => '0',
 		'is_late' => rand(0,1)
     ];

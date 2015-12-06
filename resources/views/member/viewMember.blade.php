@@ -9,10 +9,14 @@
 <!-- page main header -->
 <div class="page-header container-fluid" ng-cloak ng-show="member.regt_num">
 
+    <!-- Sidebar toggle -->
+    <aside class="title-actions pull-right">
+        <a sidebar-toggle class="btn btn-link"><span class="glyphicon glyphicon-option-vertical"></span></a>
+    </aside>
 	<!-- EDIT BUTTON -->
-	<aside class="title-actions pull-right" ng-show="!(member.deleted_at || workflow.isDischarge())">
-		<button class="btn btn-default" ng-class="{'btn-success': workflow.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': workflow.isView(), 'glyphicon-floppy-disk': workflow.isEdit()}"></span> @{{workflow.isEdit() ? 'Save' : 'Edit'}}</button>
-		<button class="btn btn-default" ng-show="workflow.isEdit()" ng-click="cancelEdit()">Cancel</button>
+	<aside class="title-actions pull-right" ng-show="!(member.deleted_at || state.isDischarge())">
+		<button class="btn btn-default" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> @{{state.isEdit() ? 'Save' : 'Edit'}}</button>
+		<button class="btn btn-default" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</aside>
 	
 	<h1>Member Service Record</h1>
@@ -21,26 +25,26 @@
 
 @section('alerts')
 <!-- Loading failure warnings -->
-<div class="alert alert-info" ng-cloak ng-show="!workflow.isRequested">
+<div class="alert alert-info" ng-cloak ng-show="!state.isRequested">
 	<strong>No Member ID specified:</strong> Please go back and request the member record again
 </div>
 <div class="alert alert-warning" ng-cloak ng-show="member.errorNotFound">
-	<strong>Member Lookup failed:</strong> The user with Regt# &diams;@{{workflow.path.id}} couldn't be found.
+	<strong>Member Lookup failed:</strong> The user with Regt# &diams;@{{state.path.id}} couldn't be found.
 </div>
 <div class="alert alert-danger" ng-cloak ng-show="member.errorServerSide">
 	<strong>Member Lookup failed:</strong> There was a server-side error and this record could not be retrieved
 </div>
 
 <!-- Inactive and discharged warnings -->
-<div class="alert alert-danger" ng-cloak ng-if="workflow.isLoaded && !member.is_active">
+<div class="alert alert-danger" ng-cloak ng-if="state.isLoaded && !member.is_active">
 	<h4>Incomplete Member Record</h4>
 	<p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
 	<p>
-		<button type="button" class="btn btn-danger" ng-click="permanentDelete()" ng-disabled="workflow.isAsync">Delete this record, it's not needed</button>
-		<button type="button" class="btn btn-default" ng-click="activate()" ng-disabled="workflow.isAsync">Activate member</button>
+		<button type="button" class="btn btn-danger" ng-click="permanentDelete()" ng-disabled="state.isAsync">Delete this record, it's not needed</button>
+		<button type="button" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Activate member</button>
 	</p>
 </div>
-<div class="alert alert-warning" ng-cloak ng-if="workflow.isLoaded && member.deleted_at">
+<div class="alert alert-warning" ng-cloak ng-if="state.isLoaded && member.deleted_at">
 	<h4>Discharged Member</h4>
 	<p>This member has been discharged so this record cannot be edited.</p>
 </div>
@@ -48,7 +52,7 @@
 
 
 @section('dischargeDisplay')
-<div ng-show="member.regt_num && workflow.isDischarge()" ng-cloak>
+<div ng-show="member.regt_num && state.isDischarge()" ng-cloak>
 	<div class="row">
 		<form class="form-horizontal col-sm-6">
 			<h3>Discharge member</h3>
@@ -78,14 +82,14 @@
 				</div>
 			</div>
 			
-			<div class="alert alert-info" ng-show="workflow.isAsync">
+			<div class="alert alert-info" ng-show="state.isAsync">
 				<span class="glyphicon glyphicon-info-sign"></span> Working on your request.
 			</div>
 			
 			<div class="form-group">
 				<div class="col-sm-9 col-sm-push-3">
-					<button type="button" class="btn btn-warning" ng-click="discharge()" ng-disabled="workflow.isAsync">Continue with Discharge</button>
-					<button type="button" class="btn btn-default" ng-click="cancelDischarge()" ng-disabled="workflow.isAsync">Cancel</button>
+					<button type="button" class="btn btn-warning" ng-click="discharge()" ng-disabled="state.isAsync">Continue with Discharge</button>
+					<button type="button" class="btn btn-default" ng-click="cancelDischarge()" ng-disabled="state.isAsync">Cancel</button>
 				</div>
 			</div>
 		</form>
@@ -94,7 +98,7 @@
 @endsection
 
 @section('memberDisplay')
-<div ng-show="member.regt_num && !workflow.isDischarge()">
+<div ng-show="member.regt_num && !state.isDischarge()">
 
     <div class="row">
         <div class="col-xs-9 col-sm-9">
@@ -117,8 +121,7 @@
 	
 	<!-- Member info tabs & panel -->
 	<div class="row">
-		<div class="col-sm-3 col-sm-push-9 hidden-xs">
-		
+		<div class="fl-sidebar col-sm-3 col-sm-push-9 hidden">
 			<section>
 				<h4>Actions</h4>
 				<!-- For fully active members -->
@@ -138,8 +141,7 @@
 				<div class="list-group" ng-show="member.deleted_at">
 					<button type="button" class="list-group-item" ng-click="">Reactivate --- (WIP)</button>
 				</div>
-			</section>
-			
+			</section>			
 			<h4>Record audit info</h4>
 			<dl ng-show="member.deleted_at">
 				<dt>Date marked discharged</dt>
@@ -153,8 +155,7 @@
 			<dl>
 		</div>
 	
-		<div class="col-sm-9 col-sm-pull-3">
-
+		<div class="fl-content col-sm-12">
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>

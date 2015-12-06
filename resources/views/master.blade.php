@@ -8,6 +8,7 @@
 	
 	<!-- <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'> -->
 	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/assets/css/flares-bs-ext.css" rel="stylesheet">
 	<link href="/assets/css/flares.css" rel="stylesheet">
 
 	<script src="/assets/js/jquery-1.11.3.min.js"></script>
@@ -15,10 +16,10 @@
 	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
 </head>
-<body ng-controller="@yield('ng-controller')" flow-prevent-drop>
+<body flow-prevent-drop>
 	@section('header')
 	<header>
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsible">
@@ -81,16 +82,29 @@
 				</div>
 			</div>
 		</nav>
-        @yield('heading')
 	</header>
 	@show
+
+
+
+	{{--
+$userInfo = User::find(Auth::id())->with('personalInfo')->first();
+return View::make('page')->with('userInfo',$userInfo);
+
+//in your view then you have access to 
+{ {$userInfo->name } }
+{ {$userInfo->address} }
+//the values from the table and related model.
+	--}}
 	
-	
-	<div id="main" class="container-fluid">
-		@yield('banner')
-		@yield('alerts')
-		@yield('content')
-	</div>
+    <div id="main" class="flares-main" ng-controller="@yield('ng-controller')">
+        @yield('heading')
+        <div class="container-fluid">
+            @yield('banner')
+            @yield('alerts')
+            @yield('content')
+        </div>
+    </div>
 	
 	@section('footer')
 	<footer>

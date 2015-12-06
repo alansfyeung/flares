@@ -18,6 +18,12 @@
 	Route::get('/', function () {
 		return view('dashboard');
 	});
+
+
+	// Authentication routes...
+	Route::get('auth/login', 'Auth\AuthController@getLogin');
+	Route::post('auth/login', 'Auth\AuthController@postLogin');
+	Route::get('auth/logout', 'Auth\AuthController@getLogout');
 	
 	
 	/* FLARES views */

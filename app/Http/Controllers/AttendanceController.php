@@ -281,8 +281,10 @@ class AttendanceController extends Controller
 		$deleted = false;
 		
         $activity = Activity::findOrFail($activityId);
-		$att = Activity::attendances()->firstOrFail($attId);
-		if ($att->recorded_value != '0'){
+		$att = $activity->attendances()->where('att_id', $attId)->firstOrFail();
+        
+        // Only delete if roll value is NOT marked
+		if ($att->recorded_value == '0'){
 			$deleted = $att->delete();
             return response()->json([
                 'success' => $deleted
@@ -291,7 +293,7 @@ class AttendanceController extends Controller
 		else {
 			// Don't delete
             return response()->json([
-                'error' => ['code' => self::ERR_DB_PERSIST, 'reason' => 'Did not save recorded_value to database']
+                'error' => ['code' => self::ERR_DB_PERSIST, 'reason' => 'No-op: value was already recorded for attendance', 'recorded' => $att->recorded_value]
             ]);
 		}
 		

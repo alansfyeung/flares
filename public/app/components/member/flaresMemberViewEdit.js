@@ -72,14 +72,14 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     // Add some base 
     var veController = this;
     angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
-	$scope.workflow = Object.create(veController.workflow);        // inherit the proto
-	$scope.workflow.isDischarge = function(){
+	$scope.state = Object.create(veController.state);        // inherit the proto
+	$scope.state.isDischarge = function(){
 		return this.path.mode === 'discharge';
 	};
-	$scope.workflow.isImageUploadable = function(){
+	$scope.state.isImageUploadable = function(){
 		return this.isMemberLoaded && !$scope.member.deleted_at;
 	};
-	$scope.workflow.toggleMode = function(){
+	$scope.state.toggleMode = function(){
 		this.path.mode = this.isView() ? 'edit' : 'view';
 	};
     
@@ -96,7 +96,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	}
 	
 	$scope.edit = function(){
-		var sw = $scope.workflow;
+		var sw = $scope.state;
 		if (sw.isView()){
 			// If in view mode, toggle to Edit mode
 			sw.path.mode = 'edit';
@@ -110,16 +110,16 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		}
 	};
 	$scope.cancelEdit = function(){
-		if ($scope.workflow.isLoaded){
+		if ($scope.state.isLoaded){
 			$scope.member = angular.extend(Object.create($scope.record), $scope.originalMember);
-			$scope.workflow.path.mode = 'view';
+			$scope.state.path.mode = 'view';
 			return;
 		}
 		console.warn('Cannot cancel - member record was never loaded');
 	};
 	
 	$scope.activate = function(){
-		var sw = $scope.workflow;
+		var sw = $scope.state;
 		if ($scope.member.regt_num){
 			var payload = {
 				member: {
@@ -145,15 +145,15 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	};
 	
 	$scope.confirmDischarge = function(){
-		$scope.workflow.path.mode = 'discharge';
-		$scope.workflow.path.tab = 'confirm';
+		$scope.state.path.mode = 'discharge';
+		$scope.state.path.tab = 'confirm';
 	};
 	$scope.cancelDischarge = function(){
-		$scope.workflow.path.mode = 'view';
-		$scope.workflow.path.tab = 'details';
+		$scope.state.path.mode = 'view';
+		$scope.state.path.tab = 'details';
 	};
 	$scope.discharge = function(){
-		var sw = $scope.workflow;
+		var sw = $scope.state;
 		if (!sw.isDischarge()){
 			$scope.confirmDischarge();
 			return;
@@ -167,8 +167,8 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			// $http.delete('/api/member/'+$scope.member.regt_num).then(function(response){
 			flaresAPI.member.delete([$scope.member.regt_num]).then(function(response){
 				retrieveMember();
-				$scope.workflow.path.mode = 'view';		// Revert
-				$scope.workflow.path.tab = 'details';
+				$scope.state.path.mode = 'view';		// Revert
+				$scope.state.path.tab = 'details';
 				
 			}, function(response){
 				console.warn('ERROR: Discharge process failed', response);
@@ -186,7 +186,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	};
 	
 	$scope.permanentDelete = function(){
-		var sw = $scope.workflow;
+		var sw = $scope.state;
 		if ($scope.member.regt_num && !$scope.member.is_active){
 			sw.isAsync = true;
 			// $http.delete('/api/member/'+$scope.member.regt_num, {params: { remove: 'permanent' }}).then(function(response){
@@ -244,7 +244,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	//======================
 	// Save-your-change niceties
 	window.onbeforeunload = function(event){
-		if ($scope.workflow.isEdit()){
+		if ($scope.state.isEdit()){
 			var message = 'You are editing this member record, and will lose any unsaved changes.';
 			return message;
 		}
@@ -259,12 +259,12 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     // Function decs
     
 	function retrieveMember(){
-		if ($scope.workflow.path.id){
-			// $http.get('/api/member/'+$scope.workflow.path.id, {params: {detail: 'high'}}).then(function(response){
-			flaresAPI.member.get([$scope.workflow.path.id], {params: {detail: 'high'}}).then(function(response){
+		if ($scope.state.path.id){
+			// $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
+			flaresAPI.member.get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
 				processMemberRecord(response.data.member);
-				$scope.workflow.isMemberLoaded = true;
+				$scope.state.isMemberLoaded = true;
 				
 			}, function(response){
 				if (response.status == 404){
@@ -333,7 +333,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		dropzone: false,
         hasUploadTarget: false,
 		ready: function(){
-			return $scope.uploader.hasUploadTarget && $scope.workflow.isImageUploadable();
+			return $scope.uploader.hasUploadTarget && $scope.state.isImageUploadable();
 		}
 	};
 	
