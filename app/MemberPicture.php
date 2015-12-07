@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberPicture extends Model
 {
-    protected $table = 'member_picture';
+    // protected $table = 'member_pictures';
 	protected $primaryKey = 'img_id';
 	protected $guarded = ['img_id', 'created_at', 'updated_at'];
 	

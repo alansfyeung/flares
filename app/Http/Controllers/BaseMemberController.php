@@ -9,7 +9,7 @@ use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-abstract class MemberControllerBase extends Controller
+abstract class BaseMemberController extends Controller
 {	
 
 	/* ==================================================

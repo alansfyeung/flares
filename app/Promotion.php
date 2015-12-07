@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostingPromo extends Model
+class Promotion extends Model
 {
     protected $table = 'posting_promo';
-	protected $primaryKey = 'posting_id';
+	protected $primaryKey = 'promo_id';
 	
 	// Relationships
 	public function member(){

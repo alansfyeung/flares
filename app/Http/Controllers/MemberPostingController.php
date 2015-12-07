@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 
 use DB;
 use App\Member;
-use App\PostingPromo;
+use App\Promotion;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class MemberPostingController extends MemberControllerBase
+class MemberPostingController extends BaseMemberController
 {
     public function index($memberId)
     {
@@ -46,7 +46,7 @@ class MemberPostingController extends MemberControllerBase
 		/* 
 		 * This method is totally redundant (as it's a lookup by postingpromo id) 
 		 */
-        $postingRecord = PostingPromo::findOrFail($postingId);
+        $postingRecord = Promtion::findOrFail($postingId);
         return response()->json($postingRecord->toArray());
     }
 	

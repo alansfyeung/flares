@@ -13,7 +13,7 @@ class CreatePostingPromoTable extends Migration
     public function up()
     {
         Schema::create('posting_promo', function(Blueprint $table){
-            $table->increments('posting_id');
+            $table->increments('promo_id');
             $table->string('regt_num', 10);  
             $table->dateTime('effective_date'); 
             $table->string('new_platoon', 10)->nullable();

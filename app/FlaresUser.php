@@ -18,13 +18,14 @@ class FlaresUser extends Model implements AuthenticatableContract, CanResetPassw
      * @var string
      */
     protected $table = 'system_users';
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'forums_id'];
+    protected $fillable = ['forums_username', 'email', 'password', 'forums_id'];
 
     /**
      * The attributes excluded from the model's JSON form.

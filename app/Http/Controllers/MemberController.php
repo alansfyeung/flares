@@ -8,14 +8,15 @@ use DB;
 use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Flares\ResponseCodes;
 
-class MemberController extends MemberControllerBase
+class MemberController extends BaseMemberController
 {
-    const ERR_POSTDATA_MISSING = 4001;
-	const ERR_POSTDATA_FORMAT = 4002;
-	const ERR_EX = 5000;
-	const ERR_DB_PERSIST = 5001;
-	const ERR_REGT_NUM = 5002;
+    //const ResponseCodes::ERR_POSTDATA_MISSING = 4001;
+	//const ResponsesCodes::ERR_POSTDATA_FORMAT = 4002;
+	// const ResponseCodes::ERR_EX = 5000;
+	// const ResponseCodes::ERR_DB_PERSIST = 5001;
+	// const ResponseCodes::ERR_REGT_NUM = 5002;
     
     /**
      * Display a listing of the resource.
@@ -141,12 +142,12 @@ class MemberController extends MemberControllerBase
 							// 'valueExpected' => $newRegtNum, 
 							// 'valueActual' => $newMember->regt_num, 
 							// 'reason' => 'Looks like the database rejected this regt num'];
-						throw new \Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", ERR_REGT_NUM);
+						throw new \Exception('Looks like the database rejected this regt num. ' . "Value Expected: $newRegtNum, Value Actual: {$newMember->regt_num}", ResponseCodes::ERR_REGT_NUM);
 					}
 					
 				}
 				else {
-					throw new Exception('Could not generate a regt num', ERR_REGT_NUM);
+					throw new Exception('Could not generate a regt num', ResponseCodes::ERR_REGT_NUM);
 				}
                 
                 DB::commit();
@@ -165,7 +166,7 @@ class MemberController extends MemberControllerBase
 		}
 		
         return response()->json([
-            'error' => ['code' => ERR_POSTDATA_MISSING, 'reason' => 'Member postdata missing']
+            'error' => ['code' => FlaresCodes::ERR_POSTDATA_MISSING, 'reason' => 'Member postdata missing']
         ], 400);
     }
 

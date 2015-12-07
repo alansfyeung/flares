@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ParentalPerm extends Model
+class ParentalAuth extends Model
 {
-    protected $table = 'parental_perm';
+    protected $table = 'parental_authority';
 }

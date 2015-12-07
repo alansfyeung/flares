@@ -11,7 +11,7 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class MemberPictureController extends MemberControllerBase
+class MemberPictureController extends BaseMemberController
 {		
 	private $tmpDir;			// Use the PHP default
 	
