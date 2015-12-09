@@ -224,7 +224,7 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
     };
 
     $scope.goToNewActivity = function(){
-        $window.location.href = flaresLinkBuilder.page().activity().new().getLink();
+        $window.location.href = flaresLinkBuilder('activity').new().getLink();
     };
     
     function openContextMenu(){
@@ -345,21 +345,21 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
     var clickActions = {
         viewActivity: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder.page().activity(frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            $window.location.href = flaresLinkBuilder.page().activity(frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
         },
         editRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'rollbuilder'];
-            $window.location.href = flaresLinkBuilder.page().activity(frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
         },
         markRoll: function(){
             var frag = [$scope.activity.acty_id];
-            $window.location.href = flaresLinkBuilder.page().activity(frag).roll().getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
         }
     };
     

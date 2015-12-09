@@ -1,9 +1,7 @@
 @extends('master')
 
 @section('heading')
-<div class="page-header container-fluid">
-	<h1>Login</h1>
-</div>
+<h1>Login</h1>
 @endsection
 
 @section('content')

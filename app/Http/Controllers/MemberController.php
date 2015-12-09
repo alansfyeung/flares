@@ -57,17 +57,46 @@ class MemberController extends BaseMemberController
 			$query = Member::select();
 		}
 		
-		foreach($request->only('rank', 'last_name', 'first_name', 'regt_num') as $name => $input){
-			$input = trim($input);
-			if (!empty($input)){
-				$query->where($name, 'like', "$input%");
-				$query->orderBy($name, 'asc');
+		// join on 3p table 
+		$query->leftJoin('posting_promo', function ($join) {
+            $join->on('members.regt_num', '=', 'posting_promo.regt_num');
+        });
+		$query->select('members.*', 'posting_promo.new_rank as rank');
+		
+		if ($request->has('keywords')){
+			$keywords = explode(' ', $request->query('keywords'));
+			foreach ($keywords as $keyword){
+				// If keyword resembles a regt number_format
+				if ($this->keywordLikeRegtNum($keyword)){
+					$query->where('members.regt_num', 'like', "$keyword%");
+					continue;
+				}
+				// If keyword matches a known rank abbrev 
+				if ($this->keywordLikeRank($keyword)){
+					$rank = $this->keywordExtractRank($keyword);
+					$query->where('rank', $rank);
+					continue;
+				}
+				// Otherwise add this as a name search
+				$query->where(function($query) use ($keyword){
+					$query->where('last_name', 'like', "%$keyword%")
+							->orWhere('first_name', 'like', "%$keyword%");
+				});
 			}
 		}
-		foreach($request->only('sex') as $name => $input){			// ('sex', 'is_active')
-			$input = trim($input);
-			if (!empty($input)){
-				$query->where($name, $input);
+		else {
+			foreach($request->only('rank', 'last_name', 'first_name', 'regt_num') as $name => $input){
+				$input = trim($input);
+				if (!empty($input)){
+					$query->where($name, 'like', "$input%");
+					$query->orderBy($name, 'asc');
+				}
+			}
+			foreach($request->only('sex') as $name => $input){			// ('sex', 'is_active')
+				$input = trim($input);
+				if (!empty($input)){
+					$query->where($name, $input);
+				}
 			}
 		}
 		

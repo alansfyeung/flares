@@ -7,9 +7,7 @@
 
 
 @section('heading')
-<div class="page-header container-fluid">
-	<h1>Reports</h1>
-</div>
+<h1>Reports</h1>
 @endsection
 
 

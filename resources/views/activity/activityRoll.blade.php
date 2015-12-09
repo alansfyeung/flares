@@ -7,8 +7,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div class="page-header container-fluid" ng-cloak ng-show="activity.acty_id">
-
+<div ng-cloak ng-show="activity.acty_id">
 	<!-- EDIT BUTTON -->
 	<aside class="title-actions pull-right" ng-show="workflow.isEdit()">
 		<button class="btn btn-success" ng-click="edit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save Details</button>
@@ -17,7 +16,6 @@
 	<aside class="title-actions pull-right" ng-show="workflow.isView()">
 		<button class="btn btn-default" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit Details</button>
 	</aside>
-	
 	<h1>@{{activity.type}} @{{activity.name}}</h1>
 </div>
 @endsection

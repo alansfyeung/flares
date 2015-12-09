@@ -7,12 +7,10 @@
 
 
 @section('heading')
-<div class="page-header container-fluid">
-    <aside class="title-actions pull-right">
-        <a href="/activities/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new</a>
-    </aside>
-	<h1>Search</h1>
-</div>
+<aside class="title-actions pull-right">
+    <a href="/activities/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new</a>
+</aside>
+<h1>Search</h1>
 @endsection
 
 @section('searchbar')

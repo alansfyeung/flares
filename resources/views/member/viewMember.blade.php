@@ -7,8 +7,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div class="page-header container-fluid" ng-cloak ng-show="member.regt_num">
-
+<div ng-cloak ng-show="member.regt_num">
     <!-- Sidebar toggle -->
     <aside class="title-actions pull-right">
         <a sidebar-toggle class="btn btn-link"><span class="glyphicon glyphicon-option-vertical"></span></a>
@@ -18,7 +17,6 @@
 		<button class="btn btn-default" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> @{{state.isEdit() ? 'Save' : 'Edit'}}</button>
 		<button class="btn btn-default" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
 	</aside>
-	
 	<h1>Member Service Record</h1>
 </div>
 @endsection

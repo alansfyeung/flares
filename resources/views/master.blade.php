@@ -8,7 +8,7 @@
 	
 	<!-- <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'> -->
 	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/assets/css/flares-bs-ext.css" rel="stylesheet">
+	<link href="/assets/css/flares-bs-extn.css" rel="stylesheet">
 	<link href="/assets/css/flares.css" rel="stylesheet">
 
 	<script src="/assets/js/jquery-1.11.3.min.js"></script>
@@ -20,7 +20,7 @@
 	@section('header')
 	<header>
 		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container-fluid">
+			<div class="container">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsible">
 						<span class="sr-only">Toggle navigation</span>
@@ -98,8 +98,12 @@ return View::make('page')->with('userInfo',$userInfo);
 	--}}
 	
     <div id="main" class="flares-main" ng-controller="@yield('ng-controller')">
-        @yield('heading')
-        <div class="container-fluid">
+		<div class="page-header">
+			<div class="container">
+        	@yield('heading')				
+			</div>
+		</div>
+        <div class="container">
             @yield('banner')
             @yield('alerts')
             @yield('content')
@@ -108,13 +112,14 @@ return View::make('page')->with('userInfo',$userInfo);
 	
 	@section('footer')
 	<footer>
-		<div class="container-fluid">
+		<div class="container">
 			<h6>FLARES Falcon Leave Automated REporting System &copy; 2015 Alan Yeung, 206 Army Cadet Unit</h6>
 		</div>
 	</footer>
 	@show
 
 	<script src="/app/shared/flaresBase.js"></script>
+	<script src="/app/shared/flaresBase-services.js"></script>
 	@yield('ng-script')
 	
 </body>

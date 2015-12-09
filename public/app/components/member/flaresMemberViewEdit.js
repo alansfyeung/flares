@@ -316,7 +316,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     
 	var maxImageSize = 1024 * 1024;		// 1MB max file size
 	var maxImageSizeDesc = '1MB';
-	var defaultImage = flaresLinkBuilder.resource().anonImage().getLink();
+	var defaultImage = flaresLinkBuilder('resource').addUrl('img/anon.png').getLink();
 	
 	$scope.memberImage = {
 		url: defaultImage,

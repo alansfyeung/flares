@@ -8,8 +8,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div class="page-header container-fluid" ng-cloak ng-show="activity.acty_id">
-
+<div ng-cloak ng-show="activity.acty_id">
 	<aside class="title-actions pull-right">
         <!-- EDIT BUTTON groups -->
         <span ng-show="state.isEdit()">

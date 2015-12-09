@@ -7,9 +7,7 @@
 
 
 @section('heading')
-<div class="page-header container-fluid">
-	<h1>New Activity</h1>
-</div>
+<h1>New Activity</h1>
 @endsection
 
 @section('activity-form')

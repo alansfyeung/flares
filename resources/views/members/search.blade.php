@@ -6,16 +6,32 @@
 @section('title', 'Members')
 
 @section('heading')
-<div class="page-header container-fluid">
-	<h1>Search all members</h1>
-</div>
+<h1>Search all members</h1>
 @endsection
 
+
 @section('memberSearch')
-<form class="form-horizontal" ng-submit="submitSearch()">
+<form class="form" ng-submit="submitSimpleSearch()">
 	<div class="row">
-	
-		<div class="col-sm-6 col-md-4">
+		<div class="col-sm-12">
+			<div class="input-group input-group-lg">
+				<input type="text" class="form-control" ng-model="searchKeywords" placeholder="Search members...">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="submit">Go!</button>
+				</span>
+			</div><!-- /input-group -->
+		</div>
+	</div>
+	<p>
+		<small><a class="btn btn-link" ng-click="state.advancedSearch = !state.advancedSearch;">Advanced search</a></small>
+	</p>
+</form>
+@endsection
+
+@section('advancedSearch')
+<form class="form-horizontal" ng-cloak ng-show="state.advancedSearch" ng-submit="submitAdvancedSearch()">
+	<div class="row">
+		<div class="col-sm-6">
 			<div class="form-group">
 				<label class="control-label col-sm-3">Surname</label>
 				<div class="col-sm-9">
@@ -38,7 +54,7 @@
 			</div>
 		</div>
 		
-		<div class="col-sm-6 col-md-4">
+		<div class="col-sm-6">
 			<div class="form-group">
 				<label class="control-label col-sm-3">Rank</label>
 				<div class="col-sm-9">
@@ -62,16 +78,16 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="col-sm-6 col-md-4">
-			<button type="submit" class="btn btn-primary" tabindex="11">Search</button>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 text-right">
+			<button type="submit" class="btn btn-primary" tabindex="11">Search</button>				
 		</div>
-		
 	</div>
 </form>
+@endsection
 
-<hr/>
-
+@section('searchResults')
 <section class="search-results">
 	<div class="label label-default">@{{results.length}} results for search</div>
 	<table class="table table-hover" ng-show="results.length > 0">
@@ -126,6 +142,10 @@
 
 @section('content')
 	@yield('memberSearch')
+	@yield('advancedSearch')
+	<hr/>
+	@yield('searchResults')
+
 @endsection
 
 

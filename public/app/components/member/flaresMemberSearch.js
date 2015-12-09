@@ -1,3 +1,4 @@
+/* global angular */
 // ==================================
 //   flaresMemberSearch.js
 //   Search for users before selecting one to edit
@@ -15,12 +16,18 @@ flaresApp.run(function($templateCache){
 flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flaresAPI){
 	$scope.results = [];
 	$scope.activeMember = null;
+    
+    $scope.state = {
+        advancedSearch: false
+    };
 	$scope.formData = {
 		ranks: [
 			{ id: '', name: 'Any rank' }
 		]
 	};
-	
+    
+    // $scope.searchKeywords = (typeof $location.search() === 'object' && $location.search().keywords) || '';
+    $scope.searchKeywords = '';
 	$scope.searchParams = angular.merge({
 		rank: '',
 		first_name: '',
@@ -29,9 +36,30 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 		regt_num: '',
 		is_active: '',
 		discharged: ''
-	}, typeof $location.search() === 'object' && $location.search());
+	}, $location.search() || {});
 	
-	$scope.submitSearch = function(){
+    $scope.submitSimpleSearch = function(){
+        $location.search(function(){
+            if ($scope.searchKeywords){
+                return {
+                    keywords: $scope.searchKeywords
+                };
+            }
+            return {};
+		}());
+        
+        flaresAPI.member.get(['search'], {
+			params: { 'keywords': $scope.searchKeywords }
+		}).then(function(response){
+			$scope.results = response.data.members;
+			angular.forEach($scope.results, parseMemberSearchResult);
+			
+		}, function(response){
+			console.warn('Error - member search', response);
+		});
+    };
+    
+	$scope.submitAdvancedSearch = function(){
 		$location.search(function(){
 			var search = {};
 			angular.forEach($scope.searchParams, function(value, key){
@@ -46,20 +74,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 			params: $scope.searchParams
 		}).then(function(response){
 			$scope.results = response.data.members;
-			
-			var MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.2425;
-			angular.forEach($scope.results, function(result){
-				if (result.dob && !isNaN(new Date(result.dob))){
-					var ageTurningThisYear = (new Date()).getFullYear() - (new Date(result.dob)).getFullYear();
-					result.age = Math.floor((Date.now() - (new Date(result.dob)).getTime()) / MS_PER_YEAR);
-					result.ageDetails = result.age + ' (' + ageTurningThisYear + ')';					
-				}
-				else {
-					result.age = '0';
-					result.ageDetails = '??';
-					
-				}
-			});
+			angular.forEach($scope.results, parseMemberSearchResult);
 			
 		}, function(response){
 			console.warn('Error - member search', response);
@@ -75,8 +90,14 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
     
     //==================
 	// submit the search if params were already given
-	if (typeof $location.search() === 'object' && Object.keys($location.search()).length > 0){
-		$scope.submitSearch();
+	if ($location.search() && Object.keys($location.search()).length > 0){
+        console.log('keywords', $location.search().keywords);
+        if ($location.search().keywords){
+    		$scope.submitSimpleSearch();            
+        }
+        else {
+            $scope.submitAdvancedSearch();
+        }
 	}
 	
 	angular.element('[name=search-surname]').focus();
@@ -95,6 +116,23 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
     
     // ==============
     // Function decs
+    
+    var MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.2425;
+    function parseMemberSearchResult(result){
+        if (result.dob && !isNaN(+new Date(result.dob))){
+            result.age = Math.floor((Date.now() - (new Date(result.dob)).getTime()) / MS_PER_YEAR);
+            result.ageDetails = result.age;					
+            var ageTurningThisYear = (new Date()).getFullYear() - (new Date(result.dob)).getFullYear();
+            if (ageTurningThisYear !== result.age){
+                result.ageDetails +=  ' > ' + ageTurningThisYear;
+            }
+        }
+        else {
+            result.age = '0';
+            result.ageDetails = '??';
+            
+        }
+    }
     
     function openContextMenu(){
         var modalInstance = $uibModal.open({
@@ -160,7 +198,7 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     var clickActions = {
         linkToMember: function(){
             var frag = [$scope.member.regt_num, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder.page().member().fragment(frag).getLink();
+            $window.location.href = flaresLinkBuilder('member').retrieve().addFragment(frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         }

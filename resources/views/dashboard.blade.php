@@ -6,9 +6,7 @@
 @section('title', 'Dashboard')
 
 @section('heading')
-<div class="page-header container-fluid">
 	<h1>Dashboard</h1>
-</div>
 @endsection
 
 @section('content')

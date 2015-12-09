@@ -28,7 +28,42 @@ abstract class BaseMemberController extends Controller
 			'completionPercentage' => 100
 		]);
 	}
+	
+	protected function keywordLikeRegtNum($keyword)
+	{
+		return preg_match('/206\d{3,5}F?/', $keyword);
+	}
+	
+	protected function keywordExtractRank($keyword)
+	{
+		$ranks = DB::table('ref_ranks')->orderBy('pos', 'asc')->get();
+		foreach ($ranks as $rank){
+			$clean = preg_replace('/\s+/', '', $keyword);
+			$clean = strtoupper($clean);
+			$abbr = strtoupper($rank->abbr);
+			
+			// maybe direct match
+			if ($abbr == $clean){
+				return $rank->abbr;
+			}
+			// maybe in format "CDTCPL"
+			if (strlen($abbr) > 3 && substr($abbr, 3) === $clean){
+				return $rank->abbr;
+			}
+			// maybe in format "CAPT (AAC)"
+			if (preg_replace('/\(AAC\)/', '', $abbr) === $clean){
+				return $rank->abbr;
+			}
+			
+		}
+		return null;
+	}
 
+	protected function keywordLikeRank($keyword)
+	{
+		$extractedKeyword = $this->keywordExtractRank($keyword);
+		return $extractedKeyword != null;
+	}
 
 
 	/* ==================================================
@@ -269,9 +304,7 @@ abstract class BaseMemberController extends Controller
                 ];
             }
         }
-    }
-
-    
+	}
     
     
 	protected function generateForumsAccount(){

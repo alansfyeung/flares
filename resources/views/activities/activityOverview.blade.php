@@ -7,12 +7,7 @@
 
 
 @section('heading')
-<div class="page-header container-fluid">
-        <!-- <aside class="title-actions pull-right">
-        <a href="/activities/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new</a>
-    </aside>-->
-	<h1>Activity Overview</h1>
-</div>
+<h1>Activity Overview</h1>
 @endsection
 
 @section('archived')

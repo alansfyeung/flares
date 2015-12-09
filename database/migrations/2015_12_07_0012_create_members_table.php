@@ -19,6 +19,7 @@ class CreateMembersTable extends Migration
             $table->string('sex', 1)->nullable();
             $table->dateTime('dob')->nullable();
             $table->string('forums_username')->unique()->nullable();
+            $table->integer('forums_userid')->unique()->nullable();
             $table->string('coms_username')->nullable();
             $table->integer('coms_id')->unique()->nullable();
             $table->string('role_class')->nullable();
@@ -34,6 +35,7 @@ class CreateMembersTable extends Migration
             $table->string('parent_mobile', 12)->nullable();
             $table->string('parent_type')->nullable();
             $table->string('parent_custodial')->nullable();
+            $table->string('parent_preferred_comm')->nullable();
             $table->string('med_allergies')->nullable();
             $table->string('med_cond')->nullable();
             $table->string('sdr')->nullable();

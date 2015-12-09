@@ -6,9 +6,7 @@
 @section('title', 'Member Onboarding')
 
 @section('heading')
-<div class="page-header container-fluid">
-	<h1>Onboarding members <small>Stage @{{workflow.stage}} of 6</small></h1>
-</div>
+<h1>Onboarding members <small>Stage @{{workflow.stage}} of 6</small></h1>
 @endsection
 
 

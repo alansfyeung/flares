@@ -82,7 +82,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
                 // Take us to the activity's view
                 // window.location.href = $('[name=menu.activity.overview]').attr('href');
                 // console.log(flaresLinkBuilderflaresLinkBuilder.page().activity(data.recordId).getLink());
-                window.location.href = flaresLinkBuilder.page().activity(data.recordId).getLink();
+                window.location.href = flaresLinkBuilder('activity', data.recordId).getLink();
             });
         }
         return false;

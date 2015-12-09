@@ -42,7 +42,7 @@ a[sidebar-toggle] {
     color: #CCC;
 }
 .page-header .title-actions {
-    margin: 15px;
+    margin-top: -5px;
 }
 .page-header .title-actions.pull-right {
     margin-right: 0px;
