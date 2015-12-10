@@ -128,7 +128,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			};	
 			sw.isAsync = true;
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI.member.patch([$scope.member.regt_num], payload).then(function(response){
+			flaresAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
 				console.log('Activation successful');
 				retrieveMember();
 				
@@ -161,11 +161,11 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		sw.isAsync = true;
 		
 		// $http.post('/api/member/'+$scope.member.regt_num+'/posting', {context: $scope.dischargeContext}).then(function(response){
-		flaresAPI.member.post([$scope.member.regt_num, 'posting'], {context: $scope.dischargeContext}).then(function(response){
-			console.log('Success: Created discharge record');
+		flaresAPI('member').postingFor($scope.member.regt_num).post({context: $scope.dischargeContext}).then(function(response){
+			console.log('Success: Created discharge posting record');
 			
 			// $http.delete('/api/member/'+$scope.member.regt_num).then(function(response){
-			flaresAPI.member.delete([$scope.member.regt_num]).then(function(response){
+			flaresAPI('member').delete([$scope.member.regt_num]).then(function(response){
 				retrieveMember();
 				$scope.state.path.mode = 'view';		// Revert
 				$scope.state.path.tab = 'details';
@@ -190,7 +190,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		if ($scope.member.regt_num && !$scope.member.is_active){
 			sw.isAsync = true;
 			// $http.delete('/api/member/'+$scope.member.regt_num, {params: { remove: 'permanent' }}).then(function(response){
-			flaresAPI.member.delete([$scope.member.regt_num], {params: { remove: 'permanent' }}).then(function(response){
+			flaresAPI('member').delete([$scope.member.regt_num], {params: { remove: 'permanent' }}).then(function(response){
 				$scope.member = {};  // Clear all traces of the old member
 				sw.isMemberLoaded = false;
 				retrieveMember();		// Then this should result in a "Member not found"
@@ -234,7 +234,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	// Fetch reference data for platoons and ranks
 	
 	// $http.get('/api/refdata').then(function(response){
-	flaresAPI.refData.getAll().then(function(response){
+	flaresAPI('refData').getAll().then(function(response){
 		if (response.data.ranks){
 			$scope.formData.ranks = response.data.ranks;
 		}
@@ -261,7 +261,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	function retrieveMember(){
 		if ($scope.state.path.id){
 			// $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
-			flaresAPI.member.get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
+			flaresAPI('member').get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
 				processMemberRecord(response.data.member);
 				$scope.state.isMemberLoaded = true;
@@ -298,7 +298,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		});
 		if (hasChanges){
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI.member.patch([$scope.member.regt_num], payload).then(function(response){
+			flaresAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
 				console.log('Save successful');
 				$scope.originalMember = angular.extend(Object.create($scope.originalRecord), $scope.member);
 				
@@ -360,7 +360,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	
 	$scope.deleteLast = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture').then(function(response){
-		flaresAPI.member.delete([$scope.member.regt_num, 'picture']).then(function(response){
+		flaresAPI('member').delete([$scope.member.regt_num, 'picture']).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -370,7 +370,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	};
 	$scope.deleteAll = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture', {params: { remove: 'all' }}).then(function(response){
-		flaresAPI.member.delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
+		flaresAPI('member').delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -406,7 +406,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
         if ($scope.member.regt_num){
-            flaresAPI.member.get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
+            flaresAPI('member').get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
                 if (response.status === 200){
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();

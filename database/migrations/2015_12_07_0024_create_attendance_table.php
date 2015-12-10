@@ -15,7 +15,7 @@ class CreateAttendanceTable extends Migration
         Schema::create('attendance', function(Blueprint $table){
             $table->increments('att_id');
             $table->string('regt_num', 10);
-            $table->unsignedInteger('prev_att_id');
+            $table->unsignedInteger('prev_att_id')->nullable();
             $table->dateTime('date');
             $table->unsignedInteger('acty_id');
             $table->string('recorded_value', 3);

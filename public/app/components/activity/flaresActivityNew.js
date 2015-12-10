@@ -55,7 +55,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             };
             
             // $http.post('/api/activity', payload).then(function(response){
-            flaresAPI.activity.post(payload).then(function(response){
+            flaresAPI('activity').post([], payload).then(function(response){
                 if (response.data.error && response.data.error.code){
                     console.warn(response.data.error); 
                     return;
@@ -104,7 +104,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
     
-    flaresAPI.refData.get(['activity']).then(function(response){
+    flaresAPI('refData').get(['activity']).then(function(response){
 		if (response.data.types){
 			$scope.formData.activityTypes = response.data.types;
 		}

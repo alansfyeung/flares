@@ -31,16 +31,21 @@ a[sidebar-toggle] {
     padding-bottom: 0;
     background: #8b4346;        /* 206 Maroon Dull */
     color: white;
+    box-shadow: inset 0px 4px 6px rgba(0,0,0,0.15);
 }
 .page-header h1 {
-    font-size: 1.75em;
+    font-size: 1.25em;
     font-weight: normal;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 0.55em;
+    margin-bottom: 0.5em;
 }
 .page-header h1 small {
     color: #CCC;
 }
+.page-header .btn {
+    font-size: 0.8em;
+}
+
 .page-header .title-actions {
     margin-top: -5px;
 }

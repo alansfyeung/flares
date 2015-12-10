@@ -24,7 +24,16 @@
         </span>
 	</aside>
 	
-	<h1>@{{activity.type}} @{{activity.name}}</h1>
+	<h1>Activity preparation</h1>
+</div>
+@endsection
+
+@section('activity-titleBlock')
+<div class="row">
+    <div class="col-xs-12">
+	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
+    </div>
+    <hr>
 </div>
 @endsection
 
@@ -258,38 +267,41 @@
 @endsection
 
 @section('content')
-<div class="fl-sidebar col-sm-3 col-sm-push-9 hidden">
-    <section>
-        <h4>Execution</h4>
-        <!-- For fully active members -->
-        <div class="list-group">
-            <a class="list-group-item list-group-item-success"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
-            <a class="list-group-item" ng-click="">Parade State</a>
-            <a class="list-group-item" ng-click="">Configure leave</a>
-            <a class="list-group-item" ng-click="">Review AWOLs</a>
-            <a class="list-group-item" ng-click="deleteActivity()">Delete activity</a>
-        </div>
-    </section>
-    <h4>Record audit info</h4>
-    <dl>
-        <dt>Date created</dt>
-        <dd>@{{activity.created_at | date:'medium'}}</dd>
-        <dt>Last updated</dt>
-        <dd>@{{activity.updated_at | date:'medium'}}</dd>
-    <dl>
-</div>
-<div class="fl-content col-sm-12">	
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
-        <li role="presentation"><a bs-show-tab href="#rollbuilder" aria-controls="rollbuilder" role="tab">Roll Builder</a></li>
-        <li role="presentation"><a bs-show-tab href="#permission" aria-controls="permission" role="tab">Permission</a></li>
-    </ul>
-    <div class="tab-content">
-        @yield('activity-details')
-        @yield('activity-rollbuilder')
-        @yield('activity-permission')
+@yield('activity-titleBlock')
+<div class="row">
+    <div class="fl-sidebar col-sm-3 col-sm-push-9 hidden">
+        <section>
+            <h4>Actions</h4>
+            <!-- For fully active members -->
+            <div class="list-group">
+                <a class="list-group-item list-group-item-success"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item" ng-click="">Parade State</a>
+                <a class="list-group-item" ng-click="">Configure leave</a>
+                <a class="list-group-item" ng-click="">Review AWOLs</a>
+                <a class="list-group-item" ng-click="deleteActivity()">Delete activity</a>
+            </div>
+        </section>
+        <h4>Record audit info</h4>
+        <dl>
+            <dt>Date created</dt>
+            <dd>@{{activity.created_at | date:'medium'}}</dd>
+            <dt>Last updated</dt>
+            <dd>@{{activity.updated_at | date:'medium'}}</dd>
+        <dl>
     </div>
+    <div class="fl-content col-sm-12">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
+            <li role="presentation"><a bs-show-tab href="#rollbuilder" aria-controls="rollbuilder" role="tab">Roll Builder</a></li>
+            <li role="presentation"><a bs-show-tab href="#permission" aria-controls="permission" role="tab">Permission</a></li>
+        </ul>
+        <div class="tab-content">
+            @yield('activity-details')
+            @yield('activity-rollbuilder')
+            @yield('activity-permission')
+        </div>
+    </div> 
 </div>
 @endsection
 

@@ -48,7 +48,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
             return {};
 		}());
         
-        flaresAPI.member.get(['search'], {
+        flaresAPI('member').get(['search'], {
 			params: { 'keywords': $scope.searchKeywords }
 		}).then(function(response){
 			$scope.results = response.data.members;
@@ -70,7 +70,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 			return search;
 		}());
 		
-		flaresAPI.member.get(['search'], {
+		flaresAPI('member').get(['search'], {
 			params: $scope.searchParams
 		}).then(function(response){
 			$scope.results = response.data.members;
@@ -106,7 +106,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 	//==================
 	// Fetch reference data for platoons and ranks
 	
-	flaresAPI.refData.getAll().then(function(response){
+	flaresAPI('refData').getAll().then(function(response){
 		if (response.data.ranks){
 			$scope.formData.ranks = response.data.ranks;
 			$scope.formData.ranks.unshift({abbr: '', name: 'Any rank'});

@@ -195,7 +195,7 @@ class MemberController extends BaseMemberController
 		}
 		
         return response()->json([
-            'error' => ['code' => FlaresCodes::ERR_POSTDATA_MISSING, 'reason' => 'Member postdata missing']
+            'error' => ['code' => ResponseCodes::ERR_POSTDATA_MISSING, 'reason' => 'Member postdata missing']
         ], 400);
     }
 
@@ -291,7 +291,7 @@ class MemberController extends BaseMemberController
 					$deleted = true;		// we just presume it worked, since we deleted the postings already
 				}
 				else {
-					throw new \Exception('You don\'t have permission to permanently delete this record', 'PERM');
+					throw new \Exception('You don\'t have permission to permanently delete this record', ResponseCodes::ERR_PERM_NOPE);
 				}
 			}
 			else {
@@ -307,7 +307,7 @@ class MemberController extends BaseMemberController
 		catch (\Exception $ex){
             if (!$deleted){
                 return response()->json([
-                    'error' => ['code' => 'DELETION_ERROR', 'deletionResult' => print_r($deleted, true), 'reason' => "Could not delete this record $id"]
+                    'error' => ['code' => ResponseCodes::ERR_DELETION, 'deletionResult' => print_r($deleted, true), 'reason' => "Could not delete this record $id"]
                 ], 401);
             }
             else {

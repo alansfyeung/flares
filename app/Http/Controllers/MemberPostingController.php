@@ -21,24 +21,25 @@ class MemberPostingController extends BaseMemberController
     public function store(Request $request, $memberId)
     {
 		$postingRecordId = 0;
-		$postingNotPossibleError = [];
 		
-		$context = $request->input('context', []);
-		// $member = $request->input('member', []);
-		// if ($request->has('member') && array_key_exists('regt_num', $member)){
-			// $postingRecordId = $this->generateDischargePostingRecord($member['regt_num'], $context);
-		// }
-		if ($memberId){
-			$postingRecordId = $this->generateDischargePostingRecord($memberId, $context);
+		try {
+			$context = $request->input('context', []);
+			if ($memberId){
+				$postingRecordId = $this->generateDischargePostingRecord($memberId, $context);
+			}
+			else {
+				$postingNotPossibleError = ['code' => 'NO_REGT_NUM', 'reason' => 'Did not provide a member ID'];;
+			}
+			
+			return response()->json([
+				'recordId' => $postingRecordId
+			]);
 		}
-		else {
-			$postingNotPossibleError = ['code' => 'NO_REGT_NUM', 'reason' => 'Did not provide a member ID'];;
+		catch (\Exception $ex){
+			return response()->json([
+				'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+			], 500);
 		}
-		
-		return response()->json([
-			'success' => $postingRecordId,
-			'regtNumError' => $postingNotPossibleError
-		]);
     }
 
     public function show($memberId, $postingId)
@@ -47,7 +48,9 @@ class MemberPostingController extends BaseMemberController
 		 * This method is totally redundant (as it's a lookup by postingpromo id) 
 		 */
         $postingRecord = Promtion::findOrFail($postingId);
-        return response()->json($postingRecord->toArray());
+        return response()->json([
+			'posting_promo' => $postingRecord
+		]);
     }
 	
 }

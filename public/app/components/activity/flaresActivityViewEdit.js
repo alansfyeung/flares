@@ -54,7 +54,7 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
     
-    flaresAPI.refData.get(['activity']).then(function(response){
+    flaresAPI('refData').get(['activity']).then(function(response){
 		if (response.data.types){
 			$scope.formData.activityTypes = response.data.types;
 		}
@@ -79,7 +79,7 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 
     function retrieveActivity(){
 		if ($scope.state.path.id){
-			flaresAPI.activity.get([$scope.state.path.id]).then(function(response){
+			flaresAPI('activity').get([$scope.state.path.id]).then(function(response){
 				// Process then store in VM
                 if (response.data.activity){
                     processActivityRecord(response.data.activity);
@@ -120,7 +120,7 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 		});
 		if (hasChanges){
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI.activity.patch([$scope.activity.acty_id], payload).then(function(response){
+			flaresAPI('activity').patch([$scope.activity.acty_id], payload).then(function(response){
 				console.log('Save successful');
 				$scope.originalActivity = angular.extend(Object.create($scope.originalRecord), $scope.activity);
 				
@@ -299,7 +299,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
     }
 
     function retrieveRefData(){
-        flaresAPI.refData.getAll().then(function(response){
+        flaresAPI('refData').getAll().then(function(response){
             if (response.data.platoons){
                 $scope.formData.platoons = response.data.platoons;
             }
@@ -313,11 +313,11 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
     }
     
     function retrieveMembers(){
-        return flaresAPI.member.getAll();
+        return flaresAPI('member').getAll();
     }
     
     function retrieveActivityNominalRoll(activityId){
-        return flaresAPI.activity.rollFor(activityId).getAll();
+        return flaresAPI('activity').rollFor(activityId).getAll();
     }
 
     function mapToMemberList(roll, members){
@@ -357,14 +357,14 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
             var payloadAdd = {
                 attendance: adds
             };
-            flaresAPI.activity.rollFor(activityId).post(payloadAdd).then(function(response){
+            flaresAPI('activity').rollFor(activityId).post([], payloadAdd).then(function(response){
                 $scope.lastError = response.data.error;
                 console.log('added', response);
             });            
         }
         
         deletes.forEach(function(rollId){
-            flaresAPI.activity.rollFor(activityId).delete(rollId).then(function(response){
+            flaresAPI('activity').rollFor(activityId).delete(rollId).then(function(response){
                 $scope.lastError = response.data.error;
                 console.log('deleted', response);
             });

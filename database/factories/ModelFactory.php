@@ -37,8 +37,8 @@ $factory->define(App\Activity::class, function (Faker\Generator $faker) {
     return [
 		'name' => $faker->lastName,
 		'type' => ['Parade','Bivouac','Activity','Annual Camp'][rand(0,3)],
-		'start_date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
-		'end_date' => $faker->dateTimeThisCentury()->format('Y-m-d'),
+		'start_date' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'),
+		'end_date' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'),
 		'desc' => $faker->catchPhrase,
 		'is_parade_night' => $isParadeNight,
 		'is_half_day' => $isParadeNight

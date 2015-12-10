@@ -9,7 +9,6 @@ class Member extends Model
 {
 	use SoftDeletes;
 	
-    // protected $table = 'members';
 	protected $primaryKey = 'regt_num';
 	protected $dates = ['deleted_at'];
 	protected $guarded = ['is_fully_enrolled', 'coms_username', 'coms_id', 'forums_username', 'forums_userid', 'created_at', 'updated_at', 'deleted_at'];

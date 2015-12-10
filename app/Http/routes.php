@@ -73,7 +73,7 @@
 			return view('activity.viewActivity');				// View/edit activity details & nom roll
 		});
 		Route::get('activity/roll', function(){
-			return view('activity.roll');				// Mark the roll
+			return view('activity.activityRoll');				// Mark the roll
 		});
 	});
 	

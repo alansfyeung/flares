@@ -152,8 +152,8 @@ select.ng-dirty.ng-invalid,
 
 .activity-colorcode {
     position: relative;
-    padding: 20px;
-    padding-left: 40px;
+    padding: 10px 0 0;
+    padding-left: 30px;
 }
 .activity-colorcode::before {
     content: '';

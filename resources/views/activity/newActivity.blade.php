@@ -12,7 +12,7 @@
 
 @section('activity-form')
 <form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
-    <div class="col-sm-6">
+    <div class="col-xs-12">
         <h3>Details</h3>
         <aside ng-show="workflow.isSubmitAttempted && workflow.validation.hasErrors">
             <div class="alert alert-danger">@{{workflow.validation.message}}</div>

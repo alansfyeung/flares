@@ -17,17 +17,17 @@
 <form class="form-horizontal" name="contextForm" ng-submit="workflow.next()">
 	<div class="row">
 	
-		<div class="col-sm-6">
+		<div class="col-xs-12">
 			<div class="form-group">
-				<label class="control-label col-sm-4">Default Type</label>
-				<div class="col-sm-8">
+				<label class="control-label col-sm-3">Default Type</label>
+				<div class="col-sm-9">
 					<select class="form-control" ng-model="onboardingContext.name">
 						<option ng-repeat="type in formData.onboardingTypes" value="@{{type.id}}">@{{type.name}}</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-offset-4 col-sm-8 checkbox">
+				<div class="col-sm-offset-3 col-sm-9 checkbox">
 					<label><input type="checkbox" ng-model="onboardingContext.hasOverrides" ng-true-value="true" ng-false-value="false"/> Override defaults</label>
 				</div>
 			</div>
@@ -35,19 +35,19 @@
 			<div ng-show="onboardingContext.hasOverrides">			
 				<hr>
 				<div class="form-group">
-					<label class="control-label col-sm-4">Year and Intake Cycle</label>
-					<div class="col-sm-4">
+					<label class="control-label col-sm-3">Year and Intake Cycle</label>
+					<div class="col-sm-3">
 						<input type="text" class="form-control" ng-model="onboardingContext.thisYear" />
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<select class="form-control" ng-model="onboardingContext.thisCycle">
 							<option ng-repeat="intake in formData.intakes" value="@{{intake.id}}">@{{intake.name}}</option>
 						</select>
 					</div>
 				</div>			
 				<div class="form-group">
-					<label class="control-label col-sm-4">Initial Rank</label>
-					<div class="col-sm-8">
+					<label class="control-label col-sm-3">Initial Rank</label>
+					<div class="col-sm-9">
 						<select class="form-control" ng-model="onboardingContext.newRank" aria-describedby="descInitialRank">
 							<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
 						</select>
@@ -55,8 +55,8 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-sm-4">Initial Posting</label>
-					<div class="col-sm-8">
+					<label class="control-label col-sm-3">Initial Posting</label>
+					<div class="col-sm-9">
 						<select class="form-control" ng-model="onboardingContext.newPosting" aria-describedby="descInitialPosting">
 							<option ng-repeat="posting in formData.postings" value="@{{posting.abbr}}">@{{posting.name}}</option>
 						</select> 
@@ -88,9 +88,9 @@
 				<th>Given Names</th>
 				<th>Sex</th>
 				<th>DOB</th>
-				<th>School</th>
-				<th>Member's email</th>
-				<th>Parent's email</th>
+				<!--<th>School</th>-->
+				<!--<th>Member's email</th>-->
+				<!--<th>Parent's email</th>-->
 			</tr>
 		<thead>
 		<tbody>
@@ -99,9 +99,9 @@
 				<td><input type="text" ng-model="member.data.first_name" placeholder="required" ng-disabled="member.isSaved" spreadsheet-nav required></td>
 				<td><select ng-model="member.data.sex" ng-disabled="member.isSaved" spreadsheet-nav required><option ng-repeat="sex in formData.sexes" value="@{{sex}}">@{{sex}}</option></select></td>
 				<td><input type="date" ng-model="member.data.dob" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>
-				<td><input type="text" ng-model="member.data.school" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>
-				<td><input type="email" ng-model="member.data.member_email" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>
-				<td><input type="email" ng-model="member.data.parent_email" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>
+				<!--<td><input type="text" ng-model="member.data.school" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>-->
+				<!--<td><input type="email" ng-model="member.data.member_email" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>-->
+				<!--<td><input type="email" ng-model="member.data.parent_email" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>-->
 			</tr>
 		</tbody>
 	</table>
@@ -113,12 +113,12 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-8">
 			<span>@{{newMembers.length}} new record@{{newMembers.length === 1 ? '' : 's'}}</span> &nbsp;&nbsp;
 			<button type="button" class="btn btn-default" ng-click="addNewRecord()"><span class="glyphicon glyphicon-plus-sign"></span> Add more</button>			
 			<button type="button" class="btn btn-default" ng-click="removeBlankRows()"><span class="glyphicon glyphicon-erase"></span> Remove blank rows</button>			
 		</div>
-		<div class="col-sm-6 text-right">
+		<div class="col-sm-4 text-right">
 			<button type="button" class="btn btn-default" ng-click="workflow.prev()">Back</button>
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</div>
@@ -173,12 +173,14 @@
 </div>
 <div class="row">
 	<div class="col-sm-3">
-		<h4>Select a member</h4>
 		<div class="list-group">
 			<a href="#" class="list-group-item" detailed-member="@{{member.regtNum}}" ng-repeat="member in newMembers | filter: { isSaved: true }"><strong>@{{member.regtNum}}</strong> @{{member.data.last_name}}, @{{member.data.first_name}}</a>
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-9">
+		<div ng-show="!workflow.detailedMember.regtNum">
+			<p class="lead text-muted">Select a member</p>
+		</div>
 		<form class="form-horizontal" ng-submit="workflow.submitDetailedRecord()" ng-show="workflow.detailedMember.regtNum">
 			<h3>Personal particulars</h3>
 			<div class="form-group">
@@ -336,14 +338,6 @@
 				</div>
 			</div>
 		</form>
-	</div>
-	<div class="col-sm-3">
-		<div class="well" ng-show="workflow.detailedMember.regtNum">
-			<h4>@{{workflow.detailedMember.regtNum}}</h4>
-			<p>@{{workflow.detailedMember.data.last_name}}, @{{workflow.detailedMember.data.first_name}}</p>
-			<p><button type="button" class="btn btn-primary" ng-click="workflow.submitDetailedRecord()" ng-disabled="!workflow.detailedMember.regtNum"><span class="glyphicon glyphicon-floppy-disk"></span> Save changes</button><p>
-			<p ng-show="workflow.detailedMember.isUpdated" title="Last updated at @{{workflow.detailedMember.lastPersistTime}}"><span class="glyphicon glyphicon-floppy-saved"></span> Saved</p>
-		</div>
 	</div>
 	
 </div>

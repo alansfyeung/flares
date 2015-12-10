@@ -258,7 +258,7 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
     });
     
     
-    flaresAPI.activity.getAll().then(function(response){
+    flaresAPI('activity').getAll().then(function(response){
         // categories the respose data into upcoming
         if (typeof response === 'object'){
             var activities = response.data.activities.map(function(currentValue, index, array){

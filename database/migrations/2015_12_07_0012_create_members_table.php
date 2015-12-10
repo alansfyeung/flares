@@ -17,7 +17,7 @@ class CreateMembersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('sex', 1)->nullable();
-            $table->dateTime('dob')->nullable();
+            $table->date('dob')->nullable();
             $table->string('forums_username')->unique()->nullable();
             $table->integer('forums_userid')->unique()->nullable();
             $table->string('coms_username')->nullable();
@@ -69,7 +69,7 @@ class CreateMembersTable extends Migration
             $table->increments('idcard_id');
             $table->string('regt_num');
             $table->tinyInteger('is_idcard_printed')->default(0);
-            $table->dateTime('expiry')->nullable();
+            $table->date('expiry')->nullable();
             $table->tinyInteger('is_with_bn')->default(0);
             $table->string('serial_num');
             $table->text('remarks');

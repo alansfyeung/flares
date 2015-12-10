@@ -167,7 +167,8 @@ abstract class BaseMemberController extends Controller
 		$proposedRegtNum = $prefix . str_pad($nextIndex, 2, '0', STR_PAD_LEFT);
 		$counterNoConflict = 0;
 		while ($counterNoConflict < 10){
-			$res = DB::table('member')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
+			$res = Member::select()->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
+			// $res = DB::table('members')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
 			if (sizeof($res) > 0){
 				// Is conflicted; try next index
 				$counterNoConflict++;
@@ -212,7 +213,7 @@ abstract class BaseMemberController extends Controller
 		// TODO check for overrides to the above values in $opts
 		$effectiveDate = date('Y-m-d');
 		$promoAuth = 'OC';
-		$recordedBy = 'YeungA';				// TODO: Temp, replce this recorded by
+		$recordedBy = '1';				// TODO: Temp, replce this recorded by
 		
 		if (is_array($opts)){
 			// overwrite vars above with the overrides
@@ -247,7 +248,7 @@ abstract class BaseMemberController extends Controller
 		
 		$effectiveDate = date('Y-m-d');
 		$promoAuth = 'OC';
-		$recordedBy = 'YeungA';				// TODO: Temp, replce this value dynamically 
+		$recordedBy = 1;				// TODO: Temp, replce this value dynamically 
 		$dischargeRank = null;
 		
 		if (is_array($opts)){

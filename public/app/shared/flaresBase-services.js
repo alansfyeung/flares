@@ -42,8 +42,8 @@ flaresBase.factory('flaresAPI', function($http){
     FlaresAPI.prototype.get = function(parts, params){
         return $http.get(this._buildEndpoint(parts), params);
     };
-    FlaresAPI.prototype.post = function(data, params){      // don't expect ID
-        return $http.post(this._buildEndpoint(), data, params);
+    FlaresAPI.prototype.post = function(parts, data, params){      // don't expect ID
+        return $http.post(this._buildEndpoint(parts), data, params);
     };
     FlaresAPI.prototype.put = function(parts, data, params){
         return $http.put(this._buildEndpoint(parts), data, params);
@@ -56,39 +56,22 @@ flaresBase.factory('flaresAPI', function($http){
     };
     // Todo: add a FlaresAPI.prototype.remove, alias of delete?
     
-    return {
-        refData: new FlaresAPI('/api/refdata'),
-        member: new FlaresAPI('/api/member', ['posting', 'picture', 'status']),
-        activity: new FlaresAPI('/api/activity', ['roll', 'awol'])
-    };
-});
-flaresBase.factory('flaresLinkBuilder', function() {
-    
-    function FlaresLinkBuilderFactory(className, id){
-        if (className === 'resource'){
-            return new FlaresLinkBuilder('/assets');
-        }      
-        
-        var flb = new FlaresLinkBuilder('');  
+    var factory = function(className){
+        if (className === 'refData'){
+            return new FlaresAPI('/api/refdata');
+        }
         if (className === 'member'){
-            flb.singular = 'member';
-            flb.plural = 'members';
-            flb.search = function(){
-                this.addUrl('/search');
-            };
-            return flb;
+            return new FlaresAPI('/api/member', ['posting', 'picture', 'status']);
         }
         if (className === 'activity'){
-            flb.singular = 'activity';
-            flb.plural = 'activities';
-            if (id){
-                flb.addUrl(this.singular);
-                flb.addFragment(id);
-            }
-            return flb;
+            return new FlaresAPI('/api/activity', ['roll', 'awol']);
         }
-        return flb;
-    };
+        return new FlaresAPI();
+    }
+    
+    return factory;
+});
+flaresBase.factory('flaresLinkBuilder', function() {
     
     function FlaresLinkBuilder(urlRoot){
         this.url = (urlRoot ? urlRoot : '');
@@ -142,7 +125,33 @@ flaresBase.factory('flaresLinkBuilder', function() {
         return this.url + this.frag;
     };
     
-    return FlaresLinkBuilderFactory;
+    var factory = function(className, fragment){
+        if (className === 'resource'){
+            return new FlaresLinkBuilder('/assets');
+        }      
+        
+        var flb = new FlaresLinkBuilder('');  
+        if (className === 'member'){
+            flb.singular = 'member';
+            flb.plural = 'members';
+            flb.search = function(){
+                flb.addUrl('/search');
+            };
+            return flb;
+        }
+        if (className === 'activity'){
+            flb.singular = 'activity';
+            flb.plural = 'activities';
+            if (fragment){
+                flb.addUrl(flb.singular);
+                flb.addFragment(fragment);
+            }
+            return flb;
+        }
+        return flb;
+    };
+    
+    return factory;
         
 
 });

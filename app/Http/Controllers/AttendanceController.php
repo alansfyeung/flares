@@ -9,6 +9,7 @@ use App\Activity;
 use App\Attendance;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Flares\ResponseCodes;
 
 class AttendanceController extends Controller
 {
@@ -88,10 +89,11 @@ class AttendanceController extends Controller
 			try {
 				$activity = Activity::findOrFail($activityId);
 				foreach ($request->input('attendance') as $postDataAtt){
-					$att = $activity->attendances()->save(Attendance::create($postDataAtt));
+					$newAtt = new Attendance($postDataAtt);
+					$savedAtt = $activity->attendances()->save($newAtt);
 					// $att->recorded_by = $recordedBy;  		// recorded_by is not needed for empty att recs
 					// $att->save();
-					$recordIds[] = $att->att_id;
+					$recordIds[] = $savedAtt->att_id;
 				}
 				DB::commit();
                 return response()->json([
@@ -164,7 +166,7 @@ class AttendanceController extends Controller
 		$action = $request->query('action', 'update');
 		
 		// TODO: Set the correct "Recorded By" as a system user
-		$recordedBy =  'YeungA';  	// This value should be set by the SESSION
+		$recordedBy =  1;  	// This value should be set by the SESSION
 		$postData = $request->input('attendance', []);
 		$comments = $request->input('comments', '');
 		
@@ -205,7 +207,7 @@ class AttendanceController extends Controller
 				}
 				else {
 					// Payload didn't specify an attendance value. return an error
-					throw new \Exception('No attendance value in payload', self::ERR_POSTDATA_MISSING);
+					throw new \Exception('No attendance value in payload', ResponseCodes::ERR_POSTDATA_MISSING);
 				}
 			}
 			else {

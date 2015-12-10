@@ -56,7 +56,7 @@ class ActivityTest extends TestCase
 		$activityId = $activity['att_id'];
 		
 		// Select a person to be the recorder
-		$systemUser = App\SystemUser::select('forums_username')->get()->random();
+		$systemUser = App\FlaresUser::select('user_id')->get()->random();
 		$this->assertEquals(1, count($systemUser), 'No System Users were found');		// Ensure a system user
 		
 		// Select a bunch of random regt nums
