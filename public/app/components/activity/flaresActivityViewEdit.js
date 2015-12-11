@@ -47,6 +47,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
         deleteActivity();
     };
 	
+    // ============
 	// Read the url
 	if (this.loadWorkflowPath()){
 		retrieveActivity();
@@ -110,12 +111,8 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
                     console.warn('Activity data not loaded');
                 }
 			}, function(response){
-				if (response.status == 404){
-					$scope.activity.errorNotFound = true;
-				}
-				else {
-					$scope.activity.errorServerSide = true;
-				}
+				console.warn(response);
+                $scope.state.errorNotLoaded = true;
 			});
 		}
 		else {
@@ -189,7 +186,10 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
     // Quick selection
     $scope.quickSelecting = {
         quickSelections: [],
-        activeFilter: (new QuickSelection())
+        activeQuickSelectionIndex: '0',
+    };
+    $scope.quickSelecting.runQuickSelection = function(){
+        
     };
     
     

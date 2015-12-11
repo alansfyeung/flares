@@ -11,6 +11,10 @@ class ReferenceDataSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('ref_misc')->insert([
+            ['name' => 'ROLL_SYMBOLS', 'value' => '/,A,S,L']
+        ]);
+        
         DB::table('ref_platoons')->insert([
             ['abbr' => 'D', 'name' => 'Delta Platoon', 'pos' => '0'],
             ['abbr' => '3PL', 'name' => 'Recruit Platoon', 'pos' => '10'],

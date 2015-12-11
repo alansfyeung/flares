@@ -18,7 +18,7 @@ class CreateAttendanceTable extends Migration
             $table->unsignedInteger('prev_att_id')->nullable();
             $table->dateTime('date');
             $table->unsignedInteger('acty_id');
-            $table->string('recorded_value', 3);
+            $table->string('recorded_value', 3)->default('0');  // defaulting to 0 is part of hard coded logic
             $table->tinyInteger('is_late');
             $table->unsignedInteger('leave_id');
             $table->tinyInteger('is_sms_sent');

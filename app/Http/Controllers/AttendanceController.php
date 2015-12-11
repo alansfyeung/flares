@@ -23,25 +23,27 @@ class AttendanceController extends Controller
      */
     public function index($activityId)
     {
-		$activity = Activity::findOrFail($activityId);
+		$activity = Activity::with('attendances.member')->findOrFail($activityId);
 		$atts = $activity->attendances;		// assume this returns a Collection
 		
 		$atts->reject(function($item) use ($atts){
 			// Check if this item has successors
 			foreach ($atts as $att){
-				if ($att->prev_at_id == $item->att_id){
+				if ($att->prev_att_id == $item->att_id){
 					return true;		// If it has a successor, mark for removal it
 				}
 			}
 		});
         
         $atts->each(function($item){
-            // bind extra info
+			// find the member 
+            // bind some helper properties
             $isBlank = ($item->recorded_value === '0' || $item->recorded_value === 0);
             $item->is_blank = $isBlank;
         });
 		
 		return response()->json([
+			'activity' => $activity->toArray(),
             'count' => $atts->count(),
             'roll' => $atts->toArray()
         ]);

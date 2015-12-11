@@ -15,6 +15,7 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
     this.loadInto = function(childController, callback){
         angular.extend(childController, veController);
         $scope.state = Object.create(veController.state);
+        console.log($scope.state);
         (callback || function(){})();    
     };
     

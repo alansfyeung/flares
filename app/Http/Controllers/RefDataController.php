@@ -18,8 +18,14 @@ class RefDataController extends Controller
 		return response()->json($refData);
 	}
 	
-    public function misc(){
-		return response()->json(DB::table('ref_misc')->get());
+    public function misc(Request $request){
+		$query = DB::table('ref_misc');
+		if ($request->has('name')){
+			$query->where('name', $request->input('name'));
+		}
+		return response()->json([
+			'misc' => $query->get()
+		]);
 	}
 	
     public function platoons(){

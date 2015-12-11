@@ -18,7 +18,7 @@ flaresBase.factory('flaresAPI', function($http){
                 // Create a "subresource" shortcut e.g. 
                 // FlaresAPI.member.postingFor('2065141').get();
                 this[subresourceName+'For'] = function(parentId){
-                    if (!parentId) throw 'ID must be specified';
+                    if (!parentId) console.warn('[FlaresAPI] ID must be specified');
                     var sub = Object.create(this);
                     sub.endpoint = [this.endpoint, parentId, subresourceName].join('/');
                     return sub;

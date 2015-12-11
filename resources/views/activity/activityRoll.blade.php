@@ -1,7 +1,7 @@
 {{-- Roll for an activity --}} 
 @extends('master')
 
-@section('ng-app', 'flaresActivityRollView')
+@section('ng-app', 'flaresActivityMarkRoll')
 @section('ng-controller', 'activityRollController')
 @section('title', 'Activity roll')
 
@@ -11,10 +11,10 @@
     <aside class="title-actions pull-right">
         <!-- FILL BUTTON groups -->
         <span ng-show="state.isFill()">
-            <button class="btn btn-success" ng-click="fill()"><span class="glyphicon glyphicon-floppy-disk"></span> Stop filling</button>        
+            <button class="btn btn-default" ng-click="fill()"><span class="glyphicon glyphicon-floppy-disk"></span> Stop filling</button>        
         </span>
         <span ng-show="state.isView()">
-            <button class="btn btn-default" ng-click="fill()"><span class="glyphicon glyphicon-pencil"></span> Fill</button>
+            <button class="btn btn-success" ng-click="fill()"><span class="glyphicon glyphicon-pencil"></span> Fill</button>
         </span>
     </aside>
 	<h1>Activity run sheet</h1>
@@ -31,13 +31,22 @@
 @endsection
 
 @section('activity-roll')
-<div role="tabpanel" id="markroll" class="tab-pane active">
-    <form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
-        <div class="row">
-            <h2>Mark roll</h2>
+<form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
+    <h2>Mark roll</h2>
+    <div>
+        <div class="row" ng-repeat="rollEntry in roll">
+            <div class="col-xs-4 col-sm-3">
+                <p>@{{rollEntry.rank}}</p>
+            </div>
+            <div class="col-xs-4 col-sm-6">
+                <h4>@{{rollEntry.last_name}}, @{{rollEntry.first_name.substr(0, 1)}}</h4>            
+            </div>
+            <div class="col-xs-4 col-sm-3">
+                
+            </div>
         </div>
     </div>
-</div>
+</form>
 @endsection
 
 @section('activity-paradeState')
@@ -46,19 +55,8 @@
 
 @section('content')
 @yield('activity-titleBlock')
-<div class="row">
-    <div class="col-sm-12">	
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a bs-show-tab href="markroll" aria-controls="markroll" role="tab">Mark Roll</a></li>
-            <li role="presentation"><a bs-show-tab href="paradestate" aria-controls="paradestate" role="tab">Parade State</a></li>
-        </ul>
-        <div class="tab-content">
-            @yield('activity-roll')
-            @yield('activity-paradeState')
-        </div>
-    </div>
-</div>
+@yield('activity-roll')
+@yield('activity-paradeState')
 @endsection
 
 @section('ng-script')

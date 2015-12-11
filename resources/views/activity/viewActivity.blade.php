@@ -166,7 +166,7 @@
                 <h3>Edit nominal roll</h3>
                 <p>
                     @{{ (memberList | filter:{ onRoll: true }).length }}/@{{ memberList.length }} selected
-                    <span ng-show="filtering.filterFired">, @{{filtering.showing}} displayed under this filter</span>
+                    <span ng-show="filtering.filterFired">, <span class="glyphicon glyphicon-filter"></span> @{{filtering.showing}} displayed</span>
                 </p>
                 <div class="alert alert-danger" ng-show="lastError.code">
                     <strong>@{{lastError.code}}</strong> @{{lastError.reason}}
@@ -216,6 +216,32 @@
             </div>
             <div class="col-sm-4">
                 <div class="">
+                    <h4>Filter (narrow the results)</h4>
+                    <div class="form-group">
+                        <select class="form-control" ng-model="filtering.activeFilterIndex" ng-change="filtering.runFilter()">
+                            <option ng-repeat="filter in filtering.filters track by $index" value="@{{$index}}">@{{filter.desc}}</option>
+                        </select>
+                        <!--<div class="input-group">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" ng-click="filtering.runFilter()">Filter</button>
+                            </span>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="">
+                    <h4>Quick selections (WIP)</h4>
+                    <div class="form-group">
+                        <select class="form-control" ng-model="quickSelecting.activeQuickSelectionIndex" ng-change="filtering.runFilter()">
+                            <option ng-repeat="platoon in formData.platoons" value="@{{platoon.abbr}}">@{{platoon.name}}</option>
+                        </select>
+                        <!--<div class="input-group">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary">Select</button>
+                            </span>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="">
                     <h4>Legend</h4>
                     <table class="table table-condensed">
                         <tr class="success">
@@ -225,32 +251,6 @@
                             <td><strong>Already marked</strong> (Cannot be removed)</td>
                         </tr>
                     </table>
-                </div>
-                <div class="">
-                    <h4>Filter (display only)</h4>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <select class="form-control" ng-model="filtering.activeFilterIndex">
-                                <option ng-repeat="filter in filtering.filters track by $index" value="@{{$index}}">@{{filter.desc}}</option>
-                            </select>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary" ng-click="filtering.runFilter()">Filter</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <h4>Quick selections</h4>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <select class="form-control">
-                                <option ng-repeat="platoon in formData.platoons" value="@{{platoon.abbr}}">@{{platoon.name}}</option>
-                            </select>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary">Select</button>
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -15,8 +15,8 @@ class CreateRefTable extends Migration
         Schema::create('ref_misc', function(Blueprint $table){
             $table->increments('id');
             $table->string('name', 255); 
-            $table->string('value', 255); 
-            $table->string('cond', 255); 
+            $table->string('value'); 
+            $table->string('cond')->nullable(); 
         });
         Schema::create('ref_ranks', function(Blueprint $table){
             $table->string('abbr', 10);
