@@ -117,6 +117,8 @@
         </div>
     </div>
 	
+	<hr>
+	
 	<!-- Member info tabs & panel -->
 	<div class="row">
 		<div class="fl-sidebar col-sm-3 col-sm-push-9 hidden">

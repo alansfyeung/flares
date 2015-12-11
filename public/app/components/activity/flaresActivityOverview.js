@@ -31,8 +31,16 @@ flaresApp.factory('activityCategoriser', function(){
                 var thisMonthNum = today.getMonth();
                 var thisMonthYear = today.getFullYear();
                 var thisMonthFirstDayTS = (new Date()).getTime();
+                var today = new Date();
+                var msDiff = today.getTime() - theirDate.getTime();
+                var dayDiff = Math.ceil(msDiff / (1000 * 60 * 60 * 24));
                 
                 if (theirDate.getTime() >= (new Date(thisMonthYear, thisMonthNum, 1)).getTime() && theirDate.getTime() < today.getTime()){
+                    if (dayDiff < 7){
+                        if (today.getDay() - dayDiff >= 1 && today.getDay() - dayDiff <= 7){      // testing if weekday within 1-7 (this monday to this sunday)
+                            return false;       // this will be picked up by 'This week'
+                        }
+                    }
                     return true;
                 }
                 return false;
@@ -329,13 +337,13 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
     // };
     
     $scope.bodyButtons = [{
-        label: 'View activity',
-        classNames: ['btn-default'],
-        click: 'viewActivity'
-    }, {
         label: 'Mark roll',
         classNames: ['btn-success'],
         click: 'markRoll'
+    }, {
+        label: 'View and edit activity',
+        classNames: ['btn-default'],
+        click: 'viewActivity'
     }];
     $scope.footerButtons = [{
         label: 'Close',
@@ -345,20 +353,20 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
     var clickActions = {
         viewActivity: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
         },
         editRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'rollbuilder'];
-            $window.location.href = flaresLinkBuilder('activity', frag).getLink();
+            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
         },
         markRoll: function(){
-            var frag = [$scope.activity.acty_id];
+            var frag = [$scope.activity.acty_id, 'edit', 'markroll'];
             $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
         }
     };

@@ -12,11 +12,11 @@
 	<aside class="title-actions pull-right">
         <!-- EDIT BUTTON groups -->
         <span ng-show="state.isEdit()">
-            <button class="btn btn-success" ng-click="edit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save changes</button>
+            <button class="btn btn-success" ng-click="saveEdit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
             <button class="btn btn-default" ng-click="cancelEdit()">Cancel</button>        
         </span>
         <span ng-show="state.isView()">
-            <button class="btn btn-default" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit mode</button>
+            <button class="btn btn-default" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
         </span>
         <!-- Sidebar toggle -->
         <span>
@@ -33,8 +33,8 @@
     <div class="col-xs-12">
 	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
     </div>
-    <hr>
 </div>
+<hr> 
 @endsection
 
 @section('activity-details')
@@ -274,10 +274,10 @@
             <h4>Actions</h4>
             <!-- For fully active members -->
             <div class="list-group">
-                <a class="list-group-item list-group-item-success"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
-                <a class="list-group-item" ng-click="">Parade State</a>
-                <a class="list-group-item" ng-click="">Configure leave</a>
-                <a class="list-group-item" ng-click="">Review AWOLs</a>
+                <a class="list-group-item" ng-click="actions.markRoll()"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item" ng-click="actions.paradeState()">Parade State</a>
+                <a class="list-group-item" ng-click="actions.leave()">Configure leave</a>
+                <a class="list-group-item" ng-click="actions.reviewAwol()">Review AWOLs</a>
                 <a class="list-group-item" ng-click="deleteActivity()">Delete activity</a>
             </div>
         </section>

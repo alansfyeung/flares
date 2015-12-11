@@ -8,8 +8,26 @@
 @section('heading')
 <!-- page main header -->
 <div>
+    <aside class="title-actions pull-right">
+        <!-- FILL BUTTON groups -->
+        <span ng-show="state.isFill()">
+            <button class="btn btn-success" ng-click="fill()"><span class="glyphicon glyphicon-floppy-disk"></span> Stop filling</button>        
+        </span>
+        <span ng-show="state.isView()">
+            <button class="btn btn-default" ng-click="fill()"><span class="glyphicon glyphicon-pencil"></span> Fill</button>
+        </span>
+    </aside>
 	<h1>Activity run sheet</h1>
 </div>
+@endsection
+
+@section('activity-titleBlock')
+<div class="row">
+    <div class="col-xs-12">
+	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
+    </div>
+</div>
+<hr> 
 @endsection
 
 @section('activity-roll')
@@ -27,9 +45,7 @@
 @endsection
 
 @section('content')
-<div class="row">
-    
-</div>
+@yield('activity-titleBlock')
 <div class="row">
     <div class="col-sm-12">	
         <!-- Nav tabs -->

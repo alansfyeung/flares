@@ -5,18 +5,18 @@
 
 var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
-flaresApp.controller('activityViewEditController', function($scope, $location, $controller, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flaresAPI, flaresLinkBuilder){
     
     // Add some base 
-    var veController = this;
-    angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
+    var aveController = this;
+    // angular.extend(aveController, $controller('baseViewEditController', {$scope: $scope})); 
+    // $scope.state = Object.create(aveController.state);     // set parent workflow object as proto
     
-    $scope.state = Object.create(veController.state);     // set parent workflow object as proto
+    $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
     
     $scope.activity = Object.create($scope.record);
     $scope.originalActivity = Object.create($scope.originalRecord);
     $scope.activityRollStats = {};
-    
     $scope.formData = {};
     
     $scope.edit = function(){
@@ -33,6 +33,7 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 			sw.path.mode = 'view';
 		}
 	};
+    $scope.saveEdit = $scope.edit;      // point to the same place
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
 			$scope.activity = angular.extend(Object.create($scope.record), $scope.originalActivity);
@@ -47,9 +48,29 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
     };
 	
 	// Read the url
-	if (veController.loadWorkflowPath()){
+	if (this.loadWorkflowPath()){
 		retrieveActivity();
 	}
+    
+    
+    //======================
+	// Actions menu
+    $scope.actions = {
+        markRoll: function(){
+            var frag = [$scope.activity.acty_id, 'fill', 'markroll'];
+            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+        },
+        paradeState: function(){
+            var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
+            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+        },
+        leave: function(){
+            alert('WIP');
+        },
+        reviewAwol: function(){
+            alert('WIP');
+        }
+    };
     
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
@@ -102,7 +123,7 @@ flaresApp.controller('activityViewEditController', function($scope, $location, $
 		}
 	}
     function processActivityRecord(activity){
-        veController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
+        aveController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
 		$scope.activity = activity;
 		$scope.originalActivity = angular.extend(Object.create($scope.record), activity);
 	}

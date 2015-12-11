@@ -119,6 +119,7 @@ return View::make('page')->with('userInfo',$userInfo);
 	@show
 
 	<script src="/app/shared/flaresBase.js"></script>
+	<script src="/app/shared/flaresBase-controllers.js"></script>
 	<script src="/app/shared/flaresBase-services.js"></script>
 	@yield('ng-script')
 	
