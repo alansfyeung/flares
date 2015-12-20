@@ -27,26 +27,32 @@
 	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
     </div>
 </div>
-<hr> 
 @endsection
 
 @section('activity-roll')
-<form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
-    <h2>Mark roll</h2>
-    <div>
-        <div class="row" ng-repeat="rollEntry in roll">
-            <div class="col-xs-4 col-sm-3">
-                <p>@{{rollEntry.rank}}</p>
-            </div>
-            <div class="col-xs-4 col-sm-6">
-                <h4>@{{rollEntry.last_name}}, @{{rollEntry.first_name.substr(0, 1)}}</h4>            
-            </div>
-            <div class="col-xs-4 col-sm-3">
-                
+<section>
+    <form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
+        <div class="roll-view">
+            <div class="row" ng-repeat="rollEntry in roll">
+                <div class="col-xs-9 col-sm-10">
+                    <div class="roll-view-cell">
+                        <span class="roll-view-rank">@{{rollEntry.data.member.rank | markBlanks}}</span> 
+                        @{{rollEntry.data.member.last_name}}, @{{rollEntry.data.member.first_name.substr(0, 1)}}
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2 text-right">
+                    <a class="roll-view-cell roll-mark-value" ng-class="rollValueDisplayClass(rollEntry)" ng-click="scrollAttendance(rollEntry)">@{{rollEntry.data.recorded_value | rollDisplayValue }}</a>    
+                    <a class="roll-view-cell roll-mark-action" ng-show="rollEntry.locked" ng-click="unlockRollEntry()"><span class="glyphicon glyphicon-edit"></span></a> 
+                    <a class="roll-view-cell roll-mark-action" ng-show="!rollEntry.locked" ng-click="lockRollEntry()"><span class="glyphicon glyphicon-ok"></span></a> 
+                </div>
             </div>
         </div>
-    </div>
-</form>
+        <div class="text-right">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Finish and create Parade State</button>
+        </div>
+    </form>
+</section>
 @endsection
 
 @section('activity-paradeState')

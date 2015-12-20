@@ -178,3 +178,67 @@ select.ng-dirty.ng-invalid,
 .activity-colorcode .activity-fullname {
     font-size: 1.25em;
 }
+
+
+
+/* =======================*/
+/* Roll marking view */
+
+.roll-view .row > [class^=col-] {
+	
+}
+
+.roll-view {
+	font-size: 1.5em;
+}
+.roll-view .row {
+	border-top: 1px solid #ccc;
+}
+.roll-view .row + .row {
+	border-bottom: 1px solid #ccc;
+}
+.roll-view-cell {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.roll-view .roll-mark-action,
+.roll-view .roll-mark-value {
+	display: block;
+	float: left;
+	width: 50%;
+	color: white;
+	background: black;
+	text-align: center;
+}
+.roll-view .roll-mark-value {
+	background: white;
+	color: #111;
+}
+.roll-view .roll-mark-action:hover,
+.roll-view .roll-mark-value:hover {
+	text-decoration: none;
+}
+.roll-view .roll-mark-action:active,
+.roll-view .roll-mark-value:active {
+	opacity: 0.9;
+}
+.roll-view .roll-mark-value.present {
+	background: #27ae60;
+}
+.roll-view .roll-mark-value.awol {
+	background: #c0392b;
+}
+.roll-view .roll-mark-value.away {
+	background: #e67e22;
+}
+.roll-view .roll-mark-value.pending {
+	background: #999;
+}
+
+.roll-view-rank {
+	display: inline-block;
+	width: 4em;
+}
+
+

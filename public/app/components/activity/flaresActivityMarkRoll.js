@@ -7,17 +7,48 @@
 
 var flaresApp = angular.module('flaresActivityMarkRoll', ['flaresBase']);
 
+flaresApp.filter('rollDisplayValue', function(){
+    return function(input){
+		input = input || '0';
+        return input === '0' ? '-' : input;
+    }
+});
+
 flaresApp.controller('activityRollController', function($scope, $controller, flaresAPI, flaresLinkBuilder){
 	// Add some base 
 	$controller('baseViewEditController', {$scope: $scope}).loadInto(this);
 	
+	$scope.state.isRollUnsaved = false;
+    $scope.formData = {};
+	
 	$scope.activity = Object.create($scope.record);
 	$scope.rollCount = 0;
 	$scope.roll = [];
+	$scope.activeRollEntry = 0;
 	
-    $scope.formData = {};
-	$scope.fill = function(){		
+	$scope.scrollAttendance = function(rollEntry){
 		
+	};
+	
+	$scope.markAttendance = function(){
+		$scope.state.isRollUnsaved = true;
+		
+	};
+	
+	$scope.rollDisplayValue = function(rollEntry){
+		if (rollEntry.locked){
+			return "";
+		}
+		if (~['/'].indexOf(rollEntry)){
+			return "present";
+		}
+		if (~['A'].indexOf(rollEntry)){
+			return "awol";
+		}
+		if (~['L', 'S'].indexOf(rollEntry)){
+			return "awol";
+		}
+		return "pending";
 	};
 		
 	// ==============
@@ -38,8 +69,8 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 	//======================
 	// Save-your-change niceties
 	window.onbeforeunload = function(event){
-		if ($scope.state.isEdit()){
-			var message = '';
+		if ($scope.state.isRollUnsaved){
+			var message = 'The roll has been marked but not saved.';
 			return message;
 		}
 	};
@@ -58,7 +89,14 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 				}
 				if (response.data.roll){
 					$scope.rollCount = response.data.count || 0;
-					$scope.roll = response.data.roll;		
+					$scope.roll = [];
+					response.data.roll.forEach(function(value){
+						$scope.roll.push({ 
+							locked: true, 
+							data: value 
+						});
+					});
+					// $scope.roll = response.data.roll;		
 				}
 			}, function(response){
 				console.warn(response);

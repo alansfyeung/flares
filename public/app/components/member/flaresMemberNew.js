@@ -279,7 +279,7 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 	//==================
 	// Fetch reference data for platoons and ranks
 	
-	flaresAPI.refData.getAll().then(function(response){
+	flaresAPI('refData').getAll().then(function(response){
 		if (response.data.postings){
 			$scope.formData.postings = response.data.postings;
 		}
