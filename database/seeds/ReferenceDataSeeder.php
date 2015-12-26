@@ -54,7 +54,7 @@ class ReferenceDataSeeder extends Seeder
         ]);
         
         DB::table('ref_ranks')->insert([
-            ['abbr' => 'CAPT (AAC)', 'name' => 'Captain (AAC)', 'pos' => '210'],
+            ['abbr' => 'CDTREC', 'name' => 'Recruit', 'pos' => '10'],
             ['abbr' => 'CDT', 'name' => 'Cadet', 'pos' => '20'],
             ['abbr' => 'CDTCPL', 'name' => 'Corporal', 'pos' => '40'],
             ['abbr' => 'CDTLCPL', 'name' => 'Lance Corporal', 'pos' => '30'],
@@ -67,10 +67,10 @@ class ReferenceDataSeeder extends Seeder
             ['abbr' => 'LT (AAC)', 'name' => 'Lieutenant (AAC)', 'pos' => '200'],
             ['abbr' => 'MAJ (AAC)', 'name' => 'Major (AAC)', 'pos' => '220'],
             ['abbr' => 'RAH', 'name' => 'Registered Adult Helper', 'pos' => '100'],
-            ['abbr' => 'REC', 'name' => 'Recruit', 'pos' => '10'],
             ['abbr' => 'SGT (AAC)', 'name' => 'Sergeant (AAC)', 'pos' => '140'],
             ['abbr' => 'UA', 'name' => 'Unit Assistant', 'pos' => '110'],
             ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100'],
+            ['abbr' => 'CAPT (AAC)', 'name' => 'Captain (AAC)', 'pos' => '210'],
             ['abbr' => 'WO1 (AAC)', 'name' => 'Warrant Officer Class 1 (AAC)', 'pos' => '155'],
             ['abbr' => 'WO2 (AAC)', 'name' => 'Warrant Officer Class 2 (AAC)', 'pos' => '150']
         ]);
