@@ -378,7 +378,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
             var payloadAdd = {
                 attendance: adds
             };
-            flaresAPI('activity').rollFor(activityId).post([], payloadAdd).then(function(response){
+            flaresAPI('activity').rollFor(activityId).post(payloadAdd).then(function(response){
                 $scope.lastError = response.data.error;
                 console.log('added', response);
             });            

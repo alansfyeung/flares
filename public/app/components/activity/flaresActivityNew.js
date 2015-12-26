@@ -55,7 +55,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             };
             
             // $http.post('/api/activity', payload).then(function(response){
-            flaresAPI('activity').post([], payload).then(function(response){
+            flaresAPI('activity').post(payload).then(function(response){
                 if (response.data.error && response.data.error.code){
                     console.warn(response.data.error); 
                     return;
