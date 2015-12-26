@@ -8,15 +8,6 @@
 @section('heading')
 <!-- page main header -->
 <div>
-    <aside class="title-actions pull-right">
-        <!-- FILL BUTTON groups -->
-        <span ng-show="state.isFill()">
-            <button class="btn btn-default" ng-click="fill()"><span class="glyphicon glyphicon-floppy-disk"></span> Stop filling</button>        
-        </span>
-        <span ng-show="state.isView()">
-            <button class="btn btn-success" ng-click="fill()"><span class="glyphicon glyphicon-pencil"></span> Fill</button>
-        </span>
-    </aside>
 	<h1>Activity run sheet</h1>
 </div>
 @endsection
@@ -30,45 +21,68 @@
 @endsection
 
 @section('activity-roll')
-<section>
-    <form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
-        <div class="roll-view" ng-show="roll.length === 0">
-            <p class="fl-helptext">
-                There are no members on the roll.
-                <a ng-href="/activity/#!/@{{activity.acty_id}}/edit/rollbuilder" class="btn btn-default">Edit the nominal roll</a>
-                </p>
-        </div>
-        <div class="roll-view" ng-show="roll.length > 0">
-            <div class="row">
-                <div class="col-xs-9 col-sm-10">
-                    <span class="roll-view-rank">Rank</span> 
-                    Surname, Initial
-                </div>
+<section ng-show="state.path.tab == 'markroll'">
+    <div class="roll-view-container" ng-show="roll.length === 0">
+        <p class="fl-helptext">
+            There are no members on the roll.
+            <a ng-href="/activity/#!/@{{activity.acty_id}}/edit/rollbuilder" class="btn btn-default">Edit the nominal roll</a>
+            </p>
+    </div>
+    <div class="roll-view-container" ng-show="roll.length > 0">
+        <div class="row">
+            <div class="col-xs-8 col-sm-9">
+                <span class="roll-view-rank">Rank</span> 
+                Surname, Initial
             </div>
+        </div>
+        <article class="roll-view">
             <div class="row" ng-repeat="rollEntry in roll">
-                <div class="col-xs-9 col-sm-10">
+                <div class="col-xs-8 col-sm-9">
                     <div class="roll-view-cell">
-                        <span class="roll-view-rank">@{{rollEntry.data.member.rank | markBlanks}}</span> 
+                        <span class="roll-view-rank">@{{rollEntry.data.member.current_rank.new_rank | markBlanks}}</span> 
                         @{{rollEntry.data.member.last_name}}, @{{rollEntry.data.member.first_name.substr(0, 1)}}
                     </div>
                 </div>
-                <div class="col-xs-3 col-sm-2 text-right">
-                    <a class="roll-view-cell roll-mark-value" ng-class="rollValueDisplayClass(rollEntry)" ng-click="scrollAttendance(rollEntry)">@{{rollEntry.data.recorded_value | rollDisplayValue }}</a>    
-                    <a class="roll-view-cell roll-mark-action" ng-show="rollEntry.locked" ng-click="unlockRollEntry()"><span class="glyphicon glyphicon-edit"></span></a> 
-                    <a class="roll-view-cell roll-mark-action" ng-show="!rollEntry.locked" ng-click="lockRollEntry()"><span class="glyphicon glyphicon-ok"></span></a> 
+                <div class="col-xs-4 col-sm-3 text-right">
+                    <span ng-show="rollEntry.locked">
+                        <a class="roll-view-cell roll-mark-action" ng-click="rollEntry.unlockRollEntry()"> 
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                        <span class="roll-view-cell roll-mark-value"> 
+                            @{{rollEntry.data.recorded_value | rollDisplayValue }}
+                        </span>
+                    </span>
+                    <span ng-show="!rollEntry.locked">
+                        <a class="roll-view-cell roll-mark-selector noselect" ng-class="rollValueDisplayClass(rollEntry)" ng-click="rollEntry.scrollAttendance()">@{{rollEntry.scroller.selectedSymbol}}</a>
+                        <a class="roll-view-cell roll-mark-action accept" ng-click="rollEntry.markAttendance()">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </a> 
+                        <a class="roll-view-cell roll-mark-action reject" ng-click="rollEntry.cancelAttendanceChange()">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a> 
+                    </span>
                 </div>
             </div>
-        </div>
+        </article>
         <div class="text-right">
             Your roll is autosaved. &nbsp;
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> View Parade State</button>
+            <button type="submit" class="btn btn-success" ng-click="showParadeState()">
+                View Parade State <span class="glyphicon glyphicon-ok-circle"></span> 
+            </button>
         </div>
-    </form>
+    </div>
 </section>
 @endsection
 
 @section('activity-paradeState')
-
+<section ng-show="state.path.tab == 'paradestate'">
+    <div class="roll-view-container" ng-show="roll.length === 0">
+        <p class="fl-helptext">
+            There are no members on the roll.
+            <a ng-href="/activity/#!/@{{activity.acty_id}}/edit/rollbuilder" class="btn btn-default">Edit the nominal roll</a>
+            </p>
+    </div>
+</section>
 @endsection
 
 @section('content')

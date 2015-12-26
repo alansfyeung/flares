@@ -13,7 +13,7 @@
 	<link href="/assets/css/alerts.css" rel="stylesheet">
     
 </head>
-<body flow-prevent-drop>
+<body flow-prevent-drop ng-cloak>
 	@section('header')
 	<header>
 		<nav class="navbar navbar-default navbar-fixed-top">

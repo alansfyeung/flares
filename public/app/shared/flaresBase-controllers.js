@@ -15,8 +15,7 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
     this.loadInto = function(childController, callback){
         angular.extend(childController, veController);
         $scope.state = Object.create(veController.state);
-        console.log($scope.state);
-        (callback || function(){})();    
+        (callback || function(){})();       // invoke the callback or whatever
     };
     
     $scope.record = {};     // Expect this to be aliased in child instance.
@@ -52,13 +51,16 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
             tab: pathFrags[2] ? pathFrags[2] : null,
         };
     };
-    this.loadWorkflowPath = function(){
+    this.loadWorkflowPath = function(defaultMode, defaultTab){
+        defaultMode = defaultMode || 'view';
+        defaultTab = defaultTab || 'details';
+        
         // load parsed $location into state.path
         var pathParts = this.parseUrl();
         if (pathParts.id){
             this.state.isRequested = true;
             this.state.path.id = pathParts.id;
-            this.state.path.mode = pathParts.mode ? pathParts.mode : 'view';
+            this.state.path.mode = pathParts.mode ? pathParts.mode : defaultMode;
             
             var expectedTab = $("[bs-show-tab][aria-controls='" + pathParts.tab + "']");
             if (expectedTab.length > 0){
@@ -66,7 +68,7 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
                 this.state.path.tab = pathParts.tab;
             }
             else {
-                this.state.path.tab = 'details';
+                this.state.path.tab = defaultTab;
             }
             
             // Change the state.path if $location is updated

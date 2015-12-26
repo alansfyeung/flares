@@ -188,11 +188,13 @@ select.ng-dirty.ng-invalid,
 	
 }
 
-.roll-view {
+.roll-view-container {
     margin: 1em 0;
-	font-size: 1.5em;
 }
-
+.roll-view {
+    margin: 0 0 1em;
+    font-size: 1.5em;
+}
 .roll-view .row + .row {
 	border-top: 1px solid #ccc;
 }
@@ -201,43 +203,74 @@ select.ng-dirty.ng-invalid,
 	padding-bottom: 0.5em;
 }
 
+.roll-view .roll-mark-value,
 .roll-view .roll-mark-action,
-.roll-view .roll-mark-value {
+.roll-view .roll-mark-selector {
 	display: block;
-	float: left;
-	width: 50%;
+	float: right;
 	color: white;
 	background: black;
 	text-align: center;
 }
+.roll-view .roll-mark-action,
+.roll-view .roll-mark-selector {
+    width: 33.3%;
+}
 .roll-view .roll-mark-value {
-	background: white;
+    width: 66.6%;
+    background: #444;
+    font-size: 0.8em;
+    line-height: 2;
+}
+.roll-view .roll-mark-selector {
+	background: #ccc;
 	color: #111;
 }
-.roll-view .roll-mark-action:hover,
-.roll-view .roll-mark-value:hover {
+
+.roll-view a[class^=roll]:hover {
 	text-decoration: none;
 }
-.roll-view .roll-mark-action:active,
-.roll-view .roll-mark-value:active {
+.roll-view a[class^=roll]:active {
 	opacity: 0.9;
 }
-.roll-view .roll-mark-value.present {
+
+.roll-view .roll-mark-action.accept,
+.roll-view .roll-mark-selector.present {
 	background: #27ae60;
 }
-.roll-view .roll-mark-value.awol {
+.roll-view .roll-mark-action.reject,
+.roll-view .roll-mark-selector.awol {
 	background: #c0392b;
 }
-.roll-view .roll-mark-value.away {
+.roll-view .roll-mark-selector.away {
 	background: #e67e22;
 }
-.roll-view .roll-mark-value.pending {
+.roll-view .roll-mark-selector.pending {
 	background: #999;
+}
+
+.roll-view .roll-mark-selector {
+    position: relative;
+}
+.roll-view .roll-mark-selector::before,
+.roll-view .roll-mark-selector::after {
+    position: absolute;
+    top: 10px;
+    font-size: 20px;
+    color: #aaa;
+}
+.roll-view .roll-mark-selector::before {
+    content: '<';
+    left: 3px;
+}
+.roll-view .roll-mark-selector::after {
+    content: '>';
+    right: 3px;
 }
 
 .roll-view-rank {
 	display: inline-block;
-	width: 4em;
+	width: 200px;
 }
 
 

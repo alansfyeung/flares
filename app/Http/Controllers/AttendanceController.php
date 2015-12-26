@@ -18,15 +18,18 @@ class AttendanceController extends Controller
 	
     /**
      * Display a listing of the resource.
+     * Returns all attendances (roll entries) belonging to this activity, and nests the member,
+     * member's rank, platoon and posting.
      *
      * @return Response
      */
     public function index($activityId)
     {
-		$activity = Activity::with('attendances.member')->findOrFail($activityId);
+        $activityMemberEagerLoads = ['attendances.member', 'attendances.member.current_rank', 'attendances.member.current_platoon', 'attendances.member.current_posting'];
+		$activity = Activity::with($activityMemberEagerLoads)->findOrFail($activityId);
 		$atts = $activity->attendances;		// assume this returns a Collection
 		
-		$atts->reject(function($item) use ($atts){
+		$atts = $atts->reject(function($item) use ($atts){
 			// Check if this item has successors
 			foreach ($atts as $att){
 				if ($att->prev_att_id == $item->att_id){
@@ -35,7 +38,7 @@ class AttendanceController extends Controller
 			}
 		});
         
-        $atts->each(function($item){
+        $atts = $atts->each(function($item){
 			// find the member 
             // bind some helper properties
             $isBlank = ($item->recorded_value === '0' || $item->recorded_value === 0);
@@ -45,7 +48,7 @@ class AttendanceController extends Controller
 		return response()->json([
 			'activity' => $activity->toArray(),
             'count' => $atts->count(),
-            'roll' => $atts->toArray()
+            'roll' => $atts->values()->toArray()             // values() resets the arr indexes a la array_values()
         ]);
     }
 	
@@ -262,7 +265,7 @@ class AttendanceController extends Controller
             
             return response()->json([
                 'attId' => $attId,
-                'requested' => $requestedAtt,
+                // 'requested' => $requestedAtt,
                 'oldRecordId' => $oldId,
                 'recordId' => $newId
             ]);
