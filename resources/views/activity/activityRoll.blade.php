@@ -24,7 +24,7 @@
 @section('activity-titleBlock')
 <div class="row">
     <div class="col-xs-12">
-	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
+	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>
     </div>
 </div>
 @endsection
@@ -32,7 +32,19 @@
 @section('activity-roll')
 <section>
     <form class="form-horizontal" name="contextForm" ng-submit="submitOnly()">
-        <div class="roll-view">
+        <div class="roll-view" ng-show="roll.length === 0">
+            <p class="fl-helptext">
+                There are no members on the roll.
+                <a ng-href="/activity/#!/@{{activity.acty_id}}/edit/rollbuilder" class="btn btn-default">Edit the nominal roll</a>
+                </p>
+        </div>
+        <div class="roll-view" ng-show="roll.length > 0">
+            <div class="row">
+                <div class="col-xs-9 col-sm-10">
+                    <span class="roll-view-rank">Rank</span> 
+                    Surname, Initial
+                </div>
+            </div>
             <div class="row" ng-repeat="rollEntry in roll">
                 <div class="col-xs-9 col-sm-10">
                     <div class="roll-view-cell">
@@ -48,8 +60,8 @@
             </div>
         </div>
         <div class="text-right">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Finish and create Parade State</button>
+            Your roll is autosaved. &nbsp;
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> View Parade State</button>
         </div>
     </form>
 </section>

@@ -9,11 +9,10 @@ var flaresApp = angular.module('flaresActivityOverview', ['flaresBase']);
 flaresApp.run(function($templateCache){
     $templateCache.put('activityContextMenuTemplate.html', '<div class="modal-header"><h4 class="modal-title">{{activity.type}} {{activity.name}}</h4><h5 class="modal-subtitle">{{activity.dateTopLine()}} {{activity.dateBottomLine()}}</h5></div> \
         <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
-    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a></div>');
+    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="parseClick(cancelItem.click)">{{cancelItem.label}}</a></div>');
     $templateCache.put('activityOverviewFilterTemplate.html', '<div class="modal-header"><h4 class="modal-title">Filter categories</h4></div> \
         <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
-    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a></div>');
-    
+    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="parseClick(cancelItem.click)">{{cancelItem.label}}</a></div>');
     
 });
 
@@ -265,26 +264,28 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
         $location.path($scope.state.mode || 'upcoming');
     });
     
-    
-    flaresAPI('activity').getAll().then(function(response){
-        // categories the respose data into upcoming
-        if (typeof response === 'object'){
-            var activities = response.data.activities.map(function(currentValue, index, array){
-                return new Activity(currentValue);
-            });
-            angular.forEach(activities, function(activity){
-                veController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
-            });
-            
-            $scope.upcoming = activityCategoriser.sortUpcoming(activities); 
-console.log($scope.upcoming);            
-        }
-    });
-    
+    // Go
+    loadActivities();
     
     
     // ====================
     // Function decs
+    
+    function loadActivities(){
+        flaresAPI('activity').getAll().then(function(response){
+            // categories the respose data into upcoming
+            if (typeof response === 'object'){
+                var activities = response.data.activities.map(function(currentValue, index, array){
+                    return new Activity(currentValue);
+                });
+                angular.forEach(activities, function(activity){
+                    veController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
+                });
+                
+                $scope.upcoming = activityCategoriser.sortUpcoming(activities);             
+            }
+        });
+    }
     
     function parseUrl(){
         var path = $location.path();
@@ -294,13 +295,9 @@ console.log($scope.upcoming);
         };
     };
     
-    
-    
     function Activity(data){
         angular.extend(this, data);
     }
-    
-    
     Activity.prototype = {
         dateTopLine: function(){
             if (this.is_half_day || this.start_date.getTime() === this.end_date.getTime()){
@@ -310,10 +307,10 @@ console.log($scope.upcoming);
         },
         dateBottomLine: function(){
             if (this.is_half_day){
-                return '+ Half day';
+                return '(Half day)';
             }
             if (this.start_date.getTime() === this.end_date.getTime()){
-                return '++ Full day';
+                return '(Full day)';
             }
             
             var dayDiff = Math.floor((this.end_date.getTime() - this.start_date.getTime()) / (1000*60*60*24)) + 1;
@@ -323,7 +320,7 @@ console.log($scope.upcoming);
     
 });
 
-flaresApp.controller('activityContextMenuController', function ($scope, $parse, $filter, $window, $modalInstance, flaresLinkBuilder, context){
+flaresApp.controller('activityContextMenuController', function ($scope, $parse, $filter, $window, $modalInstance, flaresLinkBuilder, flaresAPI, context){
     
     $scope.activity = context;
     // $scope.activity.dateInfo = function(){
@@ -344,10 +341,15 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
         label: 'View and edit activity',
         classNames: ['btn-default'],
         click: 'viewActivity'
+    }, {
+        label: 'Delete',
+        classNames: ['btn-default'],
+        click: 'deleteActivity'
     }];
     $scope.footerButtons = [{
         label: 'Close',
-        classNames: ['btn-default']
+        classNames: ['btn-default'],
+        click: 'cancel'
     }];
     
     var clickActions = {
@@ -357,9 +359,34 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },
+        viewActivityHref: function(){
+            var frag = [$scope.activity.acty_id, 'view', 'details'];
+            return flaresLinkBuilder('activity', frag).retrieve().getLink();
+        },
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
             $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
+        },
+        editActivityHref: function(){
+            var frag = [$scope.activity.acty_id, 'edit', 'details'];
+            return flaresLinkBuilder('activity', frag).retrieve().getLink();
+        },
+        deleteActivity: function(){
+            var frag = [$scope.activity.acty_id, 'edit', 'details'];
+            flaresAPI('activity').delete([$scope.activity.acty_id]).then(function(response){
+                // Should have been deleted. Close the modal and refresh teh list
+                loadActivities();
+                $modalInstance.dismiss('cancel');
+            }, function(response){      // Deal with any errors
+                if (response.data.error){
+                    $.alert({
+                        type: 'warning',
+                        title: 'Error deleting',
+                        text: response.data.error.reason
+                    });
+                }
+                $modalInstance.dismiss('cancel');
+            });
         },
         editRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'rollbuilder'];
@@ -368,6 +395,9 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'markroll'];
             $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+        },
+        cancel: function(){
+            $modalInstance.dismiss('cancel');
         }
     };
     
@@ -377,9 +407,9 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
         func(clickActions);
     };
     
-    $scope.cancel = function(){
-        $modalInstance.dismiss('cancel');
-    };
+    // $scope.cancel = function(){
+        // $modalInstance.dismiss('cancel');
+    // };
     // $scope.ok = function () {
         // $modalInstance.close($scope.selected.item);
     // };

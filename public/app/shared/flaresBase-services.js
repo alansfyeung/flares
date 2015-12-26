@@ -43,8 +43,8 @@ flaresBase.factory('flaresAPI', function($http){
     FlaresAPI.prototype.get = function(parts, params){
         return $http.get(this._buildEndpoint(parts), params);
     };
-    FlaresAPI.prototype.post = function(parts, data, params){      // don't expect ID
-        return $http.post(this._buildEndpoint(parts), data, params);
+    FlaresAPI.prototype.post = function(data, params){      // don't expect ID
+        return $http.post(this._buildEndpoint(), data, params);
     };
     FlaresAPI.prototype.put = function(parts, data, params){
         return $http.put(this._buildEndpoint(parts), data, params);
@@ -100,10 +100,6 @@ flaresBase.factory('flaresLinkBuilder', function() {
         this.addUrl([this.singular]);
         return this;  
     };
-    FlaresLinkBuilder.prototype.roll = function(){
-        this.addUrl([this.singular, 'roll']);
-        return this;
-    };
     FlaresLinkBuilder.prototype.addFragment = function(fragParts){     // expect an array or a string
         if (fragParts instanceof Array){
             this.frag = '#!/' + fragParts.join('/');
@@ -122,7 +118,7 @@ flaresBase.factory('flaresLinkBuilder', function() {
         }
         return this;
     };
-    FlaresLinkBuilder.prototype.getLink = function(actyId){
+    FlaresLinkBuilder.prototype.getLink = function(){
         return this.url + this.frag;
     };
     
@@ -136,7 +132,8 @@ flaresBase.factory('flaresLinkBuilder', function() {
             flb.singular = 'member';
             flb.plural = 'members';
             flb.search = function(){
-                flb.addUrl('/search');
+                this.addUrl([this.plural, 'search']);
+                return this;
             };
             return flb;
         }
@@ -146,6 +143,10 @@ flaresBase.factory('flaresLinkBuilder', function() {
             if (fragment){
                 flb.addFragment(fragment);
             }
+            flb.roll = function(){
+                this.addUrl([this.singular, 'roll']);
+                return this;
+            };
             return flb;
         }
         return flb;

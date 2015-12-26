@@ -62,8 +62,18 @@ footer {
 	color: #95a5a6;
     background: whitesmoke; 
 }
+
+/* ================ */
+/* My own utility classes */
+
+.fl-helptext {          /* Note: when less, try to get the same colour as @muted */
+    color: #ccc;
+    font-size: 24px;
+    font-weight: 300;
+}
+
   
-/* ==============*/
+/* ============== */
 /* Common elements and Bootstrap monkey patches */
 .table {
     table-layout: fixed;
@@ -76,4 +86,6 @@ footer {
     max-height: 400px;
     overflow-y: auto;
 }
+ 
+ 
  

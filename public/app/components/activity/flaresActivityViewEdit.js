@@ -8,9 +8,9 @@ var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flaresAPI, flaresLinkBuilder){
     
     // Add some base 
-    var aveController = this;
-    // angular.extend(aveController, $controller('baseViewEditController', {$scope: $scope})); 
-    // $scope.state = Object.create(aveController.state);     // set parent workflow object as proto
+    var thisController = this;
+    // angular.extend(thisController, $controller('baseViewEditController', {$scope: $scope})); 
+    // $scope.state = Object.create(thisController.state);     // set parent workflow object as proto
     
     $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
     
@@ -59,11 +59,11 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
     $scope.actions = {
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'markroll'];
-            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+            return flaresLinkBuilder('activity', frag).roll().getLink();
         },
         paradeState: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
-            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+            return flaresLinkBuilder('activity', frag).roll().getLink();
         },
         leave: function(){
             alert('WIP');
@@ -120,7 +120,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
 		}
 	}
     function processActivityRecord(activity){
-        aveController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
+        thisController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
 		$scope.activity = activity;
 		$scope.originalActivity = angular.extend(Object.create($scope.record), activity);
 	}

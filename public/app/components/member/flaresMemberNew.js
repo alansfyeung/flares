@@ -190,7 +190,7 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 					member: newMember.data
 				};
 				
-				flaresAPI.member.post(payload).then(function(response){
+				flaresAPI('member').post(payload).then(function(response){
 					if (response.data.error){
 						console.warn(response.data.error);
 						return;

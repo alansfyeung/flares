@@ -10,11 +10,8 @@
 	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/assets/css/flares-bs-extn.css" rel="stylesheet">
 	<link href="/assets/css/flares.css" rel="stylesheet">
-
-	<script src="/assets/js/jquery-1.11.3.min.js"></script>
-	<script src="/assets/js/angular.min.js"></script>
-	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
-	<script src="/assets/js/bootstrap.min.js"></script>
+	<link href="/assets/css/alerts.css" rel="stylesheet">
+    
 </head>
 <body flow-prevent-drop>
 	@section('header')
@@ -117,10 +114,19 @@ return View::make('page')->with('userInfo',$userInfo);
 		</div>
 	</footer>
 	@show
+    
+    
+    <script src="/assets/js/jquery-1.11.3.min.js"></script>
+	<script src="/assets/js/angular.min.js"></script>
+	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
+	<script src="/assets/js/bootstrap.min.js"></script>
 
 	<script src="/app/shared/flaresBase.js"></script>
 	<script src="/app/shared/flaresBase-controllers.js"></script>
 	<script src="/app/shared/flaresBase-services.js"></script>
+    
+	<script src="/assets/js/notification-popups.js"></script>
+    
 	@yield('ng-script')
 	
 </body>

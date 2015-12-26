@@ -189,13 +189,12 @@ select.ng-dirty.ng-invalid,
 }
 
 .roll-view {
+    margin: 1em 0;
 	font-size: 1.5em;
 }
-.roll-view .row {
-	border-top: 1px solid #ccc;
-}
+
 .roll-view .row + .row {
-	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
 }
 .roll-view-cell {
 	padding-top: 0.5em;

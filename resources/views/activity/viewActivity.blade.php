@@ -116,14 +116,16 @@
         <div display-mode="view" class="row">
             <div class="col-sm-12">
                 <h3>Nominal roll</h3> 
-                <p>@{{(memberList | filter: { onRoll: true }).length}} members currently on the nominal roll</p>
+                <p>
+                    @{{(memberList | filter: { onRoll: true }).length}} members currently on the nominal roll. 
+                    <span><a ng-click="edit()">Edit the nominal roll</a>.</span>
+                </p>    
                 <table class="table table-condensed fl-table-header">
                     <colgroup>
                         <col style="width: 5%;">
                         <col style="width: 10%;">
                         <col style="width: 40%;">
                         <col style="width: 5%;">
-                        <col style="width: 20%;">
                         <col style="width: 20%;">
                     </colgroup>
                     <thead>
@@ -133,7 +135,6 @@
                             <th>Last name, Inital</th>
                             <th>PL</th>
                             <th>Status</th>
-                            <th>Last modified</th>
                         </tr>
                     </thead>
                 </table>
@@ -145,7 +146,6 @@
                             <col style="width: 40%;">
                             <col style="width: 5%;">
                             <col style="width: 20%;">
-                            <col style="width: 20%;">
                         </colgroup>
                         <tbody>
                             <tr ng-repeat="member in memberList | filter: { onRoll: true } track by $index">
@@ -154,7 +154,6 @@
                                 <td><span class="text-uppercase">@{{member.data.last_name}}</span>, @{{member.data.first_name.substr(0,1) }}</td>
                                 <td>@{{member.data.current_platoon.platoon | markBlanks}}</td>
                                 <td>@{{member.displayStatus()}}</td>
-                                <td>@{{member.roll.created_at | markBlanks}}</td>
                             </tr>                        
                         </tbody>
                     </table>                
@@ -241,7 +240,7 @@
                         </div>-->
                     </div>
                 </div>
-                <div class="">
+                <!--<div class="">
                     <h4>Legend</h4>
                     <table class="table table-condensed">
                         <tr class="success">
@@ -251,7 +250,7 @@
                             <td><strong>Already marked</strong> (Cannot be removed)</td>
                         </tr>
                     </table>
-                </div>
+                </div>-->
             </div>
         </div>
     </section>
@@ -274,7 +273,7 @@
             <h4>Actions</h4>
             <!-- For fully active members -->
             <div class="list-group">
-                <a class="list-group-item" ng-click="actions.markRoll()"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item" ng-href="@{{actions.markRoll()}}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
                 <a class="list-group-item" ng-click="actions.paradeState()">Parade State</a>
                 <a class="list-group-item" ng-click="actions.leave()">Configure leave</a>
                 <a class="list-group-item" ng-click="actions.reviewAwol()">Review AWOLs</a>
@@ -293,8 +292,8 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
-            <li role="presentation"><a bs-show-tab href="#rollbuilder" aria-controls="rollbuilder" role="tab">Roll Builder</a></li>
-            <li role="presentation"><a bs-show-tab href="#permission" aria-controls="permission" role="tab">Permission</a></li>
+            <li role="presentation"><a bs-show-tab href="#rollbuilder" aria-controls="rollbuilder" role="tab">Roll Preparation</a></li>
+            <li role="presentation"><a bs-show-tab href="#permission" aria-controls="permission" role="tab">Permission notes</a></li>
         </ul>
         <div class="tab-content">
             @yield('activity-details')

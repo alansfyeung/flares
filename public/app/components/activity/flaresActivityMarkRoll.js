@@ -16,6 +16,7 @@ flaresApp.filter('rollDisplayValue', function(){
 
 flaresApp.controller('activityRollController', function($scope, $controller, flaresAPI, flaresLinkBuilder){
 	// Add some base 
+    var thisController = this;
 	$controller('baseViewEditController', {$scope: $scope}).loadInto(this);
 	
 	$scope.state.isRollUnsaved = false;
@@ -50,6 +51,11 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 		}
 		return "pending";
 	};
+    
+    $scope.unlockRollEntry = function(){
+        
+    };    
+    
 		
 	// ==============
 	// Fetch all roll entries for this activity
@@ -85,6 +91,7 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 		if ($scope.state.path.id){
 			flaresAPI('activity').rollFor($scope.state.path.id).getAll().then(function(response){
 				if (response.data.activity){
+                    thisController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], response.data.activity);
 					$scope.activity = response.data.activity;
 				}
 				if (response.data.roll){

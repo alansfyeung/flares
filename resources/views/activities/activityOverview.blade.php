@@ -16,12 +16,10 @@
         <a ng-click="state.mode = 'upcoming'">View Upcoming</a>
     </div>
     <div ng-show="upcoming.summary.total === 0">
-        <div class="alert alert-info">
-            <h2>There are no archived activities</h2>
-            <p>
-                <a href="/activities/new" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Add a new activity</a>
-            </p>
-        </div>
+        <p class="fl-helptext">
+            There are no archived activities
+            <a href="/activities/new" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Add a new activity</a>
+        </p>
     </div>
     <section>
         
@@ -37,12 +35,10 @@
         <a ng-click="state.mode = 'archived'">View Archived</a>
     </div>
     <div ng-show="upcoming.summary.total === 0">
-        <div class="alert alert-info">
-            <h2>There are no upcoming activities</h2>
-            <p>
-                <a href="/activities/new" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Add a new activity</a>
-            </p>
-        </div>
+        <p class="fl-helptext">
+            There are no upcoming activities. 
+            <a href="/activities/new" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Add a new activity</a>
+        </p>
     </div>
     <section ng-repeat="category in upcoming track by $index" ng-if="category.activities.length > 0">
         <h4>@{{category.name}}</h4>
@@ -51,14 +47,10 @@
                 <span class="sr-only"></span>
                 <div class="row">
                     <div class="col-sm-6">
-                        <h3 class="activity-fullname">@{{activity.type}} @{{activity.name}}</h3>
-                        <p>@{{ activity.dateTopLine() }} @{{ activity.dateBottomLine() }}</p>
+                        <h2 class="activity-fullname">@{{activity.name}}<br><small>@{{activity.type}}</small></h2>
                     </div>
                     <div class="col-sm-3">
-                        <!--
-                        <div class="lead">@{{ activity.dateTopLine() }}</div>
-                        <div ng-class="{'text-info': activity.is_half_day}">@{{ activity.dateBottomLine() }}</div>
-                        -->
+                        <p>@{{ activity.dateTopLine() }} @{{ activity.dateBottomLine() }}</p>
                     </div>
                     <div class="col-sm-3">
                         XX on roll
