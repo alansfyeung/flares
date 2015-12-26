@@ -42,14 +42,20 @@
         </div>
          <div class="form-group">
             <label class="control-label col-sm-3">Start Date</label>
-            <div class="col-sm-9">
+            <div class="col-sm-6">
                 <input type="date" class="form-control" ng-model="newActivity.data.start_date"/>
+            </div>
+            <div class="col-sm-3">
+                <p class="form-control-static">@{{ newActivity.data.start_date | date:'EEEE' }}</p>
             </div>
         </div>    
         <div class="form-group" ng-show="!newActivity.data.is_half_day">
             <label class="control-label col-sm-3">End Date</label>
-            <div class="col-sm-9">
+            <div class="col-sm-6">
                 <input type="date" class="form-control" ng-model="newActivity.data.end_date"/>
+            </div>
+            <div class="col-sm-3">
+                <p class="form-control-static">@{{ newActivity.data.end_date | date:'EEEE' }}</p>
             </div>
         </div>
         <div class="form-group">

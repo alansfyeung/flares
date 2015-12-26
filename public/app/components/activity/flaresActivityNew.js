@@ -82,7 +82,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
                 // Take us to the activity's view
                 // window.location.href = $('[name=menu.activity.overview]').attr('href');
                 // console.log(flaresLinkBuilderflaresLinkBuilder.page().activity(data.recordId).getLink());
-                window.location.href = flaresLinkBuilder('activity', data.recordId).getLink();
+                window.location.href = flaresLinkBuilder('activity').retrieve().addFragment([data.recordId, 'edit', 'rollbuilder']).getLink();
             });
         }
         return false;
@@ -92,7 +92,8 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
         if (validateActivityForm()){
             createActivity().then(function(){
                 // Return to the activity overview
-                window.location.href = $('[name=menu\\.activity\\.overview]').attr('href');
+                window.location.href = flaresLinkBuilder('activity').overview().getLink();
+                // window.location.href = $('[name=menu\\.activity\\.overview]').attr('href');
             });
         }
         return false;

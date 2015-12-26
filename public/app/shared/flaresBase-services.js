@@ -100,6 +100,10 @@ flaresBase.factory('flaresLinkBuilder', function() {
         this.addUrl([this.singular]);
         return this;  
     };
+    FlaresLinkBuilder.prototype.overview = function(){
+        this.addUrl([this.plural]);
+        return this;
+    };
     FlaresLinkBuilder.prototype.addFragment = function(fragParts){     // expect an array or a string
         if (fragParts instanceof Array){
             this.frag = '#!/' + fragParts.join('/');
@@ -109,6 +113,7 @@ flaresBase.factory('flaresLinkBuilder', function() {
         }
         return this;
     };
+    FlaresLinkBuilder.prototype.hash = FlaresLinkBuilder.prototype.addFragment;     // alias
     FlaresLinkBuilder.prototype.addUrl = function(urlParts){        // expect an array or a string
         if (urlParts instanceof Array){
             this.url += '/' + urlParts.join('/');
@@ -122,7 +127,7 @@ flaresBase.factory('flaresLinkBuilder', function() {
         return this.url + this.frag;
     };
     
-    var factory = function(className, fragment){
+    var factory = function(className){
         if (className === 'resource'){
             return new FlaresLinkBuilder('/assets');
         }      
@@ -140,9 +145,6 @@ flaresBase.factory('flaresLinkBuilder', function() {
         if (className === 'activity'){
             flb.singular = 'activity';
             flb.plural = 'activities';
-            if (fragment){
-                flb.addFragment(fragment);
-            }
             flb.roll = function(){
                 this.addUrl([this.singular, 'roll']);
                 return this;
@@ -153,6 +155,5 @@ flaresBase.factory('flaresLinkBuilder', function() {
     };
     
     return factory;
-        
 
 });

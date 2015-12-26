@@ -42,13 +42,26 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 	$scope.roll = [];
 	$scope.activeRollEntry = 0;
     
-    $scope.state.path.mode = 'fill';        // Always fill, for markRoll
-    
-    $scope.showParadeState = function(){
-        $scope.state.path.tab = 'paradestate';
+    $scope.breadcrumbTitle = function(){
+        switch ($scope.state.path.tab){
+            case 'paradestate':
+                return 'Parade State';
+            case 'markroll':
+                return 'Mark roll';
+        }
     };
+    
+    $scope.state.isMarkRoll = function(){
+        return $scope.state.path.tab == 'markroll';
+    }
+    $scope.state.isParadeState = function(){
+        return $scope.state.path.tab == 'paradestate';
+    }    
     $scope.showMarkRoll = function(){
         $scope.state.path.tab = 'markroll';
+    };
+    $scope.showParadeState = function(){
+        $scope.state.path.tab = 'paradestate';
     };
     
 		
@@ -124,19 +137,21 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
         if (this.scroller.originalSymbol !== this.scroller.selectedSymbol){
             this.saving = true;
             
-            // bind it to data model
-            this.data.recorded_value = this.scroller.selectedSymbol;
-            
             // Save the record
             var self = this;
             var actyId = $scope.activity.acty_id;
             var attId = this.data.att_id;
             var payload = {
-                'attendance': this.data
+                'attendance': {
+                    recorded_value: this.scroller.selectedSymbol
+                }
             };
             flaresAPI('activity').rollFor(actyId).patch([attId], payload).then(function(){
                 $scope.state.isRollUnsaved = false;
                 self.saving = false;
+                // bind it to data model
+                self.data.recorded_value = self.scroller.selectedSymbol;
+                // set this as the new OG
                 self.scroller.originalSymbol = self.scroller.selectedSymbol;
             });
         }
@@ -172,7 +187,60 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 	
 });
 
-flaresApp.controller('activityParadeStateController', function(){
-	
+flaresApp.controller('activityParadeStateController', function($scope){
+	//======================
+    // This controller gets really down and dirty with crunching the parade
+    // numbers and statistics
+	//======================
+    
+    $scope.postedStrength = 0;          // todo: how to calculate this?
+    $scope.numbers = {};
+    
+    //============
+    // Fetch posted strength
+    // +++ placeholder to fetch posted strength
+    
+    //============
+    // Listen for changes to roll
+    $scope.$watchCollection('roll', function(){
+        $scope.numbers = getNumbers();
+    });
+    $scope.$watch('roll.data.recorded_value', function(){
+        $scope.numbers = getNumbers();
+    }, true);
+    
+    
+    
+    
+    //============
+    // Functions
+    
+    function getNumbers(){
+        var roll = $scope.roll;
+        var numbers = {};
+        roll.forEach(function(rollEntry){
+            switch (rollEntry.data.recorded_value){
+                case '/':
+                    numbers.present = numbers.present + 1 || 1;
+                    break;
+                case 'L':
+                    numbers.leave = numbers.leave + 1 || 1;
+                    numbers.leaveOrSick = numbers.leaveOrSick + 1 || 1;
+                    break;
+                case 'A':
+                    numbers.awol = numbers.awol + 1 || 1;
+                    break;
+                case 'S':
+                    numbers.sick = numbers.sick + 1 || 1;
+                    numbers.leaveOrSick = numbers.leaveOrSick + 1 || 1;
+                    break;
+                default:
+                    numbers.other = numbers.other + 1 || 1;
+            }
+        });
+        numbers.rollStrength = roll.length;
+        return numbers;
+    };
+    
 });
    

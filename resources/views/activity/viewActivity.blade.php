@@ -8,7 +8,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div ng-cloak ng-show="activity.acty_id">
+<div ng-show="activity.acty_id">
 	<aside class="title-actions pull-right">
         <!-- EDIT BUTTON groups -->
         <span ng-show="state.isEdit()">
@@ -24,7 +24,7 @@
         </span>
 	</aside>
 	
-	<h1>Activity preparation</h1>
+	<h1>Activity designer</h1>
 </div>
 @endsection
 
@@ -149,11 +149,11 @@
                         </colgroup>
                         <tbody>
                             <tr ng-repeat="member in memberList | filter: { onRoll: true } track by $index">
-                                <td>@{{$index + 1}}</td>
-                                <td>@{{member.data.current_rank.rank | markBlanks}}</td>
-                                <td><span class="text-uppercase">@{{member.data.last_name}}</span>, @{{member.data.first_name.substr(0,1) }}</td>
-                                <td>@{{member.data.current_platoon.platoon | markBlanks}}</td>
-                                <td>@{{member.displayStatus()}}</td>
+                                <td>@{{ $index + 1 }}</td>
+                                <td>@{{ member.data.current_rank.rank | markBlanks }}</td>
+                                <td><span class="text-uppercase">@{{ member.data.last_name }}</span>, @{{ member.data.first_name.substr(0,1) }}</td>
+                                <td>@{{ member.data.current_platoon.platoon | markBlanks }}</td>
+                                <td>@{{ member.displayStatus() }}</td>
                             </tr>                        
                         </tbody>
                     </table>                
@@ -165,7 +165,7 @@
                 <h3>Edit nominal roll</h3>
                 <p>
                     @{{ (memberList | filter:{ onRoll: true }).length }}/@{{ memberList.length }} selected
-                    <span ng-show="filtering.filterFired">, <span class="glyphicon glyphicon-filter"></span> @{{filtering.showing}} displayed</span>
+                    <span ng-show="filtering.hasFilterFired">, <span class="glyphicon glyphicon-filter"></span> @{{filtering.showing}} displayed</span>
                 </p>
                 <div class="alert alert-danger" ng-show="lastError.code">
                     <strong>@{{lastError.code}}</strong> @{{lastError.reason}}
@@ -202,8 +202,11 @@
                             <col style="width: 15%;">
                         </colgroup>
                         <tbody>
-                            <tr ng-repeat="member in memberList | filter: { visible: true }" ng-click="toggleRollSelection(member); bumpRollRefreshTimer();" ng-class="{'success': member.onRoll, 'info': member.isMarked()}">
-                                <td><input type="checkbox" ng-model="member.onRoll" ng-show="!member.isMarked()"/></td>
+                            <tr ng-repeat="member in memberList | filter: { visible: true }" ng-click="toggleRollSelection(member); bumpRollRefreshTimer();" ng-class="{'success': member.onRoll, 'warning': member.isMarked()}">
+                                <td>
+                                    <span ng-show="member.isMarked()" class="glyphicon glyphicon-lock" title="The roll has already been marked for this member, so this member cannot be removed."></span>
+                                    <input type="checkbox" ng-model="member.onRoll" ng-show="!member.isMarked()"/>
+                                    </td>
                                 <td><strong class="text-uppercase">@{{member.data.last_name}}</strong></td>
                                 <td>@{{member.data.first_name}}</td>
                                 <td>@{{member.data.current_rank.rank}}</td>
@@ -214,8 +217,15 @@
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="">
-                    <h4>Filter (narrow the results)</h4>
+                <!-- Filters -->
+                <div class="rollbuilder-opt" name="filter-byname" ng-show="!filtering.isCategoryFilter">
+                    <h4>Filter by name | <a ng-click="filtering.switchFilterMethod()">category</a></h4>
+                    <div class="form-group">
+                        <input class="form-control" ng-model="filtering.terms" ng-change="filtering.runFilter()" />
+                    </div>
+                </div>
+                <div class="rollbuilder-opt" name="filter-bycategory" ng-show="filtering.isCategoryFilter">
+                    <h4>Filter by category | <a ng-click="filtering.switchFilterMethod()">name</a></h4>
                     <div class="form-group">
                         <select class="form-control" ng-model="filtering.activeFilterIndex" ng-change="filtering.runFilter()">
                             <option ng-repeat="filter in filtering.filters track by $index" value="@{{$index}}">@{{filter.desc}}</option>
@@ -227,8 +237,8 @@
                         </div>-->
                     </div>
                 </div>
-                <div class="">
-                    <h4>Quick selections (WIP)</h4>
+                <div class="rollbuilder-opt" name="filter-quickselect">
+                    <h4>Quick select (Work In Progress)</h4>
                     <div class="form-group">
                         <select class="form-control" ng-model="quickSelecting.activeQuickSelectionIndex" ng-change="filtering.runFilter()">
                             <option ng-repeat="platoon in formData.platoons" value="@{{platoon.abbr}}">@{{platoon.name}}</option>
@@ -273,8 +283,8 @@
             <h4>Actions</h4>
             <!-- For fully active members -->
             <div class="list-group">
-                <a class="list-group-item" ng-href="@{{actions.markRoll()}}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
-                <a class="list-group-item" ng-click="actions.paradeState()">Parade State</a>
+                <a class="list-group-item" ng-href="@{{ actions.markRoll() }}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item" ng-href="@{{ actions.paradeState() }}">Parade State</a>
                 <a class="list-group-item" ng-click="actions.leave()">Configure leave</a>
                 <a class="list-group-item" ng-click="actions.reviewAwol()">Review AWOLs</a>
                 <a class="list-group-item" ng-click="deleteActivity()">Delete activity</a>

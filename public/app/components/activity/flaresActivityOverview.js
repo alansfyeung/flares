@@ -355,21 +355,21 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
     var clickActions = {
         viewActivity: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
+            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },
         viewActivityHref: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            return flaresLinkBuilder('activity', frag).retrieve().getLink();
+            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
         },
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
+            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
         },
         editActivityHref: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            return flaresLinkBuilder('activity', frag).retrieve().getLink();
+            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
         },
         deleteActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
@@ -390,11 +390,11 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
         },
         editRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'rollbuilder'];
-            $window.location.href = flaresLinkBuilder('activity', frag).retrieve().getLink();
+            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
         },
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'markroll'];
-            $window.location.href = flaresLinkBuilder('activity', frag).roll().getLink();
+            $window.location.href = flaresLinkBuilder('activity').roll().hash(frag).getLink();
         },
         cancel: function(){
             $modalInstance.dismiss('cancel');

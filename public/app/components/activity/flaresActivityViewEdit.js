@@ -59,11 +59,11 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
     $scope.actions = {
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'markroll'];
-            return flaresLinkBuilder('activity', frag).roll().getLink();
+            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
         },
         paradeState: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
-            return flaresLinkBuilder('activity', frag).roll().getLink();
+            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
         },
         leave: function(){
             alert('WIP');
@@ -154,8 +154,11 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
     }
 });
 
-flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout, flaresAPI){
-	
+flaresApp.controller('rollBuilderController', function($scope, $filter, $controller, $timeout, flaresAPI){
+    
+    var thisController = this;
+    $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
+    
     // $scope.roll = []; 
     var rollRefreshPromise;
     $scope.lastError = {};
@@ -164,22 +167,40 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
     // Filter
     $scope.filtering = {
         filters: [],
-        activeFilterIndex: '0',
-        filterFired: false,
+        terms: '',                     // name filter
+        activeFilterIndex: '0',     // category filter
+        isCategoryFilter: true,
+        hasFilterFired: false,
         showing: 0
+    };
+    $scope.filtering.switchFilterMethod = function(){
+        $scope.filtering.terms = '';
+        $scope.filtering.isCategoryFilter = !$scope.filtering.isCategoryFilter;
+        
+        // Focus on the textbox
+        var containerName = $scope.filtering.isCategoryFilter ? 'bycategory' : 'byname';
+        angular.element('[name=filter-' + containerName + '] .form-control')[0].focus();
     };
     $scope.filtering.runFilter = function(){
         var activeFilter = $scope.filtering.filters[0];
         if (this.activeFilterIndex > 0 && this.activeFilterIndex < $scope.filtering.filters.length){
             activeFilter = $scope.filtering.filters[this.activeFilterIndex];
         }
-        if (Member.prototype.hasOwnProperty(activeFilter.handler)){
-            $scope.memberList.forEach(function(member){
+        $scope.memberList.forEach(function(member){
+            // Run the active category filter
+            if (Member.prototype.hasOwnProperty(activeFilter.handler)){
                 member[activeFilter.handler](activeFilter.value);
-            });
-        }
+            }
+            // Run the term filter
+            if (Member.prototype.hasOwnProperty('nameFilter')){
+                var terms = $scope.filtering.terms.split(/\s+/);
+                if (terms.length > 0 && terms[0]){      // check terms[0] is not empty string
+                    member.nameFilter(terms);                
+                }
+            }
+        });
         this.showing = $filter('filter')($scope.memberList, {visible: true}).length;
-        this.filterFired = true;
+        this.hasFilterFired = true;
     };
 
     
@@ -279,7 +300,12 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
         // Todo: return if they are on leave during this period
         if (this.roll){
             if (this.roll.recorded_value !== '0'){
-                return 'Marked ['+this.roll.recorded_value+']';
+                var markedDateFormat = 'dd MMM';
+                if (this.roll.updated_at.getFullYear() !== (new Date).getFullYear()){
+                    markedDateFormat += ' yyyy';
+                }
+                var markedDate = $filter('date')(this.roll.updated_at, markedDateFormat);
+                return 'Marked [ '+this.roll.recorded_value+' ] on ' + markedDate; 
             }
         }
         return 'Ready';
@@ -287,8 +313,25 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
     Member.prototype.isMarked = function(){
         return (this.roll && this.roll.recorded_value !== '0');
     };
+    
+    // Define a whole bunch of self-filter-handlers
     Member.prototype.defilter = function(){
         this.visible = true;
+    };
+    Member.prototype.nameFilter = function(terms){      // expect typeof terms == Array
+        var visible = false;
+        var firstname = this.data.first_name.toLowerCase();
+        var lastname = this.data.last_name.toLowerCase();
+        terms.forEach(function(term){
+            term = term.toLowerCase();
+            if (~firstname.indexOf(term)){
+                visible = true;
+            };
+            if (~lastname.indexOf(term)){
+                visible = true;
+            }
+        });
+        this.visible = visible;
     };
     Member.prototype.selectedFilter = function(){
         this.visible = !!this.onRoll;
@@ -347,6 +390,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
         roll.forEach(function(rollEntry){
             members.forEach(function(member, index){
                 if (member.data.regt_num === rollEntry.regt_num){
+                    thisController.convertToDateObjects(['created_at', 'updated_at'], rollEntry);
                     member.associateRoll(rollEntry);
                     return true;
                 }
@@ -406,7 +450,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $timeout
             });
         }
         // Add ranks
-        if ($scope.formData.ranks){        
+        if ($scope.formData.ranks){
             $scope.formData.ranks.forEach(function(rank){
                 filters.push(new Filter('rank', rank.abbr, 'Rank: ' + rank.name, 'rankFilter'));
             });
