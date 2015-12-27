@@ -19,57 +19,57 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 // Route::group(['middleware' => 'auth'], function () {			
 
 	/* Dashboard -- Home page */
-	Route::get('/', function () {
+	Route::get('/', ['as' => 'dashboard', function () {
 		return view('dashboard');
-	});
+	}]);
 
 	/* FLARES views */
-	Route::group(['as' => 'members::'], function(){
+	Route::group(['as' => 'members::'], function () {
 		// Route::get('members', 'PagePresenter@memberSearch');
 		// Route::get('members/new', 'PagePresenter@memberNew');
-		Route::get('members', function(){				// Member search page
+		Route::get('members', function () {				// Member search page
 			return view('members.search');
 		});
-		Route::get('members/new', function(){			// Member bulk add
+		Route::get('members/new', function () {			// Member bulk add
 			return view('members.newMember');
 		});
-		Route::get('members/stats', function(){			// Member Stats
+		Route::get('members/stats', function () {			// Member Stats
 			return view('members.stats');
 		});
-		Route::get('members/mass', function(){		// Member Mass Actions
+		Route::get('members/mass', function () {		// Member Mass Actions
 			return view('members.massactions');
 		});	
-		Route::get('members/reports', function(){		// Member reporting
+		Route::get('members/reports', function () {		// Member reporting
 			return view('members.reports');
 		});
 	});
 	
-	Route::group(['as' => 'member::'], function(){
+	Route::group(['as' => 'member::'], function (){
 		Route::get('member', function(){
 			return view('member.viewMember');
 		});
 	});
 	
-	Route::group(['as' => 'activities::'], function(){
-		Route::get('activities', function(){		// dashboard-like overview for all activities
+	Route::group(['as' => 'activities::'], function () {
+		Route::get('activities', function () {		// dashboard-like overview for all activities
 			return view('activities.activityOverview');
 		});
-		Route::get('activities/new', function(){		// Create new activity
+		Route::get('activities/new', function () {		// Create new activity
 			return view('activities.newActivity');
 		});
-        Route::get('activities/search', function(){		// dedicated search screen with omni bar
+        Route::get('activities/search', function () {		// dedicated search screen with omni bar
 			return view('activities.activitySearch');
 		});
-		Route::get('activities/awol', function(){		// All activities AWOL dashboard
+		Route::get('activities/awol', function () {		// All activities AWOL dashboard
 			return view('activities.awol');
 		});
 	});
 	
-	Route::group(['as' => 'activity::'], function(){
-		Route::get('activity', function(){
+	Route::group(['as' => 'activity::'], function () {
+		Route::get('activity', function () {
 			return view('activity.viewActivity');				// View/edit activity details & nom roll
 		});
-		Route::get('activity/roll', function(){
+		Route::get('activity/roll', function () {
 			return view('activity.activityRoll');				// Mark the roll and view parade states
 		});
 	});
@@ -78,7 +78,7 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 	/* 
 	 * FLARES Resource Controller ( access via AJAX )
 	 */
-	Route::group(['prefix' => 'api'], function(){
+	Route::group(['prefix' => 'api'], function() {
 	
 		// Dashboard API
 		Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);

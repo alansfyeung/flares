@@ -17,8 +17,8 @@ class MemberTest extends TestCase
     /**
      *  Test multiple member creation via Resource MemberController
      */
-    public function testCreateMultipleMembers(){
-		
+    public function testCreateMultipleMembers()
+    {
 		$members = $this->newRecords();
 		foreach ($members as $member){
 			$payload = [
@@ -48,8 +48,8 @@ class MemberTest extends TestCase
    /**
      *  Test member creation with context overrides (e.g. Year/intake, etc)
      */
-	public function testUpdateMember(){
-		
+	public function testUpdateMember()
+    {
 		// Fetch a list of dummy members
 		// Create member 
 		$member = $this->newRecords(1);
@@ -81,8 +81,8 @@ class MemberTest extends TestCase
 	/**
      *  Test updating a single member
      */
-	public function testUpdateMemberWithContextOverrides(){
-		
+	public function testUpdateMemberWithContextOverrides()
+    {
 		// Fetch a list of dummy members
 		// Create member 
 		$members = $this->newRecords();
@@ -126,8 +126,8 @@ class MemberTest extends TestCase
 	/**
      *  Test soft deletions 1
      */
-	public function testDischargeMember(){
-		
+	public function testDischargeMember()
+    {
 		// Fetch a list of dummy members
 		// Create member 
 		$member = $this->newRecords(1);
@@ -174,8 +174,8 @@ class MemberTest extends TestCase
 	/**
      *  Test soft deletions 2
      */
-	public function testDischargeMemberWithTerminatingRank(){
-		
+	public function testDischargeMemberWithTerminatingRank()
+    {
 		// Fetch a list of dummy members
 		// Create member 
 		$member = $this->newRecords(1);
@@ -224,8 +224,8 @@ class MemberTest extends TestCase
 	/**
      *  Test proper (permanent) deletions
      */
-	public function testDeleteMember(){
-		
+	public function testDeleteMember()
+    {
 		// Fetch a list of dummy members
 		// Create member 
 		$member = $this->newRecords(1);
@@ -256,7 +256,8 @@ class MemberTest extends TestCase
      *
      * @return Member[]
      */
-	private function newMemberRecords($howMany = 3){		// Old school, don't use this
+	private function newMemberRecords($howMany = 3)
+    {		// Old school, don't use this
 		// $members = [];
 		
 		// $members[] = [
@@ -285,7 +286,8 @@ class MemberTest extends TestCase
      *
      * @return Member[]
      */
-	private function existingMemberRecords($regtNumPrefix = '20681'){
+	private function existingMemberRecords($regtNumPrefix = '20681')
+    {
 		$members = $this->newMemberRecords();
 		$regtNumCounter = 10;
 		foreach ($members as &$member){
@@ -299,7 +301,8 @@ class MemberTest extends TestCase
      *
      * @return String 
      */
-	private function persistMember($member, $overrides = 0, $overrideSettings = 0){
+	private function persistMember($member, $overrides = 0, $overrideSettings = 0)
+    {
 		if (!$overrideSettings){
 			$overrideSettings = [];
 		}

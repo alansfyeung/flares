@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use Validator;
+use App\FlaresUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use App\FlaresUser;
+// use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class AuthController extends Controller
 {
@@ -21,7 +22,9 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesUsers, ThrottlesLogins;
+    
+    // $this->username = 'forums_username';        // overrides the trait default of username
 
     /**
      * Create a new authentication controller instance.
@@ -32,34 +35,21 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
-
+    
     /**
-     * Get a validator for an incoming registration request.
+     * FLARES
+     * Capture and handle post-authenticated
      *
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
+     */ 
+    protected function authenticated(Request $request, $user)
     {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
+        // Record their login time
+        $user->last_login_time = date('Y-m-d H:i:s');
+        $user->save();
+        
+        return redirect()->intended($this->redirectPath());
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return FlaresUser
-     */
-    protected function create(array $data)
-    {
-        return FlaresUser::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-    }
 }

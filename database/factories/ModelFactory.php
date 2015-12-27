@@ -11,12 +11,13 @@
 |
 */
 
-$factory->define(App\SystemUser::class, function (Faker\Generator $faker) {
+$factory->define(App\FlaresUser::class, function (Faker\Generator $faker) {
     return [
         'forums_username' => $faker->name,
+        'email' => $faker->companyEmail,
         'access_level' => $faker->numberBetween(0, 99),
         'last_login_time' => $faker->dateTimeThisYear(),
-        'fallback_pwd' => bcrypt(str_random(10))
+        'password' => bcrypt(str_random(10))
     ];
 });
 

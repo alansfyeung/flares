@@ -24,6 +24,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 	
 	/**
+     * FLARES
      * Randomly generate some new records
      *
 	 * @param howMany

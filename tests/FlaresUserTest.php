@@ -4,302 +4,114 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\Member;
+use Hash;
+use App\FlaresUser;
 
-class MemberTest extends TestCase
+class FlaresUserTest extends TestCase
 {
 	
 	use DatabaseTransactions;
 	use WithoutMiddleware;
 	
-	protected $model = App\Member::class;
+	protected $model = App\FlaresUser::class;
 	
     /**
-     *  Test multiple member creation via Resource MemberController
+     *  Create some FlaresUsers
      */
-    public function testCreateMultipleMembers(){
-		
-		$members = $this->newRecords();
-		foreach ($members as $member){
+    public function testCreateUsers()
+    {	
+		$users = $this->newRecords();
+		foreach ($users as $user){
+            $password = $user['password'];
 			$payload = [
-				'context' => [],
-				'member' => $member
+				'user' => $user,
+                'password' => $password
 			];
-			$response = $this->call('POST', '/api/member', $payload);
+			$response = $this->call('POST', '/api/flaresuser', $payload);
 			$this->assertEquals(200, $response->status());
 			
 			$jsonResponse = json_decode($response->content());
 			$this->assertNotEmpty($jsonResponse);
 			
-			$memberId = $jsonResponse->recordId;
-			$this->assertRegExp('/^206\d{4,5}F?$/', $memberId);
+			$userId = $jsonResponse->recordId;
+			// $this->assertRegExp('/^206\d{4,5}F?$/', $memberId);
 			
-			$this->get("/api/member/$memberId")
+			$this->get("/api/flaresuser/$userId")
 				->seeJson([
-					'regt_num' => $memberId,
-					'first_name' => $member['first_name'],
-					'last_name' => $member['last_name'],
-					'dob' => $member['dob']
+					'user_id' => $userId
 				]);
+            
+            
+            // Todo: Test authenticating with a password
+            // TBA
+            
+            
 		}
-
 	}
-	
-   /**
-     *  Test member creation with context overrides (e.g. Year/intake, etc)
+    
+    /**
+     *  Edit users
+     *  persistUser() will save a single user and return the user_id
+     *  Test by applying some edits to it
      */
-	public function testUpdateMember(){
-		
-		// Fetch a list of dummy members
-		// Create member 
-		$member = $this->newRecords(1);
-		$memberId = $this->persistMember($member);
-		
+    public function testEditUserWithoutPassword()
+    {	
+		$users = $this->newRecords(1);
+        $userId = $this->persistUser($user);
+        
+        
 		// Apply some updates
-		$member['first_name'] = 'UpdatedName';
-		$member['last_name'] = 'Smith';
-		$member['dob'] = '2015-01-01';
+		$user['email'] = 'UpdatedName';
+		$user['forums_username'] = 'Smith';
+		$user['access_level'] = '40';
 		
 		$payload = [
-			'member' => $member
+			'user' => $user
 		];
-		
-		$resp = $this->call('PUT', "/api/member/$memberId", $payload);        
+		$resp = $this->call('PUT', "/api/flaresuser/$userId", $payload);
 		$this->assertEquals(200, $resp->status());
+        
+        // Todo: expect $resp->content() is json
+        // and that it contains passwordUpdated => false
 		
-		$this->get("/api/member/$memberId")
+		$this->get("/api/flaresuser/$userId")
 			->seeJson([
-				'regt_num' => $memberId,
-				'first_name' => $member['first_name'],
-				'last_name' => $member['last_name'],
-				'dob' => $member['dob']
+				'user_id' => $userId,
+				'email' => $user['email'],
+				'forums_username' => $user['forums_username'],
+				'access_level' => $user['access_level']
 			]);
-
 	}
-	
-	
-	/**
-     *  Test updating a single member
+    
+    /**
+     *  Edit user password
      */
-	public function testUpdateMemberWithContextOverrides(){
-		
-		// Fetch a list of dummy members
-		// Create member 
-		$members = $this->newRecords();
-		$member = $members[array_rand($members)];
-		$overrideSettings = [
-			'name' => 'newAdultCadetStaff',
-			'hasOverrides' => true
-		];
-		$overrides = [
-			'thisYear' => '2014',
-			'thisCycle' => '2',
-			'newPosting' => 'ACS',
-			'newPlatoon' => '3PL',
-			'newRank' => 'LT (AAC)'
-		];
-		$memberId = $this->persistMember($member, $overrides, $overrideSettings);
-		
-		
-		// TEST UPDATING
-		$member['first_name'] = 'UpdatedName';
-		$member['last_name'] = 'Smith';
-		$member['dob'] = '2015-01-01';
+    public function testEditUserWithPassword()
+    {	
+		$users = $this->newRecords(1);
+        $userId = $this->persistUser($user);  
 		
 		$payload = [
-			'member' => $member
+			'password' => str_random(10)
 		];
+		$this->call('PUT', "/api/flaresuser/$userId", $payload)
+            ->assertResponseStatus(200);
+		// $this->assertEquals(200, $resp->status());
 		
-		$resp = $this->call('PUT', "/api/member/$memberId", $payload);
-		$this->assertEquals(200, $resp->status());
-
-		$this->get("/api/member/$memberId?detail=high")
-			->seeJson([
-				'new_rank' => $overrides['newRank'],
-				'new_platoon' => $overrides['newPlatoon'],
-				'new_posting' => $overrides['newPosting']
-			]);
-
+        // Todo: expect $resp->content() is json
+        // and that it contains passwordUpdated => false
+		
+		// Todo: Test authenticating with a password
+        
 	}
-	
-	
-	/**
-     *  Test soft deletions 1
-     */
-	public function testDischargeMember(){
-		
-		// Fetch a list of dummy members
-		// Create member 
-		$member = $this->newRecords(1);
-		$memberId = $this->persistMember($member);
-		
-		// Soft Delete this record
-		$resp = $this->call('DELETE', "/api/member/$memberId");
-		$this->assertEquals(200, $resp->status());
-		
-		// Check that it still turns if queried directly
-		$this->get("/api/member/$memberId?detail=high")
-			->seeJson([
-				'regt_num' => $memberId,
-				'first_name' => $member['first_name'],
-				'last_name' => $member['last_name'],
-				// 'is_discharge' => 1		// Discharge record is now handled by separate api call
-			]);
-			
-		// And that it shows up in the relevant Index searches
-		$this->get("/api/member?regt_num=$memberId")
-			->seeJson([]);		// Expect no results
-			
-		$this->get("/api/member?regt_num=$memberId&discharged=only")
-			->seeJson([
-				'regt_num' => $memberId,
-				'first_name' => $member['first_name'],
-				'last_name' => $member['last_name']
-			]);		// Expect Us.
-			
-			
-		// var_dump($this->call('GET', "/api/member?regt_num=$memberId&discharged=only")->content());
-		// var_dump($this->call('GET', "/api/member?regt_num=$memberId&discharged=include")->content());
-		
-		// // Not working, dunno why
-		// $this->get("/api/member?regt_num=$memberId&discharged=include")
-			// ->seeJson([
-				// 'regt_num' => $memberId,
-				// 'first_name' => $member['first_name'],
-				// 'last_name' => $member['last_name']
-			// ]);
-		
-	}
-	
-	/**
-     *  Test soft deletions 2
-     */
-	public function testDischargeMemberWithTerminatingRank(){
-		
-		// Fetch a list of dummy members
-		// Create member 
-		$member = $this->newRecords(1);
-		$memberId = $this->persistMember($member);
-		
-		// Create the discharge PostingPromo record
-		$payload = [
-			'context' => [
-				'effectiveDate' => '2012-01-02',
-				'isCustomRank' => true,
-				'dischargeRank' => 'CDTSGT'
-			]
-		];
-		$resp = $this->call('POST', "/api/member/$memberId/posting", $payload);
-		$this->assertEquals(200, $resp->status());
-		
-		// Soft Delete this record
-		$resp = $this->call('DELETE', "/api/member/$memberId");
-		$this->assertEquals(200, $resp->status());
-		
-		// Check that it still turns if queried directly
-		$this->get("/api/member/$memberId?detail=high")
-			->seeJson([
-				'regt_num' => $memberId,
-				'first_name' => $member['first_name'],
-				'last_name' => $member['last_name'],
-				'is_discharge' => 1,
-				'new_rank' => 'CDTSGT',
-				'effective_date' => '2012-01-02'
-			]);
-			
-		// And that it shows up in the relevant Index searches
-		$this->get("/api/member?regt_num=$memberId")
-			->seeJson([]);		// Expect no results
-			
-		$this->get("/api/member?regt_num=$memberId&discharged=only")
-			->seeJson([
-				'regt_num' => $memberId,
-				'first_name' => $member['first_name'],
-				'last_name' => $member['last_name']
-			]);		// Expect Us.
-		
-	}
-	
-	
-	/**
-     *  Test proper (permanent) deletions
-     */
-	public function testDeleteMember(){
-		
-		// Fetch a list of dummy members
-		// Create member 
-		$member = $this->newRecords(1);
-		$memberId = $this->persistMember($member);
-		
-		// "Delete" this record
-		$resp = $this->call('DELETE', "/api/member/$memberId?remove=permanent");
-		// var_dump(json_decode($resp->content()));
-		$this->assertEquals(200, $resp->status());
-		
-		// Check that its gone for good
-		$expectedNotFound = $this->call('GET', "/api/member/$memberId");
-		$this->assertEquals(404, $expectedNotFound->status());
-		$this->get("/api/member?regt_num=$memberId&discharged=only")
-			->seeJson([]);		// Expect no results
-		
-	}
-	
-	
-	
-	
-	//========================
-	// Privates
- 
- 
-	/**
-     * Randomly generate some new member records
-     *
-     * @return Member[]
-     */
-	private function newMemberRecords($howMany = 3){		// Old school, don't use this
-		// $members = [];
-		
-		// $members[] = [
-			// 'last_name' => 'Jack',
-			// 'first_name' => 'Afro',
-			// 'dob' => '1998-05-10',
-			// 'sex' => 'M',
-			// 'school' => 'Penrith Performing Arts High School',
-			// 'member_email' => 'afro@jack.com',
-			// 'parent_email' => 'papajack@gmail.com'
-		// ];
-		// $members[] = [
-			// 'last_name' => 'Rommano',
-			// 'first_name' => 'Jessica',
-			// 'dob' => '2002-03-11',
-			// 'sex' => 'F',
-			// 'school' => 'Hurlstone Agricultural High',
-			// 'member_email' => 'jessromman@gmail.com',
-			// 'parent_email' => 'kyleromman@work.com.au'
-		// ];
-		return $members;
-	}
-	
-	/**
-     * Return a list of existing member records
-     *
-     * @return Member[]
-     */
-	private function existingMemberRecords($regtNumPrefix = '20681'){
-		$members = $this->newMemberRecords();
-		$regtNumCounter = 10;
-		foreach ($members as &$member){
-			$member['regt_num'] = $regtNumPrefix . $regtNumCounter++ . ($member['sex'] == 'F' ? 'F' : '');
-		}
-		return $members;
-	}
-	
-	/**
-     * Persist the member and return the memberId
+    
+    /**
+     * Persist the user and return the user_id 
      *
      * @return String 
      */
-	private function persistMember($member, $overrides = 0, $overrideSettings = 0){
+	private function persistUser($user, $overrides = 0, $overrideSettings = 0)
+    {
 		if (!$overrideSettings){
 			$overrideSettings = [];
 		}
@@ -307,19 +119,36 @@ class MemberTest extends TestCase
 			$overrides = [];
 		}
 		$payload = [
-			'context' => array_merge($overrideSettings, $overrides),
-			'member' => $member
+			'user' => $user
 		];
-        
-		
-		$response = $this->call('POST', '/api/member', $payload);
+		$response = $this->call('POST', '/api/flaresuser', $payload);
 		$jsonResponse = json_decode($response->content());
 
         if (property_exists($jsonResponse, 'error')){
-            $this->fail('Cannot persist member: '.$jsonResponse->error->reason);
+            $this->fail('Cannot persist user: '.$jsonResponse->error->reason);
         }
         
 		return $jsonResponse->recordId;
 	}
+    
+    /**
+     * Persist the user and return the user_id 
+     *
+     * @return String 
+     */
+	private function testPassword($username, $expectedPassword)
+    {
+        // Make a post to the /auth/login endpoint
+        // Method 1: See if it takes us back to /auth/login page aka unsuccessful
+        // Method 2: If we can see the dashboard then successful...
+        
+        $payload = [
+            'username' => $username, 
+            'password' => $expectedPassword, 
+            'remember' => 1
+        ];
+        $this->post('/api/flaresuser', $payload)->assertRedirectedToRoute('dashboard');
+        
+    }
     
 }
