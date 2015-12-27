@@ -1,4 +1,7 @@
-{{-- Search all members --}}
+{{-- 
+Home page for Flares users
+Shows links for quick access
+--}}
 @extends('master')
 
 @section('ng-app', 'flaresDashboard')

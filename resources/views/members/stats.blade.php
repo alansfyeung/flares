@@ -1,4 +1,7 @@
-{{-- Display a single member --}}
+{{-- 
+Statistics for members
+--}}
+
 @extends('master')
 
 @section('ng-app', 'flaresApp')

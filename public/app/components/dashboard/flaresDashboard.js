@@ -1,8 +1,8 @@
 // ===============
 // Flares Dashboard
 
-var memberSearchApp = angular.module('flaresDashboard', ['flaresBase']);
-memberSearchApp.controller('dashboardController', function($scope, $http){
+var flaresDashboard = angular.module('flaresDashboard', ['flaresBase']);
+flaresDashboard.controller('dashboardController', function($scope, $http){
 	
 	$scope.stats = {
 		members: {}

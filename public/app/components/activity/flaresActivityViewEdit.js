@@ -7,7 +7,7 @@ var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
 flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flaresAPI, flaresLinkBuilder){
     
-    // This seems dirty, attaching a controller straight to the scope
+    // This seems dirty, attaching a controller straight to the $scope
     // But it seems to be the best way of sharing this parentController reference to 
     // child controllers
     var thisController = this;

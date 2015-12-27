@@ -11,21 +11,18 @@
 |
 */
 
+// Authentication routes...
+Route::get('auth/login', 'Auth\AuthController@getLogin');
+Route::post('auth/login', 'Auth\AuthController@postLogin');
+Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
-// Route::group(['middleware' => 'auth'], function () {			
+Route::group(['middleware' => 'auth'], function () {			
 
 	/* Dashboard -- Home page */
 	Route::get('/', function () {
 		return view('dashboard');
 	});
 
-
-	// Authentication routes...
-	Route::get('auth/login', 'Auth\AuthController@getLogin');
-	Route::post('auth/login', 'Auth\AuthController@postLogin');
-	Route::get('auth/logout', 'Auth\AuthController@getLogout');
-	
-	
 	/* FLARES views */
 	Route::group(['as' => 'members::'], function(){
 		// Route::get('members', 'PagePresenter@memberSearch');
@@ -33,21 +30,21 @@
 		Route::get('members', function(){				// Member search page
 			return view('members.search');
 		});
+		Route::get('members/new', function(){			// Member bulk add
+			return view('members.newMember');
+		});
 		Route::get('members/stats', function(){			// Member Stats
 			return view('members.stats');
 		});
 		Route::get('members/mass', function(){		// Member Mass Actions
 			return view('members.massactions');
 		});	
-		Route::get('members/reports', function(){		// Member Mass Actions
+		Route::get('members/reports', function(){		// Member reporting
 			return view('members.reports');
 		});
 	});
 	
 	Route::group(['as' => 'member::'], function(){
-		Route::get('members/new', function(){			// Member bulk add
-			return view('member.newMember');
-		});
 		Route::get('member', function(){
 			return view('member.viewMember');
 		});
@@ -56,6 +53,9 @@
 	Route::group(['as' => 'activities::'], function(){
 		Route::get('activities', function(){		// dashboard-like overview for all activities
 			return view('activities.activityOverview');
+		});
+		Route::get('activities/new', function(){		// Create new activity
+			return view('activities.newActivity');
 		});
         Route::get('activities/search', function(){		// dedicated search screen with omni bar
 			return view('activities.activitySearch');
@@ -66,16 +66,16 @@
 	});
 	
 	Route::group(['as' => 'activity::'], function(){
-		Route::get('activities/new', function(){		// Create new activity
-			return view('activity.newActivity');
-		});
 		Route::get('activity', function(){
 			return view('activity.viewActivity');				// View/edit activity details & nom roll
 		});
 		Route::get('activity/roll', function(){
-			return view('activity.activityRoll');				// Mark the roll
+			return view('activity.activityRoll');				// Mark the roll and view parade states
 		});
 	});
+    
+    
+    
 	
 	/* 
 	 * FLARES Resource Controller ( access via AJAX )
@@ -117,13 +117,4 @@
 
 	});
 	 
-	// Rendering views to screen
-	// Route::get('v/{view}', 'Presenter@render');
-	 
-	// View all members
-	// Route::get('', );
-	 
-	// Specific individual member
-	// Route::get('member/{action}/{id?}', );
-	 
-// });
+});
