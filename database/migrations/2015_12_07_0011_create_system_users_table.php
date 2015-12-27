@@ -18,6 +18,7 @@ class CreateSystemUsersTable extends Migration
             $table->integer('access_level');
             $table->dateTime('last_login_time');
             $table->string('fallback_pwd');
+            $table->binary('signature_blob');
             $table->timestamps();
             //$table->softDeletes();
         });

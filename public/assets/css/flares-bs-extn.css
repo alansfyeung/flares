@@ -17,7 +17,6 @@ a[sidebar-toggle] {
 }
 
 
-
 /* ==============*/
 /* Header, Footer, Nav, Headings */
 .navbar {
@@ -46,7 +45,16 @@ a[sidebar-toggle] {
     font-size: 0.8em;
 }
 
+.page-header .btn-link,
+.page-header .btn-link:active {
+    color: #ccc;
+}
+.page-header .btn-link:hover {
+    color: whitesmoke;
+}
+
 .page-header .title-actions {
+    float: right;
     margin-top: -5px;
 }
 .page-header .title-actions.pull-right {
@@ -95,5 +103,22 @@ footer {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+ 
+
+@media (max-width: 767px){
+    
+    /* Right-triangle carets for mobile menu */
+    .caret {
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid;
+    }
+    
+    .page-header .title-actions {
+        float: none;
+        margin-top: 0;
+    }
+    
 }
  

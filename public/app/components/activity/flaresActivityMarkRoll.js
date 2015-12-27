@@ -34,15 +34,14 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     var thisController = this;
 	$controller('baseViewEditController', {$scope: $scope}).loadInto(this);
 	
-	$scope.state.isRollUnsaved = false;
-    $scope.formData = {};
-	
+    $scope.refData = {};
 	$scope.activity = Object.create($scope.record);
 	$scope.rollCount = 0;
 	$scope.roll = [];
 	$scope.activeRollEntry = 0;
+	$scope.state.isRollUnsaved = false;
     
-    $scope.breadcrumbTitle = function(){
+    $scope.breadcrumbTabTitle = function(){
         switch ($scope.state.path.tab){
             case 'paradestate':
                 return 'Parade State';
@@ -70,6 +69,9 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 	if (this.loadWorkflowPath('fill', 'markroll')){
 		retrieveActivityRoll();
 	}
+    
+    // Get the platoons reference data
+    retrieveRefData();
 	
 	//======================
 	// Save-your-change niceties
@@ -89,7 +91,6 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     flaresAPI('refData').get(['misc'], {name: 'ROLL_SYMBOLS'}).then(function(response){
 		if (response.data.misc && response.data.misc.length > 0){
             var symbols = response.data.misc[0].value.split(',');
-			// $scope.formData.rollSymbols = symbols;
             RollEntrySymbolScroller.prototype.symbols = symbols;
 		}
 	});
@@ -102,7 +103,7 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 		if ($scope.state.path.id){
 			flaresAPI('activity').rollFor($scope.state.path.id).getAll().then(function(response){
 				if (response.data.activity){
-                    thisController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], response.data.activity);
+                    $scope.util.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], response.data.activity);
 					$scope.activity = response.data.activity;
 				}
 				if (response.data.roll){
@@ -185,6 +186,14 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
         }
     };
 	
+    function retrieveRefData(){
+        flaresAPI('refData').getAll().then(function(response){
+            if (response.data.platoons){
+                $scope.refData.platoons = response.data.platoons;
+            }
+        });
+    }
+    
 });
 
 flaresApp.controller('activityParadeStateController', function($scope){
@@ -193,30 +202,47 @@ flaresApp.controller('activityParadeStateController', function($scope){
     // numbers and statistics
 	//======================
     
+    $scope.refData = $scope.refData || {};      // should inherit from parent scope.
+    $scope.refData.relevantPlatoons = function(){
+        var expected = ['1PL', '2PL', '3PL', 'PNR', 'HQ'];
+        if ($scope.refData.platoons){
+            return $scope.refData.platoons.filter(function(platoon){
+                return ~expected.indexOf(platoon.abbr);
+            });            
+        }
+        return [];
+    };
+    
     $scope.postedStrength = 0;          // todo: how to calculate this?
+    $scope.totalNumbers = {};
     $scope.numbers = {};
+    $scope.nonPresent = {};
     
     //============
     // Fetch posted strength
     // +++ placeholder to fetch posted strength
     
     //============
-    // Listen for changes to roll
+    // Listen for changes that would trigger roll counts refresh
     $scope.$watchCollection('roll', function(){
-        $scope.numbers = getNumbers();
+        $scope.totalNumbers = getTotalNumbers();
     });
     $scope.$watch('roll.data.recorded_value', function(){
-        $scope.numbers = getNumbers();
+        $scope.totalNumbers = getTotalNumbers();
     }, true);
-    
+    $scope.$watch('state.path.tab', function(newVal){
+        if (newVal === 'paradestate'){
+            $scope.numbers = getPlatoonNumbers();
+            $scope.nonPresent = getPlatoonNonPresent();
+        }
+    });
     
     
     
     //============
     // Functions
     
-    function getNumbers(){
-        var roll = $scope.roll;
+    function getNumbers(roll){
         var numbers = {};
         roll.forEach(function(rollEntry){
             switch (rollEntry.data.recorded_value){
@@ -238,9 +264,44 @@ flaresApp.controller('activityParadeStateController', function($scope){
                     numbers.other = numbers.other + 1 || 1;
             }
         });
-        numbers.rollStrength = roll.length;
+        numbers.posted = roll.length;
         return numbers;
     };
+    
+    function getTotalNumbers(){
+        var roll = $scope.roll;
+        return getNumbers(roll);
+    }
+    
+    function getPlatoonNonPresent(){
+        var nonPresent = {};
+        $scope.roll.forEach(function(rollEntry){
+            var val = rollEntry.data.recorded_value;
+            if (~['A', 'L', 'S'].indexOf(val)){
+                nonPresent[val] = nonPresent[val] || [];
+                nonPresent[val].push([rollEntry.data.last_name.toUpperCase, rollEntry.data.first_name].join(' ,'));       // whack in a display string    // .+' ('+rollEntry.data.current_platoon.new_platoon+')'
+            };
+        });
+        return nonPresent;
+    }
+    
+    function getPlatoonNumbers(){
+        var roll = $scope.roll;
+        var numbers = {};
+        if ($scope.refData.platoons){
+            $scope.refData.platoons.forEach(function(platoon){
+                var rollEntriesForPlatoon = roll.filter(function(rollEntry){
+                    return rollEntry.data.member.current_platoon.new_platoon === platoon.abbr;
+                });
+                if (rollEntriesForPlatoon.length > 0){
+                    var numbersForPlatoon = getNumbers(rollEntriesForPlatoon);
+                    numbers[platoon.abbr] = numbersForPlatoon;
+                }
+            });
+        }        
+        return numbers;
+    }
+    
     
 });
    

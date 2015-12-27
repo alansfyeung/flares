@@ -8,7 +8,14 @@
 @section('heading')
 <!-- page main header -->
 <div>
-	<h1>Activity run sheet &rsaquo; @{{ breadcrumbTitle() }}</h1>
+    <aside class="title-actions pull-right">
+        <!-- Sidebar toggle -->
+        <span>
+            <a sidebar-toggle class="btn btn-link"><span class="glyphicon glyphicon-option-vertical"></span></a>
+        </span>
+	</aside>
+
+	<h1>Activity run sheet &rsaquo; @{{ breadcrumbTabTitle() }}</h1>
 </div>
 @endsection
 
@@ -75,10 +82,10 @@
         <div class="text-center">
         
             <div ng-controller="activityParadeStateController">
-                <p class="fl-helptext">@{{ numbers.rollStrength || 0 }} on the activity roll, @{{ numbers.present || 0 }} present, @{{ numbers.leaveOrSick || 0 }} leave or sick, @{{ numbers.awol || 0 }} AWOL </p>
+                <p class="fl-helptext">@{{ totalNumbers.posted || 0 }} on the activity roll, @{{ totalNumbers.present || 0 }} present, @{{ totalNumbers.leaveOrSick || 0 }} leave or sick, @{{ totalNumbers.awol || 0 }} AWOL </p>
             </div>
             
-            Your roll is autosaved. &nbsp;
+            <span ng-show="!state.isRollUnsaved">Your roll is autosaved.</span><span ng-show="state.isRollUnsaved">Saving roll &elips;</span> &nbsp;
             <button type="submit" class="btn btn-success" ng-click="showParadeState()">
                 View Parade State <span class="glyphicon glyphicon-ok-circle"></span> 
             </button>
@@ -89,12 +96,69 @@
 @endsection
 
 @section('activity-paradeState')
-<section ng-class="activityParadeStateController" class="paradestate-container" ng-show="state.isParadeState()">
+<section ng-controller="activityParadeStateController" class="paradestate-container" ng-show="state.isParadeState()">
     <form>
         <h3>Attendance</h3>
-    
-        <p></p>
+        <table class="table table-bordered">
+            <colgroup>
+                <col style="width: 30%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Sub-unit</th>
+                    <th class="text-center">Posted</th>
+                    <th class="text-center">Leave</th>
+                    <th class="text-center">Sick</th>
+                    <th class="text-center">AWOL</th>
+                    <th class="text-center">Present</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="plt in refData.relevantPlatoons()">
+                    <td>@{{ plt.name }} (@{{plt.abbr}}) </td>
+                    <td class="text-center">@{{ numbers[plt.abbr].posted || '--' }}</td>
+                    <td class="text-center">@{{ numbers[plt.abbr].leave || '--' }}</td>
+                    <td class="text-center">@{{ numbers[plt.abbr].sick || '--' }}</td>
+                    <td class="text-center">@{{ numbers[plt.abbr].awol || '--' }}</td>
+                    <td class="text-center">@{{ numbers[plt.abbr].present || '--' }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Company</th>
+                    <th class="text-center">@{{ totalNumbers.posted || '--' }}</th>
+                    <th class="text-center">@{{ totalNumbers.leave || '--' }}</th>
+                    <th class="text-center">@{{ totalNumbers.sick || '--' }}</th>
+                    <th class="text-center">@{{ totalNumbers.awol || '--' }}</th>
+                    <th class="text-center">@{{ totalNumbers.present || '--' }}</th>
+                </tr>
+            </tfoot>
+        </table>
         
+        <h3>Non-present</h3>
+        <table class="table table-bordered">
+            <colgroup>
+                <col style="width: 30%;">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>Leave</td>
+                    <td>@{{ nonPresent['L'].join(', ') }}</td>
+                </tr>
+                <tr>
+                    <td>Sick</td>
+                    <td>@{{ nonPresent['S'].join(', ') }}</td>
+                </tr>
+                <tr>
+                    <td>AWOL</td>
+                    <td>@{{ nonPresent['A'].join(', ') }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>Future leave</h3>
+
+        <h3>Past leave</h3>
         
     </form>
     <div class="text-right">

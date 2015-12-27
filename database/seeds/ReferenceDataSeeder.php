@@ -16,14 +16,14 @@ class ReferenceDataSeeder extends Seeder
         ]);
         
         DB::table('ref_platoons')->insert([
-            ['abbr' => 'D', 'name' => 'Delta Platoon', 'pos' => '0'],
-            ['abbr' => '3PL', 'name' => 'Recruit Platoon', 'pos' => '10'],
+            ['abbr' => '1PL', 'name' => 'Senior Platoon', 'pos' => '10'],
             ['abbr' => '2PL', 'name' => 'Intermediate Platoon', 'pos' => '20'],
-            ['abbr' => '1PL', 'name' => 'Senior Platoon', 'pos' => '30'],
+            ['abbr' => '3PL', 'name' => 'Recruit Platoon', 'pos' => '30'],
             ['abbr' => 'PNR', 'name' => 'Pioneers', 'pos' => '40'],
             ['abbr' => 'HQ', 'name' => 'Headquarters', 'pos' => '50'],
             ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100'],
-            ['abbr' => 'ACS', 'name' => 'Adult Cadet Staff', 'pos' => '110']
+            ['abbr' => 'ACS', 'name' => 'Adult Cadet Staff', 'pos' => '110'],
+            ['abbr' => 'D', 'name' => 'Delta Platoon', 'pos' => '200']
         ]);
         
         DB::table('ref_postings')->insert([

@@ -10,11 +10,14 @@ var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstra
 // 1. ViewEdit controller base (for forms such as member, activity, etc)
 
 flaresBase.controller('baseViewEditController', function($scope, $http, $window, $location, flaresAPI){
-    var veController = this;
+    var baseController = this;
+    
+    // Any family-wide utilities can live here
+    $scope.util = {};
     
     this.loadInto = function(childController, callback){
-        angular.extend(childController, veController);
-        $scope.state = Object.create(veController.state);
+        angular.extend(childController, baseController);
+        $scope.state = Object.create(baseController.state);
         (callback || function(){})();       // invoke the callback or whatever
     };
     
@@ -74,7 +77,7 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
             // Change the state.path if $location is updated
             $scope.$on('$locationChangeSuccess', function(event) {
                 // This could be triggered by $watchCollection-state.path
-                veController.updateWorkflowPath();
+                baseController.updateWorkflowPath();
             });
             
             this.state.isLoaded = true;
@@ -127,9 +130,12 @@ flaresBase.controller('baseViewEditController', function($scope, $http, $window,
         }, record);
     };
     
+    // Since convertToDateObjects is useful, bind it to the scope as well.
+    $scope.util.convertToDateObjects = this.convertToDateObjects;
+    
     // Change the URL path if state path details are updated (e.g. clicked on tab)
-    $scope.$watchCollection('state.path', function(){
-        veController.updateLocation();
-    });
+    $scope.$watch('state.path', function(){
+        baseController.updateLocation();
+    }, true);
     
 }); 

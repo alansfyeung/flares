@@ -38,13 +38,13 @@ flaresBase.directive('displayMode', function(){
     return { 
         restrict: 'A',
         link: function (scope, element, attr) {
-            var expr = 'state.path.mode';
-            // console.log('directiving', scope.$eval(expr));
-            if (scope.$eval(expr) !== attr.displayMode){
+            var pathModeExpr = 'state.path.mode';
+            // console.log('directiving', scope.$eval(pathModeExpr));
+            if (scope.$eval(pathModeExpr) !== attr.displayMode){
                 element.hide();
             }
             
-            scope.$watch(expr, function(newValue){
+            scope.$watch(pathModeExpr, function(newValue){
                 if (newValue !== attr.displayMode){
                     element.hide();
                     return;

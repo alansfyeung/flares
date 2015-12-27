@@ -7,17 +7,31 @@ var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
 flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flaresAPI, flaresLinkBuilder){
     
-    // Add some base 
+    // This seems dirty, attaching a controller straight to the scope
+    // But it seems to be the best way of sharing this parentController reference to 
+    // child controllers
     var thisController = this;
+    $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
+    
     // angular.extend(thisController, $controller('baseViewEditController', {$scope: $scope})); 
     // $scope.state = Object.create(thisController.state);     // set parent workflow object as proto
     
-    $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
     
     $scope.activity = Object.create($scope.record);
     $scope.originalActivity = Object.create($scope.originalRecord);
     $scope.activityRollStats = {};
     $scope.formData = {};
+    
+    $scope.breadcrumbTabTitle = function(){
+        switch ($scope.state.path.tab){
+            case 'details':
+                return 'Details';
+            case 'rollbuilder':
+                return 'Roll preparation';
+            case 'permission':
+                return 'Permission notes';
+        }
+    };
     
     $scope.edit = function(){
 		var sw = $scope.state;
@@ -120,7 +134,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
 		}
 	}
     function processActivityRecord(activity){
-        thisController.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
+        $scope.util.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], activity);
 		$scope.activity = activity;
 		$scope.originalActivity = angular.extend(Object.create($scope.record), activity);
 	}
@@ -155,9 +169,6 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
 });
 
 flaresApp.controller('rollBuilderController', function($scope, $filter, $controller, $timeout, flaresAPI){
-    
-    var thisController = this;
-    $controller('baseViewEditController', {$scope: $scope}).loadInto(this);
     
     // $scope.roll = []; 
     var rollRefreshPromise;
@@ -390,7 +401,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $control
         roll.forEach(function(rollEntry){
             members.forEach(function(member, index){
                 if (member.data.regt_num === rollEntry.regt_num){
-                    thisController.convertToDateObjects(['created_at', 'updated_at'], rollEntry);
+                    $scope.$parent.util.convertToDateObjects(['created_at', 'updated_at'], rollEntry);
                     member.associateRoll(rollEntry);
                     return true;
                 }

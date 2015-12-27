@@ -9,14 +9,14 @@
 @section('heading')
 <!-- page main header -->
 <div ng-show="activity.acty_id">
-	<aside class="title-actions pull-right">
+	<aside class="title-actions">
         <!-- EDIT BUTTON groups -->
         <span ng-show="state.isEdit()">
-            <button class="btn btn-success" ng-click="saveEdit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
-            <button class="btn btn-default" ng-click="cancelEdit()">Cancel</button>        
+            <button class="btn btn-link" ng-click="saveEdit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+            <button class="btn btn-link" ng-click="cancelEdit()">Cancel</button>        
         </span>
         <span ng-show="state.isView()">
-            <button class="btn btn-default" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+            <button class="btn btn-link" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
         </span>
         <!-- Sidebar toggle -->
         <span>
@@ -24,14 +24,14 @@
         </span>
 	</aside>
 	
-	<h1>Activity designer</h1>
+	<h1>Activity designer &rsaquo; @{{ breadcrumbTabTitle() }}</h1>
 </div>
 @endsection
 
 @section('activity-titleBlock')
 <div class="row">
     <div class="col-xs-12">
-	   <h2>@{{activity.type}} @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
+	   <h2>@{{activity.type}} &rsaquo; @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
     </div>
 </div>
 <hr> 
@@ -69,7 +69,6 @@
                         <td display-mode="edit"><input type="date" ng-model="activity.end_date"></td>
                     </tr>
                 </table>
-                
             </div>
             <div class="col-sm-6">
                 <h3>Status</h3>
@@ -118,7 +117,7 @@
                 <h3>Nominal roll</h3> 
                 <p>
                     @{{(memberList | filter: { onRoll: true }).length}} members currently on the nominal roll. 
-                    <span><a ng-click="edit()">Edit the nominal roll</a>.</span>
+                    <span><a class="btn btn-default" ng-click="edit()">Edit the nominal roll</a></span>
                 </p>    
                 <table class="table table-condensed fl-table-header">
                     <colgroup>
@@ -285,9 +284,9 @@
             <div class="list-group">
                 <a class="list-group-item" ng-href="@{{ actions.markRoll() }}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
                 <a class="list-group-item" ng-href="@{{ actions.paradeState() }}">Parade State</a>
-                <a class="list-group-item" ng-click="actions.leave()">Configure leave</a>
+                <a class="list-group-item" ng-click="actions.leave()">Record leave</a>
                 <a class="list-group-item" ng-click="actions.reviewAwol()">Review AWOLs</a>
-                <a class="list-group-item" ng-click="deleteActivity()">Delete activity</a>
+                <a class="list-group-item" ng-click="deleteActivity()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete activity</span></a>
             </div>
         </section>
         <h4>Record audit info</h4>
