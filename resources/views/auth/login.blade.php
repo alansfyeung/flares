@@ -31,7 +31,9 @@ Login page
             
             <fieldset ng-show="loginType == 'fallback'">
             
-                <h1 class="text-muted">Sign in to FLARES.</h1>
+                <div class="form-group">
+                    <h1 class="text-muted">Sign in to FLARES.</h1>
+                </div>
             
                 <div class="form-group">
                     <a class="btn btn-block btn-primary" ng-click="">Sign in using 206 forums</a>

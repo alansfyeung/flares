@@ -17,9 +17,11 @@ class CreateSystemUsersTable extends Migration
             $table->string('forums_username')->unique();
             $table->integer('access_level');
             $table->dateTime('last_login_time');
-            $table->string('fallback_pwd');
-            $table->binary('signature_blob');
-            $table->string('signature_extn');
+            $table->string('email')->nullable();
+            $table->string('password');
+            $table->binary('signature_blob')->nullable();
+            $table->string('signature_extn')->nullable();
+            $table->rememberToken();
             $table->timestamps();
             //$table->softDeletes();
         });

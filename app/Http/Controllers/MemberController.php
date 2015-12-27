@@ -248,11 +248,11 @@ class MemberController extends BaseMemberController
 		// if (is_array($postData) && array_key_exists('member', $postData)){
 		try {
 			if ($request->has('member')){
-				$postDataUpdate = $request->input('member', []);
+				$postDataUpdate = $request->member;
 				$updated = Member::updateOrCreate(['regt_num' => $id], $postDataUpdate);
 			}
 			else {
-				throw new \Exception('No member value in post data', 'POSTDATA_ERROR');
+				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
 			}
 			return response()->json([
                 'recordId' => $updated

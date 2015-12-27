@@ -16,7 +16,7 @@ Route::get('auth/login', 'Auth\AuthController@getLogin');
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
-Route::group(['middleware' => 'auth'], function () {			
+// Route::group(['middleware' => 'auth'], function () {			
 
 	/* Dashboard -- Home page */
 	Route::get('/', function () {
@@ -74,9 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
 		});
 	});
     
-    
-    
-	
+
 	/* 
 	 * FLARES Resource Controller ( access via AJAX )
 	 */
@@ -106,6 +104,8 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('activity', 'ActivityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 		Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 		
+        // Flares Users API
+        Route::resource('flaresuser', 'FlaresUserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 		 
 		// Ref data routes
 		Route::get('refdata', 'RefDataController@all');
@@ -117,4 +117,4 @@ Route::group(['middleware' => 'auth'], function () {
 
 	});
 	 
-});
+// });
