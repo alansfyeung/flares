@@ -95,7 +95,7 @@
 		<thead>
 		<tbody>
 			<tr ng-repeat="member in newMembers">
-				<td><input type="text" ng-model="member.data.last_name" placeholder="required" ng-disabled="member.isSaved" spreadsheet-nav required ></td>
+				<td><input type="text" ng-model="member.data.last_name" placeholder="required" ng-disabled="member.isSaved" spreadsheet-nav required></td>
 				<td><input type="text" ng-model="member.data.first_name" placeholder="required" ng-disabled="member.isSaved" spreadsheet-nav required></td>
 				<td><select ng-model="member.data.sex" ng-disabled="member.isSaved" spreadsheet-nav required><option ng-repeat="sex in formData.sexes" value="@{{sex}}">@{{sex}}</option></select></td>
 				<td><input type="date" ng-model="member.data.dob" placeholder="optional" ng-disabled="member.isSaved" spreadsheet-nav></td>

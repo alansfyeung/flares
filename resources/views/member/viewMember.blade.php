@@ -8,14 +8,50 @@
 @section('heading')
 <!-- page main header -->
 <div ng-cloak ng-show="member.regt_num">
-    <!-- Sidebar toggle -->
-    <aside class="title-actions pull-right">
-        <a sidebar-toggle class="btn btn-link"><span class="glyphicon glyphicon-option-vertical"></span></a>
-    </aside>
-	<!-- EDIT BUTTON -->
-	<aside class="title-actions pull-right" ng-show="!(member.deleted_at || state.isDischarge())">
-		<button class="btn btn-default" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> @{{state.isEdit() ? 'Save' : 'Edit'}}</button>
-		<button class="btn btn-default" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
+	<aside class="titlebar-actions pull-right" ng-show="!(member.deleted_at || state.isDischarge())">
+        <!-- EDIT BUTTON -->
+		<button class="btn btn-link" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> @{{state.isEdit() ? 'Save' : 'Edit'}}</button>
+		<button class="btn btn-link" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
+        <!-- DotDotDot menu toggle -->
+        <span uib-dropdown>
+            <a class="btn btn-link" uib-dropdown-toggle>
+                <span class="glyphicon glyphicon-option-vertical"></span>
+            </a>
+            <div class="uib-dropdown-menu dropdown-menu-right">
+                <!-- For fully active members -->
+                <div class="list-group" ng-show="member.is_active && !member.deleted_at">
+                    <a href="#" class="list-group-item">Record Leave</a>
+                    <a href="#" class="list-group-item">Assign award</a>
+                    <a href="#" class="list-group-item">Promote</a>
+                    <a href="#" class="list-group-item">Change posting</a>
+                    <button type="button" class="list-group-item list-group-item-warning" ng-click="confirmDischarge()">Discharge</button>
+                </div>
+                <!-- For inactive members -->
+                <div class="list-group" ng-show="!member.is_active">
+                    <button type="button" class="list-group-item" ng-click="">Activate</button>
+                    <button type="button" class="list-group-item list-group-item-danger" ng-click="">Remove permanently</button>
+                </div>
+                <!-- For discharged members -->
+                <div class="list-group" ng-show="member.deleted_at">
+                    <button type="button" class="list-group-item" ng-click="">Reactivate --- (WIP)</button>
+                </div>
+                <div class="titlebar-audit-info">
+                    <h6>Record audit info</h4>
+                    <dl ng-show="member.deleted_at">
+                        <dt>Date marked discharged</dt>
+                        <dd>@{{member.deleted_at | date:'medium'}}</dd>
+                    </dl>
+                    <dl>
+                        <dt>Date created</dt>
+                        <dd>@{{member.created_at | date:'medium'}}</dd>
+                        <dt>Last updated</dt>
+                        <dd>@{{member.updated_at | date:'medium'}}</dd>
+                    <dl>
+                
+                </div>
+            </div>
+            
+        </span>
 	</aside>
 	<h1>Member Service Record</h1>
 </div>
@@ -52,7 +88,7 @@
 @section('dischargeDisplay')
 <div ng-show="member.regt_num && state.isDischarge()" ng-cloak>
 	<div class="row">
-		<form class="form-horizontal col-sm-6">
+		<form class="form-horizontal col-xs-12">
 			<h3>Discharge member</h3>
 			
 			<div class="form-group">
@@ -101,7 +137,7 @@
     <div class="row">
         <div class="col-xs-9 col-sm-9">
             <h2>
-                @{{member.last_name}}, @{{member.first_name}}  &nbsp;
+                @{{member.last_name}}, @{{member.first_name}} &nbsp;
                 <small style="position: relative; top: -5px;"><span member-status></span><span hmp-status></span><span allergy-status></span></small><br>
                 <small style="display: inline-block">&diams; @{{member.regt_num}}</small>
             </h2>
@@ -121,40 +157,6 @@
 	
 	<!-- Member info tabs & panel -->
 	<div class="row">
-		<div class="fl-sidebar col-sm-3 col-sm-push-9 hidden">
-			<section>
-				<h4>Actions</h4>
-				<!-- For fully active members -->
-				<div class="list-group" ng-show="member.is_active && !member.deleted_at">
-					<a href="#" class="list-group-item">Record Leave</a>
-					<a href="#" class="list-group-item">Assign award</a>
-					<a href="#" class="list-group-item">Promote</a>
-					<a href="#" class="list-group-item">Change posting</a>
-					<button type="button" class="list-group-item list-group-item-warning" ng-click="confirmDischarge()">Discharge</button>
-				</div>
-				<!-- For inactive members -->
-				<div class="list-group" ng-show="!member.is_active">
-					<button type="button" class="list-group-item" ng-click="">Activate</button>
-					<button type="button" class="list-group-item list-group-item-danger" ng-click="">Remove permanently</button>
-				</div>
-				<!-- For discharged members -->
-				<div class="list-group" ng-show="member.deleted_at">
-					<button type="button" class="list-group-item" ng-click="">Reactivate --- (WIP)</button>
-				</div>
-			</section>			
-			<h4>Record audit info</h4>
-			<dl ng-show="member.deleted_at">
-				<dt>Date marked discharged</dt>
-				<dd>@{{member.deleted_at | date:'medium'}}</dd>
-			</dl>
-			<dl>
-				<dt>Date created</dt>
-				<dd>@{{member.created_at | date:'medium'}}</dd>
-				<dt>Last updated</dt>
-				<dd>@{{member.updated_at | date:'medium'}}</dd>
-			<dl>
-		</div>
-	
 		<div class="fl-content col-sm-12">
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" role="tablist">

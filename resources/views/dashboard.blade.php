@@ -20,13 +20,13 @@
 			</div>
 			<div class="panel-body">
 				<div class="row">
-					<div class="col-sm-6">
+					<div class="col-xs-6">
 						<figure class="dashboard-stat" ng-cloak>
 							<figcaption class="stat-caption">Posted Strength</figcaption>
 							<div class="stat-figure">@{{stats.member.numActive}}</div>						
 						</figure>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-xs-6">
 						<figure class="dashboard-stat" ng-cloak>
 							<figcaption class="stat-caption">Total in system</figcaption>
 							<div class="stat-figure">@{{stats.member.numTotal}}</div>

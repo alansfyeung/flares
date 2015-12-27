@@ -70,6 +70,11 @@ a[sidebar-toggle] {
     margin-right: 0px;
 }
 
+.page-header .titlebar-audit-info {
+    color: #222;
+    padding: 5px 15px;
+}
+
 footer {
     position: fixed;
     left: 0;

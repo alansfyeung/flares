@@ -13,7 +13,7 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 		name: 'newRecruitment',				
 		thisYear: (new Date()).getFullYear(),
 		thisCycle: '1',
-		newRank: 'REC',
+		newRank: 'CDTREC',
 		newPosting: 'MBR',
 		newPlatoon: '3PL',
 	};
@@ -128,7 +128,7 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 				data: {
 					last_name: '',
 					first_name: '',
-					dob: new Date(),
+					dob: new Date('2000-01-01'),
 					sex: '',
 					school: '',
 					member_email: '',
@@ -222,15 +222,28 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 	
 	$scope.workflow.confirmNewRecords = function(){
 		// sets the is_active flag on all saved records
-		angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
-			if (newMember.isSaved){
-				flaresAPI.member.patch([newMember.regtNum], {
-					member: {
-						is_active: '1'
-					}
-				});
-			}
-		});
+		// angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
+			// if (newMember.isSaved){
+				// flaresAPI('member').patch([newMember.regtNum], {
+					// member: { is_active: '1' }
+				// });
+			// }
+		// });
+        
+        var unsaved = [];
+        angular.forEach($scope.newMembers, function(member){
+            if (!member.isSaved){
+                unsaved.push(member);
+            }
+        });
+        if (unsaved.length > 0){
+            var names = unsaved.reduce(function(prev, curr){
+                return prev + ', ' + [curr.data.first_name, curr.data.last_name].join(' ');
+            });
+            if (!confirm('The following invalid/incomplete member records will be discarded if you continue: ' + names)){
+                return;
+            }
+        }
 		
 		$scope.workflow.next();
 	};
@@ -241,19 +254,22 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 			console.warn('No detailedMember is selected');
 			return false;
 		}
-		
+        
 		var payload = {
 			context: $scope.onboardingContext,
 			member: sw.detailedMember.data
 		};
 		
-		// IIFE to update the correct member reference on promise fulfill
+		// Need IIFE to update the correct member reference on promise fulfill
 		(function(detailedMember){
-			
-			flaresAPI.member.patch([detailedMember.regtNum], payload).then(function(response){
-				console.log(response.data);		// Debug
-				
+			flaresAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
 				if (response.data.recordId){
+                    
+                    // Detailed save succeeded, so let's activate them
+                    flaresAPI('member').patch([detailedMember.regtNum], {
+                        member: { is_active: '1' }
+                    });
+                    
 					detailedMember.lastPersistTime = (new Date()).toTimeString();
 					detailedMember.isUpdated = true;	
 					console.log('Updated:', detailedMember);
