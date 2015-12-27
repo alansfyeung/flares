@@ -76,14 +76,12 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
             return flaresLinkBuilder('activity').roll().hash(frag).getLink();
         },
         paradeState: function(){
-            var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
+            var frag = [$scope.activity.acty_id, 'review', 'paradestate'];
             return flaresLinkBuilder('activity').roll().hash(frag).getLink();
         },
-        leave: function(){
-            alert('WIP');
-        },
-        reviewAwol: function(){
-            alert('WIP');
+        reviewAwols: function(){
+            var frag = [$scope.activity.acty_id, 'view', 'awol'];
+            return flaresLinkBuilder('activity').awol().hash(frag).getLink();
         }
     };
     

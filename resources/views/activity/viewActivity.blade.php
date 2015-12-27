@@ -9,7 +9,7 @@
 @section('heading')
 <!-- page main header -->
 <div ng-show="activity.acty_id">
-	<aside class="title-actions">
+	<aside class="titlebar-actions">
         <!-- EDIT BUTTON groups -->
         <span ng-show="state.isEdit()">
             <button class="btn btn-link" ng-click="saveEdit()"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
@@ -18,9 +18,18 @@
         <span ng-show="state.isView()">
             <button class="btn btn-link" ng-click="edit()"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
         </span>
-        <!-- Sidebar toggle -->
-        <span>
-            <a sidebar-toggle class="btn btn-link"><span class="glyphicon glyphicon-option-vertical"></span></a>
+        <!-- DotDotDot menu toggle -->
+        <span uib-dropdown>
+            <a class="btn btn-link" uib-dropdown-toggle>
+                <span class="glyphicon glyphicon-option-vertical"></span>
+            </a>
+            <div class="list-group uib-dropdown-menu dropdown-menu-right">
+                <a class="list-group-item list-group-item-success" ng-href="@{{ actions.markRoll() }}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item" ng-href="@{{ actions.paradeState() }}">Parade State</a>
+                <a class="list-group-item" ng-click="actions.leave()">Record leave</a>
+                <a class="list-group-item" ng-click="actions.reviewAwols()">Review all AWOLs</a>
+                <a class="list-group-item" ng-click="deleteActivity()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete activity</span></a>
+            </div>
         </span>
 	</aside>
 	
@@ -34,7 +43,6 @@
 	   <h2>@{{activity.type}} &rsaquo; @{{activity.name}}<br><small style="display: inline-block">@{{activity.start_date | date:'fullDate'}}</small></h2>          
     </div>
 </div>
-<hr> 
 @endsection
 
 @section('activity-details')
@@ -114,10 +122,10 @@
     <section ng-controller="rollBuilderController">
         <div display-mode="view" class="row">
             <div class="col-sm-12">
-                <h3>Nominal roll</h3> 
+                <h3>Nominal roll </h3>
                 <p>
                     @{{(memberList | filter: { onRoll: true }).length}} members currently on the nominal roll. 
-                    <span><a class="btn btn-default" ng-click="edit()">Edit the nominal roll</a></span>
+                    <span></span>
                 </p>    
                 <table class="table table-condensed fl-table-header">
                     <colgroup>
@@ -156,6 +164,11 @@
                             </tr>                        
                         </tbody>
                     </table>                
+                    
+                    <div class="text-right">
+                        <a class="btn btn-default" ng-click="edit()">Edit the nominal roll</a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -260,7 +273,12 @@
                         </tr>
                     </table>
                 </div>-->
-            </div>
+
+                <div class="text-right">
+                    <a class="btn btn-default" ng-click="saveEdit()">Save changes</a>
+                </div>
+
+            </div>            
         </div>
     </section>
 </div>
@@ -282,7 +300,7 @@
             <h4>Actions</h4>
             <!-- For fully active members -->
             <div class="list-group">
-                <a class="list-group-item" ng-href="@{{ actions.markRoll() }}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
+                <a class="list-group-item list-group-item-success" ng-href="@{{ actions.markRoll() }}"><span class="badge">@{{ memberList.length }}</span> Mark roll</a>
                 <a class="list-group-item" ng-href="@{{ actions.paradeState() }}">Parade State</a>
                 <a class="list-group-item" ng-click="actions.leave()">Record leave</a>
                 <a class="list-group-item" ng-click="actions.reviewAwol()">Review AWOLs</a>

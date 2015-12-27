@@ -19,6 +19,7 @@ class CreateSystemUsersTable extends Migration
             $table->dateTime('last_login_time');
             $table->string('fallback_pwd');
             $table->binary('signature_blob');
+            $table->string('signature_extn');
             $table->timestamps();
             //$table->softDeletes();
         });

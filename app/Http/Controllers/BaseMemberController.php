@@ -99,7 +99,7 @@ abstract class BaseMemberController extends Controller
 			return [
 				'newPlatoon' => 'VAS',
 				'newPosting' => 'VAS',
-				'newRank' => 'REC',
+				'newRank' => 'CDTREC',
 				'thisYear' => $thisYear,
 				'thisCycle' => $thisCycle,
 				'generateForumsAccounts' => false
@@ -121,7 +121,7 @@ abstract class BaseMemberController extends Controller
 		return [
 			'newPlatoon' => '3PL',
 			'newPosting' => 'MBR',
-			'newRank' => 'REC',
+			'newRank' => 'CDTREC',
 			'thisYear' => $thisYear,
 			'thisCycle' => $thisCycle,
 			'generateForumsAccounts' => false
@@ -207,7 +207,7 @@ abstract class BaseMemberController extends Controller
 	{
 		/*
 		 * Place as: 
-		 * Platoon=3PL, Rank=REC, Posting=MBR
+		 * Platoon=3PL, Rank=CDTREC, Posting=MBR
 		 */
 		 
 		// TODO check for overrides to the above values in $opts

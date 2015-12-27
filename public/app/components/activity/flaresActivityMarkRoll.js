@@ -2,7 +2,8 @@
 // ===============================
 //  flaresActivityMarkRoll.js
 //  Mark the roll +
-// 	Parade State
+// 	Parade State +
+//  AWOL viewer
 // ===============================
 
 var flaresApp = angular.module('flaresActivityMarkRoll', ['flaresBase']);
@@ -47,6 +48,8 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
                 return 'Parade State';
             case 'markroll':
                 return 'Mark roll';
+            case 'awols':
+                return 'Review AWOLs';
         }
     };
     
@@ -62,7 +65,6 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     $scope.showParadeState = function(){
         $scope.state.path.tab = 'paradestate';
     };
-    
 		
 	// ==============
 	// Fetch all roll entries for this activity
@@ -72,20 +74,25 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     
     // Get the platoons reference data
     retrieveRefData();
-	
-	//======================
-	// Save-your-change niceties
-	window.onbeforeunload = function(event){
-		if ($scope.state.isRollUnsaved){
-			var message = 'The roll has been marked but not saved.';
-			return message;
-		}
-	};
-    $scope.$on('$destroy', function() {
-		delete window.onbeforeunload;
-	});
     
+    //======================
+	// Actions menu
+    $scope.actions = {
+        editActivity: function(){
+            var frag = [$scope.activity.acty_id, 'edit', 'details'];
+            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+        },
+        paradeState: function(){
+            var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
+            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
+        },
+        reviewAwols: function(){
+            var frag = [$scope.activity.acty_id, 'view', 'awol'];
+            return flaresLinkBuilder('activity').awol().hash(frag).getLink();
+        }
+    };
     
+   
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
     flaresAPI('refData').get(['misc'], {name: 'ROLL_SYMBOLS'}).then(function(response){
@@ -131,11 +138,11 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
         this.locked = false;
     };
     RollEntry.prototype.scrollAttendance = function(){
-        $scope.state.isRollUnsaved = true;
         this.scroller.next();
 	};
 	RollEntry.prototype.markAttendance = function(){
         if (this.scroller.originalSymbol !== this.scroller.selectedSymbol){
+            $scope.state.isRollUnsaved = true;
             this.saving = true;
             
             // Save the record
@@ -218,6 +225,8 @@ flaresApp.controller('activityParadeStateController', function($scope){
     $scope.numbers = {};
     $scope.nonPresent = {};
     
+    $scope.awolMembers = [];
+    
     //============
     // Fetch posted strength
     // +++ placeholder to fetch posted strength
@@ -230,14 +239,18 @@ flaresApp.controller('activityParadeStateController', function($scope){
     $scope.$watch('roll.data.recorded_value', function(){
         $scope.totalNumbers = getTotalNumbers();
     }, true);
+    
+    // On tab changes
     $scope.$watch('state.path.tab', function(newVal){
         if (newVal === 'paradestate'){
             $scope.numbers = getPlatoonNumbers();
-            $scope.nonPresent = getPlatoonNonPresent();
+            $scope.nonPresentList = getPlatoonNonPresentListings();
+        }
+        if (newVal === 'awols'){
+            $scope.awolMembers = getAwolMembers();
         }
     });
-    
-    
+
     
     //============
     // Functions
@@ -273,7 +286,7 @@ flaresApp.controller('activityParadeStateController', function($scope){
         return getNumbers(roll);
     }
     
-    function getPlatoonNonPresent(){
+    function getPlatoonNonPresentListings(){
         var nonPresent = {};
         $scope.roll.forEach(function(rollEntry){
             var val = rollEntry.data.recorded_value;
@@ -300,6 +313,13 @@ flaresApp.controller('activityParadeStateController', function($scope){
             });
         }        
         return numbers;
+    }
+    
+    function getAwolMembers(){
+        var roll = $scope.roll;
+        return roll.filter(function(rollEntry){
+            return rollEntry.data.recorded_value === 'A';
+        });
     }
     
     

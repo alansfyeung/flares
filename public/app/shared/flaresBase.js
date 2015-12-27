@@ -55,6 +55,8 @@ flaresBase.directive('displayMode', function(){
     };
 });
 flaresBase.directive('sidebarToggle', function(){
+    // Warning: Deprecated
+    console.warn('Directive SidebarToggle is deprecated; use ui.bootstrap.dropdown instead');
     return {
         restrict: 'A',
         link: function(scope, element, attr){

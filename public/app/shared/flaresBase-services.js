@@ -149,6 +149,10 @@ flaresBase.factory('flaresLinkBuilder', function() {
                 this.addUrl([this.singular, 'roll']);
                 return this;
             };
+            flb.awol = function(){
+                this.addUrl([this.plural, 'awol']);
+                return this;
+            };
             return flb;
         }
         return flb;
