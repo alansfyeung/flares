@@ -29,7 +29,7 @@ class CreatePostingPromoTable extends Migration
             $table->foreign('new_platoon')->references('abbr')->on('ref_platoons')->onDelete('no action');
             $table->foreign('new_posting')->references('abbr')->on('ref_postings')->onDelete('no action');
             $table->foreign('new_rank')->references('abbr')->on('ref_ranks')->onDelete('no action');
-            $table->foreign('recorded_by')->references('user_id')->on('system_users')->onDelete('no action');
+            $table->foreign('recorded_by')->references('user_id')->on('users')->onDelete('no action');
         });
     }
 

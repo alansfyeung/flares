@@ -18,7 +18,7 @@ class FlaresUser extends Model implements AuthenticatableContract, CanResetPassw
      *
      * @var string
      */
-    protected $table = 'system_users';
+    protected $table = 'users';
     protected $primaryKey = 'user_id';
     protected $dates = ['deleted_at'];
 

@@ -24,7 +24,7 @@ class AuthController extends Controller
 
     use AuthenticatesUsers, ThrottlesLogins;
     
-    // $this->username = 'forums_username';        // overrides the trait default of username
+    //protected $username = 'username';        // overrides the trait default of username
 
     /**
      * Create a new authentication controller instance.
@@ -35,6 +35,8 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
+
+
     
     /**
      * FLARES

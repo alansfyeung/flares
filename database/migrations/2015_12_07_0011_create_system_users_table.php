@@ -12,9 +12,9 @@ class CreateSystemUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('system_users', function(Blueprint $table){
+        Schema::create('users', function(Blueprint $table){
             $table->increments('user_id');
-            $table->string('forums_username')->unique();
+            $table->string('username')->unique();
             $table->integer('access_level');
             $table->dateTime('last_login_time');
             $table->string('email')->nullable();
@@ -23,7 +23,7 @@ class CreateSystemUsersTable extends Migration
             $table->string('signature_extn')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            //$table->softDeletes();
+            $table->softDeletes();
         });
     }
 
@@ -34,6 +34,6 @@ class CreateSystemUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('system_users');
+        Schema::dropIfExists('users');
     }
 }

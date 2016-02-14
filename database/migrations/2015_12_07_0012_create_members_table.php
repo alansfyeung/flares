@@ -93,7 +93,7 @@ class CreateMembersTable extends Migration
             $table->timestamps();
             
             $table->foreign('regt_num')->references('regt_num')->on('members');
-            $table->foreign('recorded_by')->references('user_id')->on('system_users');
+            $table->foreign('recorded_by')->references('user_id')->on('users');
         });
         
     }

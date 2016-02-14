@@ -34,7 +34,7 @@ class CreateAttendanceTable extends Migration
             $table->foreign('prev_att_id')->references('att_id')->on('attendance');     // self-reference
             $table->foreign('acty_id')->references('acty_id')->on('activities');
             // $table->foreign('leave_id')->references_('leave_id')->on('leave');
-            $table->foreign('recorded_by')->references('user_id')->on('system_users');
+            $table->foreign('recorded_by')->references('user_id')->on('users');
         });
     }
 
