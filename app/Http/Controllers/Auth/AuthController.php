@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use Validator;
 use App\FlaresUser;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-// use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class AuthController extends Controller
@@ -23,8 +23,9 @@ class AuthController extends Controller
     */
 
     use AuthenticatesUsers, ThrottlesLogins;
-    
-    //protected $username = 'username';        // overrides the trait default of username
+
+    protected $redirectPath = '/';
+    protected $username = 'username';        // overrides the trait default of username
 
     /**
      * Create a new authentication controller instance.
@@ -42,10 +43,11 @@ class AuthController extends Controller
      * FLARES
      * Capture and handle post-authenticated
      *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @param  \Illuminate\Http\Request
+     * @param  \App\FlaresUser
+     * @return \Illuminate\Http\Response
      */ 
-    protected function authenticated(Request $request, $user)
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
     {
         // Record their login time
         $user->last_login_time = date('Y-m-d H:i:s');

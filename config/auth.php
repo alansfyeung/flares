@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'table' => 'system_users',
+    'table' => 'users',     // note unused; we're using the Eloquent driver
 
     /*
     |--------------------------------------------------------------------------

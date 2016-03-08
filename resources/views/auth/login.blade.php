@@ -17,24 +17,17 @@ Login page
 	<div class="col-sm-6 col-sm-push-3">
 		<form class="form" method="POST" action="/auth/login">
                     
-            {{--
-            <fieldset ng-show="loginType == 'forums'">
-                <h2></h2>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="email" value="{{ old('email') }}" placeholder="Forums user name">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Forums Password">
-                </div>
-            </fieldset>
-            --}}
-            
+
             <fieldset ng-show="loginType == 'fallback'">
             
                 <div class="form-group">
                     <h1 class="text-muted">Sign in to FLARES.</h1>
                 </div>
             
+                @foreach ($errors->all() as $error)
+                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> {{ $error }}</div>
+                @endforeach
+
                 <div class="form-group">
                     <a class="btn btn-block btn-primary" ng-click="">Sign in using 206 forums</a>
                 </div>
@@ -42,7 +35,7 @@ Login page
                 <span class="login-hr-device"></span>
             
                 <div class="form-group">
-                    <input type="text" class="form-control" name="email" value="{{ old('email') }}" placeholder="Forums user name">
+                    <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Flares username">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password">

@@ -18,7 +18,7 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
 Route::group(['middleware' => 'auth'], function () {			
 
-	/* Dashboard -- Home page */
+	/* Dashboard */
 	Route::get('/', ['as' => 'dashboard', function () {
 		return view('dashboard');
 	}]);

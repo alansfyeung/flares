@@ -15,8 +15,8 @@ class CreateSystemUsersTable extends Migration
         Schema::create('users', function(Blueprint $table){
             $table->increments('user_id');
             $table->string('username')->unique();
-            $table->integer('access_level');
-            $table->dateTime('last_login_time');
+            $table->integer('access_level')->default(10);
+            $table->dateTime('last_login_time')->nullable();
             $table->string('email')->nullable();
             $table->string('password');
             $table->binary('signature_blob')->nullable();
