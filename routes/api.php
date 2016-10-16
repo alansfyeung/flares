@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 // })->middleware('auth:api');
 
 // Dashboard API
-Route::resource('/api/dashboard', 'DashboardController', ['only' => ['index', 'show']]);
+Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 
 // Member API -- note that Search alias route MUST go before the resourceful route
 Route::get('member/search', 'MemberController@search');
