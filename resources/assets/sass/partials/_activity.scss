@@ -1,0 +1,35 @@
+// Activity screen
+
+.activity-fullname {
+	margin: 0 0 0.5em;
+}
+
+.activity-colorcode {
+    position: relative;
+    padding: 10px 0 0;
+    padding-left: 30px;
+}
+.activity-colorcode::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    background-color: #bbb;
+}
+.activity-colorcode.success::before {
+    background-color: green;
+}
+.activity-colorcode.warning::before {
+    background-color: orange;
+}
+.activity-colorcode.danger::before {
+    background-color: red;
+}
+.activity-colorcode .activity-fullname {
+    font-size: 1.25em;
+}
+

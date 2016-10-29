@@ -5765,6 +5765,14 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+/* Palette
+ * RED #c0392b				// Perhaps consider also #B04632
+ * GREEN #27ae60
+ * ORANGE #e67e22
+ * INFO #2a84be
+ * FLAT-CONCRETE #95a5a6
+ * FLAT-ASBESTOS #7f8c8d
+ */
 .alert {
   padding: 15px;
   margin-bottom: 20px;
@@ -6071,43 +6079,6 @@ footer {
   footer {
     font-size: 0.75em; } }
 
-/***
- ***  FLARES -- 206acu
- ***  Todo: modularise, convert to LESS 
- *** 
- */
-/* Palette
- * RED #c0392b				// Perhaps consider also #B04632
- * GREEN #27ae60
- * ORANGE #e67e22
- * INFO #2a84be
- * FLAT-CONCRETE #95a5a6
- * FLAT-ASBESTOS #7f8c8d
- */
-/* ==============*/
-/* Master */
-.flares-main {
-  height: 100%;
-  padding: 50px 0;
-  overflow-y: scroll; }
-
-.login-hr-device {
-  margin: 2em auto;
-  display: block;
-  border-top: 1px solid #95a5a6;
-  height: 1px;
-  text-align: center; }
-
-.login-hr-device:before {
-  content: 'OR';
-  display: inline-block;
-  background: white;
-  position: relative;
-  padding: 0 1em;
-  top: -11px; }
-
-/* ==============*/
-/* Dashboard */
 .dashboard-stat {
   text-align: center; }
 
@@ -6119,8 +6090,37 @@ footer {
   line-height: 1;
   font-weight: bold; }
 
-/* =======================*/
-/* View/Edit Member Screen*/
+.activity-fullname {
+  margin: 0 0 0.5em; }
+
+.activity-colorcode {
+  position: relative;
+  padding: 10px 0 0;
+  padding-left: 30px; }
+
+.activity-colorcode::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: inline-block;
+  width: 20px;
+  height: 100%;
+  background-color: #bbb; }
+
+.activity-colorcode.success::before {
+  background-color: green; }
+
+.activity-colorcode.warning::before {
+  background-color: orange; }
+
+.activity-colorcode.danger::before {
+  background-color: red; }
+
+.activity-colorcode .activity-fullname {
+  font-size: 1.25em; }
+
 .member-quickstatus {
   border-bottom: 1px dashed #ddd;
   margin-bottom: 20px; }
@@ -6180,8 +6180,6 @@ footer {
 .uploader-not-ready.uploader-drop-zone {
   border: 6px solid red; }
 
-/* =======================*/
-/* Member onboarding screen */
 .memberadd-spreadsheet {
   border-collapse: collapse;
   width: 100%; }
@@ -6211,123 +6209,97 @@ select.ng-dirty.ng-invalid,
 .ng-submitted .memberadd-spreadsheet select[required].ng-valid {
   border: 1px solid #27ae60; }
 
-/* =======================*/
-/* Activity overview screen */
-.activity-fullname {
-  margin: 0 0 0.5em; }
-
-.activity-colorcode {
-  position: relative;
-  padding: 10px 0 0;
-  padding-left: 30px; }
-
-.activity-colorcode::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  display: inline-block;
-  width: 20px;
-  height: 100%;
-  background-color: #bbb; }
-
-.activity-colorcode.success::before {
-  background-color: green; }
-
-.activity-colorcode.warning::before {
-  background-color: orange; }
-
-.activity-colorcode.danger::before {
-  background-color: red; }
-
-.activity-colorcode .activity-fullname {
-  font-size: 1.25em; }
-
-/* =======================*/
-/* Roll marking view */
 .roll-view-container {
   margin: 1em 0; }
 
 .roll-view {
   margin: 0 0 1em;
   font-size: 1.5em; }
-
-.roll-view .row + .row {
-  border-top: 1px solid #ccc; }
+  .roll-view .row + .row {
+    border-top: 1px solid #ccc; }
+  .roll-view .roll-mark-value,
+  .roll-view .roll-mark-action,
+  .roll-view .roll-mark-selector {
+    display: block;
+    float: right;
+    color: white;
+    background: black;
+    text-align: center; }
+  .roll-view .roll-mark-action,
+  .roll-view .roll-mark-selector {
+    width: 33.3%; }
+  .roll-view .roll-mark-value {
+    width: 66.6%;
+    background: #444;
+    font-size: 0.8em;
+    line-height: 2;
+    -webkit-transition: background-color 0.5s ease;
+    transition: background-color 0.5s ease; }
+  .roll-view .roll-mark-value.saving {
+    background: #e67e22; }
+  .roll-view .roll-mark-selector {
+    background: #ccc;
+    color: #111; }
+  .roll-view a[class^=roll]:hover {
+    text-decoration: none; }
+  .roll-view a[class^=roll]:active {
+    opacity: 0.9; }
+  .roll-view .roll-mark-action.accept,
+  .roll-view .roll-mark-selector.present {
+    background: #27ae60; }
+  .roll-view .roll-mark-action.reject,
+  .roll-view .roll-mark-selector.awol {
+    background: #c0392b; }
+  .roll-view .roll-mark-selector.away {
+    background: #e67e22; }
+  .roll-view .roll-mark-selector.pending {
+    background: #999; }
+  .roll-view .roll-mark-selector {
+    position: relative; }
+  .roll-view .roll-mark-selector::before,
+  .roll-view .roll-mark-selector::after {
+    position: absolute;
+    top: 10px;
+    font-size: 20px;
+    color: #aaa; }
+  .roll-view .roll-mark-selector::before {
+    content: '<';
+    left: 3px; }
+  .roll-view .roll-mark-selector::after {
+    content: '>';
+    right: 3px; }
 
 .roll-view-cell {
   padding-top: 0.5em;
   padding-bottom: 0.5em; }
 
-.roll-view .roll-mark-value,
-.roll-view .roll-mark-action,
-.roll-view .roll-mark-selector {
-  display: block;
-  float: right;
-  color: white;
-  background: black;
-  text-align: center; }
-
-.roll-view .roll-mark-action,
-.roll-view .roll-mark-selector {
-  width: 33.3%; }
-
-.roll-view .roll-mark-value {
-  width: 66.6%;
-  background: #444;
-  font-size: 0.8em;
-  line-height: 2;
-  -webkit-transition: background-color 0.5s ease;
-  transition: background-color 0.5s ease; }
-
-.roll-view .roll-mark-value.saving {
-  background: #e67e22; }
-
-.roll-view .roll-mark-selector {
-  background: #ccc;
-  color: #111; }
-
-.roll-view a[class^=roll]:hover {
-  text-decoration: none; }
-
-.roll-view a[class^=roll]:active {
-  opacity: 0.9; }
-
-.roll-view .roll-mark-action.accept,
-.roll-view .roll-mark-selector.present {
-  background: #27ae60; }
-
-.roll-view .roll-mark-action.reject,
-.roll-view .roll-mark-selector.awol {
-  background: #c0392b; }
-
-.roll-view .roll-mark-selector.away {
-  background: #e67e22; }
-
-.roll-view .roll-mark-selector.pending {
-  background: #999; }
-
-.roll-view .roll-mark-selector {
-  position: relative; }
-
-.roll-view .roll-mark-selector::before,
-.roll-view .roll-mark-selector::after {
-  position: absolute;
-  top: 10px;
-  font-size: 20px;
-  color: #aaa; }
-
-.roll-view .roll-mark-selector::before {
-  content: '<';
-  left: 3px; }
-
-.roll-view .roll-mark-selector::after {
-  content: '>';
-  right: 3px; }
-
 .roll-view-rank {
   display: inline-block;
   width: 200px; }
+
+/***
+ ***  FLARES -- 206acu
+ ***  Todo: modularise, convert to LESS 
+ *** 
+ */
+.flares-main {
+  height: 100%;
+  padding: 50px 0;
+  overflow-y: scroll; }
+
+.login-hr-device {
+  margin: 2em auto;
+  display: block;
+  border-top: 1px solid #95a5a6;
+  height: 1px;
+  text-align: center; }
+
+.login-hr-device:before {
+  content: 'OR';
+  display: inline-block;
+  background: white;
+  position: relative;
+  padding: 0 1em;
+  top: -11px; }
 
 /*# sourceMappingURL=app.css.map */

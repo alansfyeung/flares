@@ -21,12 +21,15 @@ Route::get('/', ['as' => 'dashboard', function () {
     return view('dashboard');
 }]);
 
-Route::get('auth/login', 'Auth\AuthController@getLogin');
-Route::post('auth/login', 'Auth\AuthController@postLogin');
-Route::get('auth/logout', 'Auth\AuthController@getLogout');
+Route::get('login', 'Auth\AuthController@getLogin');
+Route::post('login', 'Auth\AuthController@postLogin');
+Route::get('logout', 'Auth\AuthController@getLogout');
 
 
-/* FLARES views */
+/* 
+ * FLARES view router. Each view bootstraps its own 
+ * Angular 1 app. 
+ */
 Route::group(['as' => 'member::'], function (){
 
     // Route::get('members', 'PagePresenter@memberSearch');
@@ -34,21 +37,24 @@ Route::group(['as' => 'member::'], function (){
     Route::get('members', function () {				// Member search page
         return view('member.search');
     });
-    Route::get('members/new', function () {			// Member bulk add
-        return view('member.newMember');
+    Route::get('members/new', function () {
+        return view('member.new-multi');
+    });
+    Route::get('members/newmulti', function () {			// Member bulk add
+        return view('member.new-multi');
     });
     Route::get('members/stats', function () {			// Member Stats
         return view('member.stats');
     });
     Route::get('members/mass', function () {		// Member Mass Actions
-        return view('member.massactions');
+        return view('member.mass-actions');
     });	
     Route::get('members/reports', function () {		// Member reporting
         return view('member.reports');
     });
     
     Route::get('member', function(){
-        return view('member.viewMember');
+        return view('member.view-member');
     });
 });
 

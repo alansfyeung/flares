@@ -4,9 +4,18 @@
 @import 'node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
 // @import 'lib/bs/bootstrap.min.css';
 
+// Variables
+@import 'variables';
+@import 'fonts';
+
 // Bootstrap augmentations
 @import 'partials/alerts';
 @import 'partials/flares-bs-extn';
 
+
 // Main 
-@import 'partials/flares';
+@import 'partials/dashboard';
+@import 'partials/activity';
+@import 'partials/member';
+@import 'partials/roll';
+@import 'partials/misc';

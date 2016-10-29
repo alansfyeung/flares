@@ -1,5 +1,5 @@
 {{-- Activities overview --}}
-@extends('master')
+@extends('primary')
 
 @section('ng-app', 'flaresActivityOverview')
 @section('ng-controller', 'activityOverviewController')

@@ -1,10 +1,7 @@
-{{-- 
-Activity AWOLs 
-Displays a historical aggregation of AWOLs across all activities
---}}
-@extends('master')
+{{-- Activity Search --}}
+@extends('primary')
 
-@section('ng-app', 'flaresActivityAwols')
+@section('ng-app', 'flaresActivitySearch')
 @section('ng-controller', 'activitySearchController')
 @section('title', 'Search activities')
 
@@ -13,7 +10,7 @@ Displays a historical aggregation of AWOLs across all activities
 <aside class="title-actions pull-right">
     <a href="/activities/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new</a>
 </aside>
-<h1>AWOLs</h1>
+<h1>Search</h1>
 @endsection
 
 @section('searchbar')

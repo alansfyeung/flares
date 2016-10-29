@@ -1,0 +1,102 @@
+// View/edit member screen
+
+.member-quickstatus {
+	border-bottom: 1px dashed #ddd;
+	margin-bottom: 20px;
+}
+.member-quickstatus dd {
+	display: inline-block;
+}
+
+.member-dp {
+    margin: 0 auto;
+	max-width: 150px;
+}
+.member-dp-lg {
+    margin: 0 auto;
+	max-width: 400px;
+}
+.member-dp-thumb,
+.member-dp-sm {
+    margin: 0 auto;
+	max-width: 100px;
+}
+.member-dp img,
+.member-dp-lg img,
+.member-dp-thumb img,
+.member-dp-sm img {
+    width: 100%;
+}
+
+.record-view td {
+	width: 50%;
+	word-break: break-word;
+}
+
+.record-view input,
+.record-view textarea,
+.record-view select {
+	padding: 8px;
+	display: block;
+	border: none;	
+	width: 100%;
+}
+.record-view input,
+.record-view textarea,
+.record-view select,
+.record-view [contenteditable] {
+	border-bottom: 2px solid skyblue;
+	background: azure;
+}
+.record-view textarea {
+	resize: vertical;
+}
+.record-view input[type=radio],
+.record-view input[type=checkbox] {
+	width: auto;
+}
+
+.uploader-drop-zone {
+	border: 6px dashed steelblue;
+	background: aliceblue;
+}
+.uploader-not-ready.uploader-drop-zone {
+	border: 6px solid red;
+}
+
+
+
+// Member onboarding screen
+
+.memberadd-spreadsheet {
+	border-collapse: collapse;
+	width: 100%;
+}
+.memberadd-spreadsheet td, 
+.memberadd-spreadsheet th {
+	border: 1px solid #bbb;
+}
+.memberadd-spreadsheet th {
+	padding: 5px;
+}
+.memberadd-spreadsheet input[type],
+.memberadd-spreadsheet select {
+	border: none;
+	padding: 5px;
+	width: 100%;
+}
+
+input[type].ng-dirty.ng-invalid,
+.ng-submitted input[type].ng-invalid,
+select.ng-dirty.ng-invalid,
+.ng-submitted select.ng-invalid {
+	border: 1px solid #c0392b;
+}
+
+.memberadd-spreadsheet input[type][required].ng-dirty.ng-valid,
+.ng-submitted .memberadd-spreadsheet input[type][required].ng-valid,
+.memberadd-spreadsheet select[required].ng-dirty.ng-valid,
+.ng-submitted .memberadd-spreadsheet select[required].ng-valid  {
+	border: 1px solid #27ae60;
+}
+

@@ -1,0 +1,96 @@
+// Roll marking view
+
+.roll-view-container {
+    margin: 1em 0;
+}
+
+.roll-view {
+    margin: 0 0 1em;
+    font-size: 1.5em;
+    
+    .row + .row {
+        border-top: 1px solid #ccc;
+    }
+        
+
+    .roll-mark-value,
+    .roll-mark-action,
+    .roll-mark-selector {
+        display: block;
+        float: right;
+        color: white;
+        background: black;
+        text-align: center;
+    }
+    .roll-mark-action,
+    .roll-mark-selector {
+        width: 33.3%;
+    }
+    .roll-mark-value {
+        width: 66.6%;
+        background: #444;
+        font-size: 0.8em;
+        line-height: 2;
+        transition: background-color 0.5s ease;
+    }
+    .roll-mark-value.saving {
+        background: #e67e22;
+    }
+    .roll-mark-selector {
+        background: #ccc;
+        color: #111;
+    }
+
+    a[class^=roll]:hover {
+        text-decoration: none;
+    }
+    a[class^=roll]:active {
+        opacity: 0.9;
+    }
+
+    .roll-mark-action.accept,
+    .roll-mark-selector.present {
+        background: #27ae60;
+    }
+    .roll-mark-action.reject,
+    .roll-mark-selector.awol {
+        background: #c0392b;
+    }
+    .roll-mark-selector.away {
+        background: #e67e22;
+    }
+    .roll-mark-selector.pending {
+        background: #999;
+    }
+
+    .roll-mark-selector {
+        position: relative;
+    }
+    .roll-mark-selector::before,
+    .roll-mark-selector::after {
+        position: absolute;
+        top: 10px;
+        font-size: 20px;
+        color: #aaa;
+    }
+    .roll-mark-selector::before {
+        content: '<';
+        left: 3px;
+    }
+    .roll-mark-selector::after {
+        content: '>';
+        right: 3px;
+    }
+    
+}
+
+.roll-view-cell {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.roll-view-rank {
+	display: inline-block;
+	width: 200px;
+}
+

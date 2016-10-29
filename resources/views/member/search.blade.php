@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('master')
+@extends('primary')
 
 @section('ng-app', 'flaresMemberSearch')
 @section('ng-controller', 'memberSearchController')

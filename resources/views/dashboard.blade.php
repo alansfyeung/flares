@@ -1,8 +1,6 @@
-{{-- 
-Home page for Flares users
-Shows links for quick access
---}}
-@extends('master')
+{{-- Home page for Flares users. Shows links for quick access --}}
+
+@extends('primary')
 
 @section('ng-app', 'flaresDashboard')
 @section('ng-controller', 'dashboardController')
@@ -19,7 +17,7 @@ Shows links for quick access
 	
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Member Stats</h3>
+				<h3 class="panel-title">Member management</h3>
 			</div>
 			<div class="panel-body">
 				<div class="row">
@@ -30,53 +28,30 @@ Shows links for quick access
 						</figure>
 					</div>
 					<div class="col-xs-6">
-						<figure class="dashboard-stat" ng-cloak>
+                		<figure class="dashboard-stat" ng-cloak>
 							<figcaption class="stat-caption">Total in system</figcaption>
 							<div class="stat-figure">@{{stats.member.numTotal}}</div>
 						</figure>
 					</div>
 				</div>
 			</div>
+            <div class="list-group">
+                <a href="/members" class="list-group-item">Search members</a>
+                <a href="/members/new" class="list-group-item">Onboard new members</a>
+            </div>
 		</div>
 	
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Member Admin</h3>
+				<h3 class="panel-title">Decorations admin</h3>
 			</div>
-			<div class="panel-body">
-				<ul>
-					<li><a href="/members">Search members</a></li>
-					<li><a href="/members/new">Onboard new members</a></li>
-				</ul>
-			</div>
-		</div>
-		
-	</div>
-	<div class="col-sm-4">
-		
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Activity Admin</h3>
-			</div>
-			<div class="panel-body">
-				<ul>
-					<li><a href="#">Register leave records</a></li>
-					<li><a href="#">Register unit activities</a></li>
-				</ul>
-			</div>
-		</div>
-	
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Activity Ops</h3>
-			</div>
-			<div class="panel-body">
-				<ul>
-					<li><a href="#">Mark the roll</a></li>
-					<li><a href="#">Lookup roll</a></li>
-					<li><a href="#">Create parade state</a></li>
-				</ul>
-			</div>
+            <div class="panel-body bg-primary">
+                “Decorations” are the digital representations of a 206 ACU member’s awards and achievements portfolio.
+            </div>
+            <div class="list-group">
+                <a href="/members" class="list-group-item">Search decorations</a>
+                <a href="/members/new" class="list-group-item">Add new decorations</a>
+            </div>
 		</div>
 		
 	</div>

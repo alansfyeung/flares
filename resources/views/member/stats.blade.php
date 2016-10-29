@@ -2,7 +2,7 @@
 Statistics for members
 --}}
 
-@extends('master')
+@extends('primary')
 
 @section('ng-app', 'flaresApp')
 @section('ng-controller', 'memberController')

@@ -1,5 +1,5 @@
 {{-- Add multiple members --}}
-@extends('master')
+@extends('primary')
 
 @section('ng-app', 'flaresMemberNew')
 @section('ng-controller', 'memberAddController')
@@ -114,9 +114,9 @@
 	
 	<div class="row">
 		<div class="col-sm-8">
-			<span>@{{newMembers.length}} new record@{{newMembers.length === 1 ? '' : 's'}}</span> &nbsp;&nbsp;
 			<button type="button" class="btn btn-default" ng-click="addNewRecord()"><span class="glyphicon glyphicon-plus-sign"></span> Add more</button>			
 			<button type="button" class="btn btn-default" ng-click="removeBlankRows()"><span class="glyphicon glyphicon-erase"></span> Remove blank rows</button>			
+			<span>@{{newMembers.length}} new record@{{newMembers.length === 1 ? '' : 's'}}</span> &nbsp;&nbsp;
 		</div>
 		<div class="col-sm-4 text-right">
 			<button type="button" class="btn btn-default" ng-click="workflow.prev()">Back</button>
