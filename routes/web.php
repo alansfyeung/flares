@@ -27,27 +27,26 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
 
 /* FLARES views */
-Route::group(['as' => 'members::'], function () {
+Route::group(['as' => 'member::'], function (){
+
     // Route::get('members', 'PagePresenter@memberSearch');
     // Route::get('members/new', 'PagePresenter@memberNew');
     Route::get('members', function () {				// Member search page
-        return view('members.search');
+        return view('member.search');
     });
     Route::get('members/new', function () {			// Member bulk add
-        return view('members.newMember');
+        return view('member.newMember');
     });
     Route::get('members/stats', function () {			// Member Stats
-        return view('members.stats');
+        return view('member.stats');
     });
     Route::get('members/mass', function () {		// Member Mass Actions
-        return view('members.massactions');
+        return view('member.massactions');
     });	
     Route::get('members/reports', function () {		// Member reporting
-        return view('members.reports');
+        return view('member.reports');
     });
-});
-
-Route::group(['as' => 'member::'], function (){
+    
     Route::get('member', function(){
         return view('member.viewMember');
     });

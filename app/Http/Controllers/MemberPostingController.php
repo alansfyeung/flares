@@ -10,8 +10,10 @@ use App\Promotion;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class MemberPostingController extends BaseMemberController
+class MemberPostingController extends Controller
 {
+    use ProcessesMemberRecordsTrait;
+    
     public function index($memberId)
     {
 		$memberPostingRecords = Member::where('regt_num', $memberId)->withTrashed()->get();

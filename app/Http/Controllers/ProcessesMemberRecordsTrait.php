@@ -9,12 +9,12 @@ use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-abstract class BaseMemberController extends Controller
+trait ProcessesMemberRecordsTrait
 {	
 
-	/* ==================================================
-	 *  Statistical functionality
-	 */
+	//==================================================
+	// Statistical functionality
+	//==================================================
 
 	/**
      * Returns the completion status for this member record
@@ -66,9 +66,9 @@ abstract class BaseMemberController extends Controller
 	}
 
 
-	/* ==================================================
-	 *  Onboarding functionality
-	 */
+	//==================================================
+	// Onboarding functionality
+	//==================================================
 	 
 	/**
      * Retrieve the default settings based on a Context name

@@ -11,8 +11,10 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class MemberPictureController extends BaseMemberController
+class MemberPictureController
 {		
+    use ProcessesMemberRecordsTrait;
+
 	private $tmpDir;			// Use the PHP default
 	
 	public function __construct(){

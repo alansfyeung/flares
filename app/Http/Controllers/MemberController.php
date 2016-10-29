@@ -10,8 +10,10 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Flares\ResponseCodes;
 
-class MemberController extends BaseMemberController
+class MemberController extends Controller
 {
+    use ProcessesMemberRecordsTrait;
+    
     //const ResponseCodes::ERR_POSTDATA_MISSING = 4001;
 	//const ResponsesCodes::ERR_POSTDATA_FORMAT = 4002;
 	// const ResponseCodes::ERR_EX = 5000;
