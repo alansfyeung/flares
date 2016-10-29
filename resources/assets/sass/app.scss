@@ -1,9 +1,12 @@
+@charset 'utf-8';
 
-// Fonts
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+// Twitter's Bootstrap
+@import 'node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+// @import 'lib/bs/bootstrap.min.css';
 
-// Variables
-@import "variables";
+// Bootstrap augmentations
+@import 'partials/alerts';
+@import 'partials/flares-bs-extn';
 
-// Bootstrap
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+// Main 
+@import 'partials/flares';

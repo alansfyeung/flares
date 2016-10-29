@@ -27,10 +27,7 @@
 
     <title>@yield('title') | FLARES</title>
 
-	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/assets/css/flares-bs-extn.css" rel="stylesheet">
-	<link href="/assets/css/flares.css" rel="stylesheet">
-	<link href="/assets/css/alerts.css" rel="stylesheet">
+	<link href="/css/app.css" rel="stylesheet">
     
 </head>
 <body flow-prevent-drop ng-cloak>
@@ -71,7 +68,7 @@
 	@section('footer')
 	<footer>
 		<div class="container">
-			<h6>FLARES Falcon Leave Automated REporting System &copy; 2015 Alan Yeung, 206 Army Cadet Unit</h6>
+			<h6>FLARES Falcon Leave Automated REporting System &copy; 2015–2016 Alan Yeung, 206 Army Cadet Unit</h6>
 		</div>
 	</footer>
 	@show
