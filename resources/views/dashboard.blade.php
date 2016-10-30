@@ -10,7 +10,12 @@
 	<h1>Dashboard</h1>
 @endsection
 
+@push('scripts')
+<script src="/app/components/dashboard/flaresDashboard.js"></script>
+@endpush
+
 @section('content')
+@verbatim
 <div class="row">
 
 	<div class="col-sm-4">
@@ -24,13 +29,13 @@
 					<div class="col-xs-6">
 						<figure class="dashboard-stat" ng-cloak>
 							<figcaption class="stat-caption">Posted Strength</figcaption>
-							<div class="stat-figure">@{{stats.member.numActive}}</div>						
+							<div class="stat-figure">{{stats.member.numActive}}</div>						
 						</figure>
 					</div>
 					<div class="col-xs-6">
                 		<figure class="dashboard-stat" ng-cloak>
 							<figcaption class="stat-caption">Total in system</figcaption>
-							<div class="stat-figure">@{{stats.member.numTotal}}</div>
+							<div class="stat-figure">{{stats.member.numTotal}}</div>
 						</figure>
 					</div>
 				</div>
@@ -55,12 +60,7 @@
 		</div>
 		
 	</div>
-	
-	
+
 </div>
-@endsection
-
-
-@section('ng-script')
-<script src="/app/components/dashboard/flaresDashboard.js"></script>
+@endverbatim
 @endsection

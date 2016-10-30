@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
-flaresApp.controller('memberAddController', function($scope, flaresAPI){
+flaresApp.controller('newMultiController', function($scope, flaresAPI){
 	//======================
 	// Vars which are related to overall onboarding process
 	$scope.onboardingContext = {
@@ -53,18 +53,11 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 		}
 	};
 	
+    // This data should be extracted from reference service
 	$scope.formData = {
-		onboardingTypes: [		// newRecruitment, newTransfer, newVolunteerStaff, newAdultCadetStaff
-			{id: 'newRecruitment', name: 'New Recruitment'},
-			{id: 'newTransfer', name: 'New Transfer'},
-			{id: 'newVolunteerStaff', name: 'Volunteer Staff member'},
-			{id: 'newAdultCadetStaff', name: 'Adult Staff member'}
-		],
-		sexes: ['M', 'F'],
-		intakes: [
-			{ id: '1', name: '1st Trg Cycle' },
-			{ id: '2', name: '2nd Trg Cycle' }
-		],
+		onboardingTypes: [],
+		sexes: [],
+		intakes: [],
 		postings: [],
 		ranks: []
 	}
@@ -296,12 +289,13 @@ flaresApp.controller('memberAddController', function($scope, flaresAPI){
 	// Fetch reference data for platoons and ranks
 	
 	flaresAPI('refData').getAll().then(function(response){
-		if (response.data.postings){
-			$scope.formData.postings = response.data.postings;
-		}
-		if (response.data.ranks){
-			$scope.formData.ranks = response.data.ranks;
-		}
+        // Auto-extract
+        var extract = ['postings', 'ranks', 'sexes', 'onboardingTypes', 'intakes'];
+        angular.forEach(extract, function(key){
+            if (response.data.hasOwnProperty(key)){
+                $scope.formData[key] = response.data[key];
+            }
+        });
 	});
 	
 	//===================

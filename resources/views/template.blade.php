@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    @include('partial.favicons')
+    @include('partials.favicons')
     <title>@yield('title') | FLARES</title>
 	<link href="/assets/css/app.css" rel="stylesheet">
 </head>
@@ -36,9 +36,15 @@
             </div>
         </div>
         <div class="container">
+            {{-- Banners are hero units below the nav but above other content --}}
             @yield('banner')
+            
+            {{-- Render notifications or alerts --}}
             @yield('alerts')
+            
+            {{-- The main screen functionality --}}
             @yield('content')
+            
         </div>
     </div>
     @show
@@ -64,7 +70,7 @@
     
     {{-- Plugin/add-on/vendor js --}}
 	<script src="/assets/js/notification-popups.js"></script>
-	@yield('ng-script')
+	@stack('scripts')
 	
 </body>
 </html>

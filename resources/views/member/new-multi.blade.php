@@ -2,13 +2,16 @@
 @extends('primary')
 
 @section('ng-app', 'flaresMemberNew')
-@section('ng-controller', 'memberAddController')
+@section('ng-controller', 'newMultiController')
 @section('title', 'Member Onboarding')
+
+@push('scripts')
+<script src="/app/components/member/flaresMemberNewMulti.js"></script>
+@endpush
 
 @section('heading')
 <h1>Onboarding members <small>Stage @{{workflow.stage}} of 6</small></h1>
 @endsection
-
 
 @section('memberAdd-contextInfo')
 <div class="alert alert-info">
@@ -46,7 +49,7 @@
 					</div>
 				</div>			
 				<div class="form-group">
-					<label class="control-label col-sm-3">Initial Rank</label>
+					<label id="descInitialRank" class="control-label col-sm-3">Initial Rank</label>
 					<div class="col-sm-9">
 						<select class="form-control" ng-model="onboardingContext.newRank" aria-describedby="descInitialRank">
 							<option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
@@ -402,12 +405,12 @@
 
 @section('content')
 <div class="hidden-xs">
-	<section ng-cloak ng-show="workflow.stage === 1">@yield('memberAdd-contextInfo')</section>
-	<section ng-cloak ng-show="workflow.stage === 2">@yield('memberAdd-memberBasic')</section>
-	<section ng-cloak ng-show="workflow.stage === 3">@yield('memberAdd-memberConfirm')</section>
-	<section ng-cloak ng-show="workflow.stage === 4">@yield('memberAdd-memberDetails')</section>
-	<section ng-cloak ng-show="workflow.stage === 5">@yield('memberAdd-forums')</section>
-	<section ng-cloak ng-show="workflow.stage === 6">@yield('memberAdd-complete')</section>
+	<section ng-show="workflow.stage === 1">@yield('memberAdd-contextInfo')</section>
+	<section ng-show="workflow.stage === 2">@yield('memberAdd-memberBasic')</section>
+	<section ng-show="workflow.stage === 3">@yield('memberAdd-memberConfirm')</section>
+	<section ng-show="workflow.stage === 4">@yield('memberAdd-memberDetails')</section>
+	<section ng-show="workflow.stage === 5">@yield('memberAdd-forums')</section>
+	<section ng-show="workflow.stage === 6">@yield('memberAdd-complete')</section>
 </div>
 <div class="visible-xs-block">
 	<div class="alert alert-warning">
@@ -415,10 +418,4 @@
 	</div>
 </div>
 
-@endsection
-
-
-
-@section('ng-script')
-<script src="/app/components/member/flaresMemberNew.js"></script>
 @endsection

@@ -13,5 +13,5 @@ return View::make('page')->with('userInfo',$userInfo);
 --}}
 
 @section('navbar-sections')
-    @include('partial.navbar')
+    @include('partials.navbar')
 @endsection

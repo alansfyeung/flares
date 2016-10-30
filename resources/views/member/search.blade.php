@@ -9,26 +9,11 @@
 <h1>Search all members</h1>
 @endsection
 
+@push('scripts')
+<script src="/app/components/member/flaresMemberSearch.js"></script>
+@endpush
 
-@section('memberSearch')
-<form class="form" ng-submit="submitSimpleSearch()">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="input-group input-group-lg">
-				<input type="text" class="form-control" ng-model="searchKeywords" placeholder="Search members...">
-				<span class="input-group-btn">
-					<button class="btn btn-default" type="submit">Go!</button>
-				</span>
-			</div><!-- /input-group -->
-		</div>
-	</div>
-	<p>
-		<small><a class="btn btn-link" ng-click="state.advancedSearch = !state.advancedSearch;">Advanced search</a></small>
-	</p>
-</form>
-@endsection
-
-@section('advancedSearch')
+@section('advancedSearchForm')
 <form class="form-horizontal" ng-cloak ng-show="state.advancedSearch" ng-submit="submitAdvancedSearch()">
 	<div class="row">
 		<div class="col-sm-6">
@@ -87,68 +72,50 @@
 </form>
 @endsection
 
-@section('searchResults')
-<section class="search-results">
-	<div class="label label-default">@{{results.length}} results for search</div>
-	<table class="table table-hover" ng-show="results.length > 0">
-		<thead>
-			<tr>
-				<th>Regt Num</th>
-				<th>Last Name</th>
-				<th>Given Names</th>
-				<th>Rank</th>
-				<th>Sex</th>
-				<th>Age</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}"  ng-click="selectMember(result)">
-				<td>@{{result.regt_num}}</td>
-				<td>@{{result.last_name}}</td>
-				<td>@{{result.first_name}}</td>
-				<td>@{{result.rank}}</td>
-				<td>@{{result.sex}}</td>
-				<td>@{{result.ageDetails}}</td>
-				<!-- <td><a href="/member#!/@{{result.regt_num}}/view">View Member</a></td> -->
-			</tr>
-		</tbody>
-	</table>
-</section>
-@endsection
-
-@section('memberSearchModal')
-{{-- This blade template section is no longer used --}}
-<div class="modal" id="memberSearchContextMenu" tabindex="-1" role="dialog" aria-labelledby="activeMemberTitle">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="activeMemberTitle">
-					<span>@{{activeMember.last_name}}, @{{activeMember.first_name}}</span>
-				</h4>
-				<h5 class="modal-subtitle">@{{activeMember.regt_num}}</h5>
-			</div>
-			<div class="modal-body text-center">
-				<a href="/member#!/@{{activeMember.regt_num}}/view" id="viewActiveMember" class="btn btn-block btn-primary activemember-view">View/Edit member details</a>
-				<button class="btn btn-block btn-default">Find roll entries [TBA]</button>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-block btn-danger" data-dismiss="modal">Cancel</button>
-			</div>
-		</div>
-	</div>
-</div>
-@endsection
-
-
 @section('content')
-	@yield('memberSearch')
-	@yield('advancedSearch')
-	<hr/>
-	@yield('searchResults')
+    <form class="form" ng-submit="submitSimpleSearch()">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" ng-model="searchKeywords" placeholder="Search members...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div>
+        </div>
+        <p>
+            <small><a class="btn btn-link" ng-click="state.advancedSearch = !state.advancedSearch;">Advanced search</a></small>
+        </p>
+    </form>
+    
+	@yield('advancedSearchForm')
+    
+	<hr>
+    <section class="search-results">
+        <div class="label label-default">@{{results.length}} results for search</div>
+        <table class="table table-hover" ng-show="results.length > 0">
+            <thead>
+                <tr>
+                    <th>Regt Num</th>
+                    <th>Last Name</th>
+                    <th>Given Names</th>
+                    <th>Rank</th>
+                    <th>Sex</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}"  ng-click="selectMember(result)">
+                    <td>@{{result.regt_num}}</td>
+                    <td>@{{result.last_name}}</td>
+                    <td>@{{result.first_name}}</td>
+                    <td>@{{result.rank}}</td>
+                    <td>@{{result.sex}}</td>
+                    <td>@{{result.ageDetails}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
-@endsection
-
-
-@section('ng-script')
-<script src="/app/components/member/flaresMemberSearch.js"></script>
 @endsection

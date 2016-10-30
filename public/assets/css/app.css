@@ -6067,6 +6067,9 @@ footer {
   -ms-user-select: none;
   user-select: none; }
 
+.form-horizontal .control-label {
+  text-align: left; }
+
 @media (max-width: 767px) {
   /* Right-triangle carets for mobile menu */
   .caret {
@@ -6121,12 +6124,16 @@ footer {
 .activity-colorcode .activity-fullname {
   font-size: 1.25em; }
 
+.member-status-labels {
+  font-size: 1.26em; }
+  .member-status-labels .label {
+    display: inline-block; }
+
 .member-quickstatus {
   border-bottom: 1px dashed #ddd;
   margin-bottom: 20px; }
-
-.member-quickstatus dd {
-  display: inline-block; }
+  .member-quickstatus dd {
+    display: inline-block; }
 
 .member-dp {
   margin: 0 auto;
@@ -6141,27 +6148,17 @@ footer {
   margin: 0 auto;
   max-width: 100px; }
 
-.member-dp img,
-.member-dp-lg img,
-.member-dp-thumb img,
-.member-dp-sm img {
+.member-dp img, .member-dp-lg img, .member-dp-thumb img, .member-dp-sm img {
   width: 100%; }
 
-.record-view td {
-  width: 50%;
-  word-break: break-word; }
-
-.record-view input,
-.record-view textarea,
-.record-view select {
+.record-view input, .record-view textarea, .record-view select {
   padding: 8px;
   display: block;
   border: none;
-  width: 100%; }
+  width: 100%;
+  border-bottom: 2px solid skyblue;
+  background: azure; }
 
-.record-view input,
-.record-view textarea,
-.record-view select,
 .record-view [contenteditable] {
   border-bottom: 2px solid skyblue;
   background: azure; }
@@ -6169,30 +6166,30 @@ footer {
 .record-view textarea {
   resize: vertical; }
 
-.record-view input[type=radio],
-.record-view input[type=checkbox] {
+.record-view input[type=radio], .record-view input[type=checkbox] {
   width: auto; }
+
+.record-view td {
+  width: 50%;
+  word-break: break-word; }
 
 .uploader-drop-zone {
   border: 6px dashed steelblue;
   background: aliceblue; }
-
-.uploader-not-ready.uploader-drop-zone {
-  border: 6px solid red; }
+  .uploader-drop-zone.uploader-not-ready {
+    border: 6px solid red; }
 
 .memberadd-spreadsheet {
   border-collapse: collapse;
   width: 100%; }
 
-.memberadd-spreadsheet td,
-.memberadd-spreadsheet th {
+.memberadd-spreadsheet td, .memberadd-spreadsheet th {
   border: 1px solid #bbb; }
 
 .memberadd-spreadsheet th {
   padding: 5px; }
 
-.memberadd-spreadsheet input[type],
-.memberadd-spreadsheet select {
+.memberadd-spreadsheet input[type], .memberadd-spreadsheet select {
   border: none;
   padding: 5px;
   width: 100%; }
@@ -6301,5 +6298,8 @@ select.ng-dirty.ng-invalid,
   position: relative;
   padding: 0 1em;
   top: -11px; }
+
+.titlebar-actions .btn-link {
+  background: rgba(0, 0, 0, 0.2); }
 
 /*# sourceMappingURL=app.css.map */

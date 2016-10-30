@@ -37,8 +37,8 @@ Route::group(['as' => 'member::'], function (){
     Route::get('members', function () {				// Member search page
         return view('member.search');
     });
-    Route::get('members/new', function () {
-        return view('member.new-multi');
+    Route::get('members/new', function () {         // Simple 1 page form
+        return view('member.new-simple');
     });
     Route::get('members/newmulti', function () {			// Member bulk add
         return view('member.new-multi');

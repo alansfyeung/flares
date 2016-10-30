@@ -1,11 +1,18 @@
 // View/edit member screen
 
+.member-status-labels {
+    font-size: 1.26em;
+    .label {
+        display: inline-block;
+    }
+}
+
 .member-quickstatus {
 	border-bottom: 1px dashed #ddd;
 	margin-bottom: 20px;
-}
-.member-quickstatus dd {
-	display: inline-block;
+    dd {
+        display: inline-block;
+    }
 }
 
 .member-dp {
@@ -21,69 +28,77 @@
     margin: 0 auto;
 	max-width: 100px;
 }
-.member-dp img,
-.member-dp-lg img,
-.member-dp-thumb img,
-.member-dp-sm img {
-    width: 100%;
+.member-dp, .member-dp-lg, .member-dp-thumb, .member-dp-sm {
+    img {
+        width: 100%;
+    }
 }
 
-.record-view td {
-	width: 50%;
-	word-break: break-word;
-}
+.record-view {
 
-.record-view input,
-.record-view textarea,
-.record-view select {
-	padding: 8px;
-	display: block;
-	border: none;	
-	width: 100%;
-}
-.record-view input,
-.record-view textarea,
-.record-view select,
-.record-view [contenteditable] {
-	border-bottom: 2px solid skyblue;
-	background: azure;
-}
-.record-view textarea {
-	resize: vertical;
-}
-.record-view input[type=radio],
-.record-view input[type=checkbox] {
-	width: auto;
+    @mixin highlighted-field($border-color: skyblue, $background-color: azure) {
+        border-bottom: 2px solid $border-color;
+        background: $background-color;
+    }
+
+    input, textarea, select {
+        padding: 8px;
+        display: block;
+        border: none;	
+        width: 100%;
+        @include highlighted-field;
+    }
+    
+    [contenteditable] {
+        @include highlighted-field;
+    }
+    
+    textarea {
+        resize: vertical;
+    } 
+    input {    
+        &[type=radio], &[type=checkbox] {
+            width: auto;
+        }
+    }
+    
+    td {
+        width: 50%;
+        word-break: break-word;
+    }
+    
 }
 
 .uploader-drop-zone {
 	border: 6px dashed steelblue;
 	background: aliceblue;
+    &.uploader-not-ready {
+        border: 6px solid red;
+    }
 }
-.uploader-not-ready.uploader-drop-zone {
-	border: 6px solid red;
-}
 
 
+// Member Simple onboarding screen
 
-// Member onboarding screen
+
+// Member Multi onboarding screen
 
 .memberadd-spreadsheet {
 	border-collapse: collapse;
 	width: 100%;
 }
-.memberadd-spreadsheet td, 
-.memberadd-spreadsheet th {
-	border: 1px solid #bbb;
-}
-.memberadd-spreadsheet th {
-	padding: 5px;
-}
-.memberadd-spreadsheet input[type],
-.memberadd-spreadsheet select {
-	border: none;
-	padding: 5px;
-	width: 100%;
+.memberadd-spreadsheet {
+    td, th {
+        border: 1px solid #bbb;
+    }
+    th {
+        padding: 5px;
+    }
+    input[type], select {
+        border: none;
+        padding: 5px;
+        width: 100%;
+    }
 }
 
 input[type].ng-dirty.ng-invalid,

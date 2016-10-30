@@ -15,6 +15,24 @@ class RefDataController extends Controller
 		$refData['platoons'] = DB::table('ref_platoons')->orderBy('pos', 'asc')->get();
 		$refData['ranks'] = DB::table('ref_ranks')->orderBy('pos', 'asc')->get();
 		$refData['postings'] = DB::table('ref_postings')->orderBy('pos', 'asc')->get();
+        
+        
+        // Manual 
+        // TODO: chuck into database
+		$refData['sexes'] = ['M', 'F'];
+        
+        /// Types are: newRecruitment, newTransfer, newVolunteerStaff, newAdultCadetStaff
+        $refData['onboardingTypes'] = [		
+			['id' => 'newRecruitment', 'name' => 'New Recruitment'],
+			['id' => 'newTransfer', 'name' => 'New Transfer'],
+			['id' => 'newVolunteerStaff', 'name' => 'Volunteer Staff member'],
+			['id' => 'newAdultCadetStaff', 'name' => 'Adult Staff member'],
+		];
+		$refData['intakes'] = [
+			['id' => '1', 'name' => '1st Trg Cycle'],
+			['id' => '2', 'name' => '2nd Trg Cycle'],
+		];
+        
 		return response()->json($refData);
 	}
 	
@@ -53,5 +71,5 @@ class RefDataController extends Controller
             'presets' => $presets
         ]);
     }
-    
+
 }

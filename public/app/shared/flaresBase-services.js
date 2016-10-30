@@ -11,7 +11,12 @@ var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstra
 // 2. flaresLinkBuilder
 
 flaresBase.factory('flaresAPI', function($http){
-    function FlaresAPI(endpoint, subresources){     // expect subresources as array
+    /**
+     * The FlaresAPI constructor
+     * @param endpoint string Path to the resource endpoint
+     * @param subresources string[] Names of known subresources required
+     */
+    function FlaresAPI(endpoint, subresources){     
         this.endpoint = endpoint;
         if (subresources instanceof Array){
             subresources.forEach(function(subresourceName){
@@ -123,9 +128,11 @@ flaresBase.factory('flaresLinkBuilder', function() {
         }
         return this;
     };
-    FlaresLinkBuilder.prototype.getLink = function(){
+    
+    FlaresLinkBuilder.prototype.build = function(){
         return this.url + this.frag;
     };
+    FlaresLinkBuilder.prototype.getLink = FlaresLinkBuilder.prototype.build;
     
     var factory = function(className){
         if (className === 'resource'){
