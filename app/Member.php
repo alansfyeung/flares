@@ -10,7 +10,7 @@ class Member extends Model
 	use SoftDeletes;
 	
 	protected $primaryKey = 'regt_num';
-	protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at', 'dob'];
 	protected $guarded = ['is_fully_enrolled', 'coms_username', 'coms_id', 'forums_username', 'forums_userid'];
 	
 	// Disable any auto-increment business

@@ -166,35 +166,28 @@ flaresApp.controller('newSimpleController', function($scope, $location, flaresAP
 
     function submitDetailedRecord(){
 		var sw = $scope.wf.state;
-		if (!sw.detailedMember.regtNum){
-			console.warn('No detailedMember is selected');
-			return false;
-		}
         
 		var payload = {
 			context: $scope.onboardingContext,
-			member: sw.detailedMember.data
+			member: $scope.member.data
 		};
 		
-		// Need IIFE to update the correct member reference on promise fulfill
-		(function(detailedMember){
-			flaresAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
-				if (response.data.recordId){
-                    
-                    // Detailed save succeeded, so let's activate them
-                    flaresAPI('member').patch([detailedMember.regtNum], {
-                        member: { is_active: '1' }
-                    });
-                    
-					detailedMember.lastPersistTime = (new Date()).toTimeString();
-					detailedMember.isUpdated = true;	
-					console.log('Updated:', detailedMember);
-				}
-			}, function(response){
-				console.warn('Error: member add', response);
-			});
+        flaresAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
+            if (response.data.recordId){
+                
+                // Detailed save succeeded, so let's activate them
+                flaresAPI('member').patch([detailedMember.regtNum], {
+                    member: { is_active: '1' }
+                });
+                
+                detailedMember.lastPersistTime = (new Date()).toTimeString();
+                detailedMember.isUpdated = true;	
+                console.log('Updated:', detailedMember);
+            }
+        }, function(response){
+            console.warn('Error: member add', response);
+        });
 			
-		}(sw.detailedMember));
 		
 	}
 	

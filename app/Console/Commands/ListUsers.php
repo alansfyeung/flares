@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use \App\FlaresUser;
+use \App\User;
 use Illuminate\Console\Command;
 
 class ListUsers extends Command
@@ -48,7 +48,7 @@ class ListUsers extends Command
 
         }
 
-        $users = FlaresUser::all($columns)->toArray();
+        $users = User::all($columns)->toArray();
         $this->table($headers, $users);
         
     }

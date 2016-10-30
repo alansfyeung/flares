@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\FlaresUser;
+use App\User;
 use Illuminate\Console\Command;
 
 class ResetUser extends Command
@@ -45,7 +45,7 @@ class ResetUser extends Command
         }
 
         // Check the user exists
-        $user = FlaresUser::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
         if (empty($user)){
             $this->error("Cannot find user $username");
             return;

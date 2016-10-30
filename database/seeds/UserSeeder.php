@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class FlaresUserSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,13 +11,13 @@ class FlaresUserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('system_users')->insert([
+        DB::table('users')->insert([
             [
                 'user_id' => '1', 
-                'forums_username' => 'SystemDefault', 
-                'access_level' => '500', 
+                'username' => 'SystemDefault', 
+                'access_level' => '99', 
                 'last_login_time' => date('Y-m-d H:i:s'), 
-                'fallback_pwd' => '###########'
+                'password' => '###########'
             ]
         ]);
     }

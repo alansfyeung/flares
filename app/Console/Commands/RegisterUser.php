@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\FlaresUser;
+use App\User;
 use Illuminate\Console\Command;
 
 class RegisterUser extends Command
@@ -19,7 +19,7 @@ class RegisterUser extends Command
      *
      * @var string
      */
-    protected $description = 'Create a new Flares user.';
+    protected $description = 'Create a new Flares admin user.';
 
     /**
      * Create a new command instance.
@@ -74,11 +74,11 @@ class RegisterUser extends Command
     /**
      *  Create the new user account
      *  
-     *  @return \App\FlaresUser $user
+     *  @return \App\User $user
      */
     private function create(array $data)
     {
-        $user =FlaresUser::create([
+        $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             //'password' => bcrypt($data['password']),
