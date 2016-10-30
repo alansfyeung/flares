@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use DB;
+use Log;
 use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -59,12 +60,24 @@ class MemberController extends Controller
 			$query = Member::select();
 		}
 		
-		// join on 3p table 
-		$query->leftJoin('posting_promo', function ($join) {
-            $join->on('members.regt_num', '=', 'posting_promo.regt_num');
+		// join on pp table 
+		$query->join('posting_promo as pp1', function ($join) {
+            $join->on('members.regt_num', '=', 'pp1.regt_num');
         });
-		$query->select('members.*', 'posting_promo.new_rank as rank');
-		
+        // Self-join to reduce numbers per: http://stackoverflow.com/questions/2111384/sql-join-selecting-the-last-records-in-a-one-to-many-relationship
+        $query->leftJoin('posting_promo as pp2', function ($join) {
+            $join->on('members.regt_num', '=', 'pp2.regt_num')
+                ->where(function ($query) {
+                    $query->whereColumn('pp1.effective_date', '<', 'pp2.effective_date')
+                    ->orWhere(function ($query) {       // resolve effective_date ties
+                        $query->whereColumn('pp1.effective_date', 'pp2.effective_date')
+                            ->whereColumn('pp1.promo_id', '<', 'pp2.promo_id');
+                    });
+                });
+        });
+        $query->whereNull('pp2.promo_id');          // pp1 bubbles to the top
+		$query->select('members.*', 'pp1.new_rank as rank');
+
 		if ($request->has('keywords')){
 			$keywords = explode(' ', $request->query('keywords'));
 			foreach ($keywords as $keyword){
@@ -82,7 +95,7 @@ class MemberController extends Controller
 				// Otherwise add this as a name search
 				$query->where(function($query) use ($keyword){
 					$query->where('last_name', 'like', "%$keyword%")
-							->orWhere('first_name', 'like', "%$keyword%");
+                        ->orWhere('first_name', 'like', "%$keyword%");
 				});
 			}
 		}
@@ -101,10 +114,17 @@ class MemberController extends Controller
 				}
 			}
 		}
+        
+        
+        // $resp = $query->get();
+               
+        dd($query->toSql());
+		
 		
 		// return var_dump($input);
 		return response()->json([
-            'members' => $query->get()
+            // 'members' => $query->get()
+            'members' => $resp
         ]);
     }
 
