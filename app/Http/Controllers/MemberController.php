@@ -114,17 +114,9 @@ class MemberController extends Controller
 				}
 			}
 		}
-        
-        
-        // $resp = $query->get();
-               
-        dd($query->toSql());
-		
-		
-		// return var_dump($input);
+
 		return response()->json([
-            // 'members' => $query->get()
-            'members' => $resp
+            'members' => $query->get()
         ]);
     }
 

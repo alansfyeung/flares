@@ -131,6 +131,8 @@ flaresApp.controller('newSimpleController', function($scope, $location, flaresAP
     // Functions
     
     function submitNewRecord(){
+        
+        var member = $scope.member;
 
         // Cheapo validation
         // TODO: make better
@@ -151,44 +153,60 @@ flaresApp.controller('newSimpleController', function($scope, $location, flaresAP
                 return;
             }
             
-            newMember.lastPersistTime = (new Date).toTimeString();
+            member.lastPersistTime = (new Date).toTimeString();
             if (response.data.recordId){
-                newMember.regtNum = response.data.recordId;	
-                newMember.isSaved = true;
+                member.regtNum = response.data.recordId;	
+                member.isSaved = true;
             }
+            
+            wf.next();
             
         }, function(response){
             console.warn('Error: during member add – ', response);
+            wf.state.errorMessage = response;
         });
-            
-		wf.next();		// Asynchronous
 	}
 
     function submitDetailedRecord(){
 		var sw = $scope.wf.state;
+        var member = $scope.member;
         
 		var payload = {
 			context: $scope.onboardingContext,
 			member: $scope.member.data
 		};
 		
-        flaresAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
+        flaresAPI('member').patch([member.regtNum], payload).then(function(response){				
             if (response.data.recordId){
                 
                 // Detailed save succeeded, so let's activate them
-                flaresAPI('member').patch([detailedMember.regtNum], {
+                flaresAPI('member').patch([member.regtNum], {
                     member: { is_active: '1' }
                 });
                 
-                detailedMember.lastPersistTime = (new Date()).toTimeString();
-                detailedMember.isUpdated = true;	
-                console.log('Updated:', detailedMember);
+                member.lastPersistTime = (new Date()).toTimeString();
+                member.isUpdated = true;	
+                console.log('Updated:', member);
+                
+                wf.next();
+                
             }
         }, function(response){
             console.warn('Error: member add', response);
+            wf.state.errorMessage = response;
         });
-			
-		
 	}
+    
+    function skipDetailedRecord(){
+        
+        // Simply mark as active, then continue
+        flaresAPI('member').patch([member.regtNum], {
+            member: { is_active: '1' }
+        }).then(function(){
+            wf.next();
+        });
+        
+        
+    }
 	
 });

@@ -42,14 +42,18 @@
 			</div>
             <div class="list-group">
                 <a href="/members" class="list-group-item">Search members</a>
-                <a href="/members/new" class="list-group-item">Onboard new members</a>
+                <a href="/members/new" class="list-group-item">Simple member onboarding</a>
+                <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a>
             </div>
 		</div>
-	
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Decorations admin</h3>
-			</div>
+			
+	</div>
+    
+	<div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Decorations admin</h3>
+            </div>
             <div class="panel-body bg-primary">
                 “Decorations” are the digital representations of a 206 ACU member’s awards and achievements portfolio.
             </div>
@@ -57,8 +61,7 @@
                 <a href="/members" class="list-group-item">Search decorations</a>
                 <a href="/members/new" class="list-group-item">Add new decorations</a>
             </div>
-		</div>
-		
+        </div>
 	</div>
 
 </div>

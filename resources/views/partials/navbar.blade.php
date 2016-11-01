@@ -14,12 +14,12 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Awards <span class="caret"></span></a>
+          <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Decorations <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Overview</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Add new award</a></li>
-            <li><a href="#">Assign award</a></li>
+            <li><a href="#">Create new decoration</a></li>
+            <li><a href="#">Assign decoration</a></li>
           </ul>
         </li> 
         {{-- <li class="dropdown">
