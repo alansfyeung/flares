@@ -9,7 +9,7 @@ use Log;
 use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Flares\ResponseCodes;
+use App\Http\Custom\ResponseCodes;
 
 class MemberController extends Controller
 {
@@ -121,7 +121,7 @@ class MemberController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Persist a newly created resource.
      *
      * @param  Request  $request
      * @return Response
@@ -257,13 +257,13 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
 	{
-		$updated = 0;
+		$updated = false;
 		
 		// if (is_array($postData) && array_key_exists('member', $postData)){
 		try {
 			if ($request->has('member')){
-				$postDataUpdate = $request->member;
-				$updated = Member::updateOrCreate(['regt_num' => $id], $postDataUpdate);
+				// $postDataUpdate = $request->member;
+				$updated = Member::updateOrCreate(['regt_num' => $id], $request->input('member'));
 			}
 			else {
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
@@ -313,10 +313,11 @@ class MemberController extends Controller
 				$deleted = Member::findOrFail($id)->delete();
 			}
             
-            return response()->json([
-				'success' => $deleted,
-				'deletionMode' => $removeMode,
-			]);
+            return response('', 204);
+            // return response()->json([
+				// 'success' => $deleted,
+				// 'deletionMode' => $removeMode,
+			// ]);
 		}
 		catch (\Exception $ex){
             if (!$deleted){

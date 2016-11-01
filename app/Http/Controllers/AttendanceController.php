@@ -9,7 +9,7 @@ use App\Activity;
 use App\Attendance;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Flares\ResponseCodes;
+use App\Http\Custom\ResponseCodes;
 
 class AttendanceController extends Controller
 {

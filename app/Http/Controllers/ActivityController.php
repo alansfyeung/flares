@@ -7,15 +7,10 @@ use Illuminate\Http\Request;
 use App\Activity;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Custom\ResponseCodes;
 
 class ActivityController extends Controller
 {
-	const ERR_POSTDATA_MISSING = 4001;
-	const ERR_POSTDATA_FORMAT = 4002;
-	const ERR_HAS_ROLL = 4100;
-	const ERR_EX = 5000;
-	const ERR_DB_PERSIST = 5001;
-	
     /**
      * Display a listing of the resource.
      *
@@ -53,7 +48,7 @@ class ActivityController extends Controller
 		} 
 		else {
 			return response()->json([
-                'error' => ['code' => self::ERR_POSTDATA_FORMAT, 'reason' => 'Post data not provided in required format']
+                'error' => ['code' => ResponseCodes::ERR_POSTDATA_FORMAT, 'reason' => 'Post data not provided in required format']
             ], 400);
 		}
 		
@@ -108,7 +103,7 @@ class ActivityController extends Controller
 				$updated = Activity::findOrFail($id)->fill($postDataUpdate)->save();
 			}
 			else {
-				throw new \Exception('No activity values in post data', self::ERR_POSTDATA_MISSING);
+				throw new \Exception('No activity values in post data', ResponseCodes::ERR_POSTDATA_MISSING);
 			}
             return response()->json([
                 'recordId' => $updated
@@ -134,12 +129,13 @@ class ActivityController extends Controller
 		try {
 			$activity = Activity::findOrFail($id);
 			if ($activity->attendances->count() > 0){
-				throw new \Exception('Attendance records exist, cannot delete this activity', self::ERR_HAS_ROLL);
+				throw new \Exception('Attendance records exist, cannot delete this activity', ResponseCodes::ERR_HAS_ROLL);
 			}
 			else {
 				$deleted = $activity->delete();
 			}
-            return response()->json(['success' => $deleted]);
+            // return response()->json(['success' => $deleted]);
+            return response('', 204);
 		}
 		catch (\Exception $ex){
 			return response()->json([

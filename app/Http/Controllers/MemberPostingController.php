@@ -9,6 +9,7 @@ use App\Member;
 use App\Promotion;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Custom\ResponseCodes;
 
 class MemberPostingController extends Controller
 {

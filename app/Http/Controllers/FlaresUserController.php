@@ -9,7 +9,7 @@ use Hash;
 use App\FlaresUser;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Flares\ResponseCodes;
+use App\Http\Custom\ResponseCodes;
 
 class FlaresUserController extends Controller
 {

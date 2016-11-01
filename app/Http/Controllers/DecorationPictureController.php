@@ -5,25 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-
 use DB;
+use App\Decoration;
 use App\Member;
-use App\MemberPicture;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
 
-class MemberPictureController
+
+class DecorationController
 {		
-    use ProcessesMemberRecordsTrait;
 
 	private $tmpDir;			// Use the PHP default
 	
 	public function __construct(){
 		$this->tmpDir = sys_get_temp_dir();
 	}
-	
-    public function store(Request $request, $memberId)
+
+    public function store(Request $request, $decorationId)
     {	
 		// Upload a chunk, then
 		// check if all chunks are done. If so
@@ -50,30 +49,25 @@ class MemberPictureController
 				// Not going to save if we don't know the mime type
 				return response('Cannot determine image mime type from filename: ' . $file->name(), Response::HTTP_UNSUPPORTED_MEDIA_TYPE); 	// 415
 			}
-			
-			// // If we wanted to ensure a 1-to-1 mapping for Member record and MemberPicture
-			// MemberPicture::updateOrCreate(['regt_num' => $memberId], [
-				// 'photo_blob' => $blob,
-				// 'file_size' => $file->size(),
-				// 'mime_type' => $mimeType
-			// ]);
-			
-			$mp = new MemberPicture();
-			// $mp->regt_num = $memberId;
-			$mp->photo_blob = $blob;
-			$mp->file_name = $file->name();
-			$mp->file_size = $file->size();
-			$mp->mime_type = $mimeType;
-			
-			$member = Member::findOrFail($memberId);
-			$member->pictures()->save($mp);
-			
+            
+            // TODO: Shrink this image
+            
+            // Shrink this image
+
+			$dec = Decoration::find($decorationId);
+			$dec->icon_blob = $blob;
+			$dec->icon_mime_type = $mimeType;
+            
+            // $dec->icon_w = $file->
+            // $dec->icon_h = $file->
+			$dec->save();
+            
 			return response('Upload OK', Response::HTTP_CREATED);		// 201
 		}
 		
 		return response('', Response::HTTP_ACCEPTED);		// 202
     }
-	
+
 	/*
 	 * Used as a query by the client-side o check if a chunk was uploaded yet
 	 */
@@ -92,49 +86,49 @@ class MemberPictureController
 	 * Return a status code and JSON obj indicating if the image resource/s exists (without returning
 	 * the actual image data)
 	 */
-	public function exists($memberId){
-		$all = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->get();
-		if ($all->isEmpty()){
-			return response()->json(['count' => 0, 'exists' => false]);
-		}
-		return response()->json(['count' => $all->count(), 'exists' => true]);
+	public function exists($decorationId){
+        $dec = Decoration::findOrFail($decorationId);
+        return response()->json([ 'exists' => true ]);
 	}
 
 	/*
 	 * Serve the image as a resource
 	 */
-    public function show($memberId)
+    public function show($decorationId)
     {
         // Get the most recent image, serve it as whatever mimetype is recorded
-		$mp = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->firstOrFail();
-		$blob = $mp->photo_blob;
-		return response($blob)->header('Content-Type', $mp->mime_type);
+		$dec = Decoration::findOrFail($decorationId);
+        if ($mp->icon_blob !== null){
+            return response($mp->icon_blob)->header('Content-Type', $mp->icon_mime_type);            
+        } elseif ($mp->icon_uri !== null) {
+            $url = $mp->icon_uri;
+            // Assume it's a local image if not fully qualified url
+            if (!str_contains($mp->icon_uri, '://')){   
+                $url = secure_asset($url);                
+            }
+            return redirect($url);
+        }
     }
 
-    public function destroy(Request $request, $memberId)
+    public function destroy(Request $request, $decorationId)
     {
-		// remove -- [ all | last ]
-		$removeMode = $request->input('remove', 'last');
-		$wasDeleted = false;
-		
-		if ($removeMode == 'all'){
-			$all = MemberPicture::where('regt_num', $memberId)->get(); 
-			if (!$all->isEmpty()){
-				$all->each(function($memberPicture, $key){
-					$memberPicture->delete();
-				});
-				$wasDeleted = true;
-			}			
-		}
-		else {
-			// Remove the latest only
-			$latest = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->first();
-			if ($latest != null){
-				$latest->delete();
-				$wasDeleted = true;
-			}			
-		}
-		return $wasDeleted ? response('', Response::HTTP_OK) : response('', Response::HTTP_NOT_FOUND);
+        try {
+            
+            $dec = Decoration::findOrFail($decorationId);
+            $dec->icon_blob = null;
+            $dec->icon_mime_type = null;
+            $dec->icon_uri = null;
+            $dec->icon_w = null;
+            $dec->icon_h = null;
+            $dec->save();            
+            return response('', Response::HTTP_NO_CONTENT);
+            
+        } catch (\Exception $ex) {
+            
+            // Not perfect... maybe filter based on 404 or otherwise
+            return response('', Response::HTTP_NOT_FOUND);
+            
+        }
     }
 	
 	
