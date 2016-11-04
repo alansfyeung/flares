@@ -19,13 +19,13 @@ class CreateDecorationsTable extends Migration
             $table->text('desc');
             
             // Image as blob
-            $table->binary('icon_blob')->nullable();
-            $table->string('icon_mime_type', 255)->nullable();
+            $table->binary('badge_blob')->nullable();
+            $table->string('badge_mime_type', 255)->nullable();
             
             // Image as URL
-            $table->string('icon_uri', 255)->nullable();
-            $table->integer('icon_w')->nullable();
-            $table->integer('icon_h')->nullable();
+            $table->string('badge_uri', 255)->nullable();
+            $table->integer('badge_w')->nullable();
+            $table->integer('badge_h')->nullable();
             
             // Couple with forums special rank table
             $table->integer('forums_special_rank_id')->nullable();
@@ -40,6 +40,10 @@ class CreateDecorationsTable extends Migration
             // Timestamps
             $table->timestamps();
         });
+        Schema::table('decorations', function(Blueprint $table){
+            DB::connection()->getPdo()->exec('ALTER TABLE `decorations` CHANGE `badge_blob` `badge_blob` LONGBLOB');
+        });
+     
     }
 
     /**

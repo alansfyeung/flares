@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
 
 
-class DecorationController
+class DecorationBadgeController
 {		
 
 	private $tmpDir;			// Use the PHP default
@@ -30,7 +30,7 @@ class DecorationController
 		
 		$config = new \Flow\Config();
 		$config->setTempDir($this->tmpDir);
-		$file = new \Flow\FileReadable($config);
+		$file = new \Flow\File($config);
 
 		if ($file->validateChunk()) {
 			$file->saveChunk();
@@ -42,7 +42,14 @@ class DecorationController
 
 		// Check for completion
 		if ($file->validateFile()) {
-			$blob = $file->saveToStream();
+            $temp = tempnam('/tmp/flares', 'dec');
+			if ($file->save($temp)){
+                $blob = file_get_contents($temp);
+                unlink($temp);
+            }
+            else {
+                return response('File Save Failed', Response::HTTP_INTERNAL_SERVER_ERROR);		// 201
+            }
 			
 			$mimeType = $this->parseImageMimeType(strrchr($file->name(), '.'));
 			if (!$mimeType){
@@ -55,11 +62,8 @@ class DecorationController
             // Shrink this image
 
 			$dec = Decoration::find($decorationId);
-			$dec->icon_blob = $blob;
-			$dec->icon_mime_type = $mimeType;
-            
-            // $dec->icon_w = $file->
-            // $dec->icon_h = $file->
+			$dec->badge_blob = $blob;
+			$dec->badge_mime_type = $mimeType;
 			$dec->save();
             
 			return response('Upload OK', Response::HTTP_CREATED);		// 201
@@ -74,7 +78,7 @@ class DecorationController
 	public function chunkCheck(){	
 		$config = new \Flow\Config();
 		$config->setTempDir($this->tmpDir);		
-		$file = new \Flow\FileReadable($config);
+		$file = new \Flow\File($config);
 		
 		if ($file->checkChunk()) {
 			return response('', Response::HTTP_OK);				// 200
@@ -98,12 +102,12 @@ class DecorationController
     {
         // Get the most recent image, serve it as whatever mimetype is recorded
 		$dec = Decoration::findOrFail($decorationId);
-        if ($mp->icon_blob !== null){
-            return response($mp->icon_blob)->header('Content-Type', $mp->icon_mime_type);            
-        } elseif ($mp->icon_uri !== null) {
-            $url = $mp->icon_uri;
+        if ($mp->badge_blob !== null){
+            return response($mp->badge_blob)->header('Content-Type', $mp->badge_mime_type);            
+        } elseif ($mp->badge_uri !== null) {
+            $url = $mp->badge_uri;
             // Assume it's a local image if not fully qualified url
-            if (!str_contains($mp->icon_uri, '://')){   
+            if (!str_contains($mp->badge_uri, '://')){   
                 $url = secure_asset($url);                
             }
             return redirect($url);
@@ -115,11 +119,11 @@ class DecorationController
         try {
             
             $dec = Decoration::findOrFail($decorationId);
-            $dec->icon_blob = null;
-            $dec->icon_mime_type = null;
-            $dec->icon_uri = null;
-            $dec->icon_w = null;
-            $dec->icon_h = null;
+            $dec->badge_blob = null;
+            $dec->badge_mime_type = null;
+            $dec->badge_uri = null;
+            $dec->badge_w = null;
+            $dec->badge_h = null;
             $dec->save();            
             return response('', Response::HTTP_NO_CONTENT);
             

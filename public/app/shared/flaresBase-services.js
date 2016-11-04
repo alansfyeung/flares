@@ -83,20 +83,6 @@ flaresBase.factory('flaresLinkBuilder', function() {
         this.url = (urlRoot ? urlRoot : '');
         this.frag = '';
     }
-    FlaresLinkBuilder.prototype.raw = function(pathParts, queryStringParts, hashFragParts){
-        pathParts = pathParts || [];
-        queryStringParts = queryStringParts || [];
-        hashFragParts = hashFragParts || [];            // expect hash frag to be separated by slashes
-        var path = '';
-        path = pathParts.join('/');
-        if (queryStringParts.length > 0){
-            path += '?' + queryStringParts.join('&');
-        }
-        if (hashFragParts.length > 0){
-            path += '#' + queryStringParts.join('/');
-        }
-        return path;
-    };
     FlaresLinkBuilder.prototype.new = function(){
         this.addUrl([this.plural,'new']);
         return this;
@@ -133,6 +119,21 @@ flaresBase.factory('flaresLinkBuilder', function() {
         return this.url + this.frag;
     };
     FlaresLinkBuilder.prototype.getLink = FlaresLinkBuilder.prototype.build;
+    
+    FlaresLinkBuilder.prototype.raw = function(pathParts, queryStringParts, hashFragParts){
+        pathParts = pathParts || [];
+        queryStringParts = queryStringParts || [];
+        hashFragParts = hashFragParts || [];            // expect hash frag to be separated by slashes
+        var path = '';
+        path = pathParts.join('/');
+        if (queryStringParts.length > 0){
+            path += '?' + queryStringParts.join('&');
+        }
+        if (hashFragParts.length > 0){
+            path += '#' + queryStringParts.join('/');
+        }
+        return path;
+    };
     
     var factory = function(className){
         if (className === 'resource'){

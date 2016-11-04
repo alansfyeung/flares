@@ -64,6 +64,10 @@ class CreateMembersTable extends Migration
             
             $table->foreign('regt_num')->references('regt_num')->on('members');
         });
+        
+        Schema::table('member_pictures', function(Blueprint $table){
+            DB::connection()->getPdo()->exec('ALTER TABLE `member_pictures` CHANGE `photo_blob` `photo_blob` LONGBLOB');
+        });
      
         Schema::create('member_idcards', function(Blueprint $table){
             $table->increments('idcard_id');

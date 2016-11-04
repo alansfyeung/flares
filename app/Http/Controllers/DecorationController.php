@@ -88,6 +88,16 @@ class DecorationController extends Controller
 		
     }    
     
+    /*
+	 * Retrieve all the decorations
+	 */
+    public function index()
+    {
+        $dec = Decoration::all();
+        return response()->json([
+            'decorations' => $dec->toArray()
+        ]);
+    }
 
 	/*
 	 * Retrieve the decoration

@@ -23,7 +23,7 @@ flaresApp.run(function($templateCache){
             </div> \
         </div> \
         <div class="modal-footer" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()"> \
-            <em>Drag and drop, or </em>&nbsp;&nbsp; \
+            <small>Tip: Drag and drop new picture onto the existing picture </small>&nbsp;&nbsp; \
             <div class="btn-group"> \
                 <span class="btn btn-default" flow-btn>Upload File</span>  \
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> \
@@ -411,8 +411,8 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();
                         // Todo: replace the below with a more sturdy flaresLinkBuilder solution
-                        $scope.memberImage.url = flaresLinkBuilder.raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
-                        $scope.memberImage.isDefault = false;			
+                        $scope.memberImage.url = flaresLinkBuilder().raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        $scope.memberImage.isDefault = false;
                     }
                     else {
                         $scope.memberImage.resetToDefault();
@@ -428,7 +428,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     function updateUploaderDestination(){
         if ($scope.$flow && $scope.member.regt_num){
             $scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
-            // console.log('Updated uploader target', $scope.$flow.opts.target);
+            console.log('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
         }
         else {

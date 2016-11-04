@@ -28,10 +28,11 @@ class MemberPictureController
 		// Upload a chunk, then
 		// check if all chunks are done. If so
 		// save the chunk to the database
-		
+
 		$config = new \Flow\Config();
 		$config->setTempDir($this->tmpDir);
-		$file = new \Flow\FileReadable($config);
+        $flowRequest = new \Flow\Request();
+		$file = new \Flow\File($config);
 
 		if ($file->validateChunk()) {
 			$file->saveChunk();
@@ -40,15 +41,23 @@ class MemberPictureController
 			// error, invalid chunk upload request, retry
 			return response('', Response::HTTP_BAD_REQUEST);		// 400
 		}
+        
 
 		// Check for completion
 		if ($file->validateFile()) {
-			$blob = $file->saveToStream();
+            $temp = tempnam('/tmp/flares', 'mbr');
+			if ($file->save($temp)){
+                $blob = file_get_contents($temp);
+                unlink($temp);
+            }
+            else {
+                return response('File Save Failed', Response::HTTP_INTERNAL_SERVER_ERROR);		// 201
+            }
 			
-			$mimeType = $this->parseImageMimeType(strrchr($file->name(), '.'));
+			$mimeType = $this->parseImageMimeType(strrchr($flowRequest->getFileName(), '.'));
 			if (!$mimeType){
 				// Not going to save if we don't know the mime type
-				return response('Cannot determine image mime type from filename: ' . $file->name(), Response::HTTP_UNSUPPORTED_MEDIA_TYPE); 	// 415
+				return response('Cannot determine image mime type from filename: ' . $flowRequest->getFileName(), Response::HTTP_UNSUPPORTED_MEDIA_TYPE); 	// 415
 			}
 			
 			// // If we wanted to ensure a 1-to-1 mapping for Member record and MemberPicture
@@ -61,8 +70,8 @@ class MemberPictureController
 			$mp = new MemberPicture();
 			// $mp->regt_num = $memberId;
 			$mp->photo_blob = $blob;
-			$mp->file_name = $file->name();
-			$mp->file_size = $file->size();
+			$mp->file_name = $flowRequest->getFileName();
+			$mp->file_size = $flowRequest->getTotalSize();
 			$mp->mime_type = $mimeType;
 			
 			$member = Member::findOrFail($memberId);
@@ -80,7 +89,7 @@ class MemberPictureController
 	public function chunkCheck(){	
 		$config = new \Flow\Config();
 		$config->setTempDir($this->tmpDir);		
-		$file = new \Flow\FileReadable($config);
+		$file = new \Flow\File($config);
 		
 		if ($file->checkChunk()) {
 			return response('', Response::HTTP_OK);				// 200
@@ -95,7 +104,7 @@ class MemberPictureController
 	public function exists($memberId){
 		$all = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->get();
 		if ($all->isEmpty()){
-			return response()->json(['count' => 0, 'exists' => false]);
+			return response()->json(['count' => 0, 'exists' => false], 404);
 		}
 		return response()->json(['count' => $all->count(), 'exists' => true]);
 	}

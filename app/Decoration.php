@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Decoration extends Model
-{
-	use SoftDeletes;
-	
+{	
 	protected $primaryKey = 'dec_id';
 	protected $dates = ['deleted_at', 'date_commence', 'date_conclude'];
     protected $guarded = [
@@ -21,7 +19,4 @@ class Decoration extends Model
         'created_at', 
         'updated_at'
     ];
-    
-    
-
 }

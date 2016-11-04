@@ -41,8 +41,17 @@ Route::get('activity/{activityId}/awol', 'AttendanceController@awol');		// Get t
 Route::resource('activity', 'ActivityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
-// Flares Users API
-Route::resource('flaresuser', 'FlaresUserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+// Decorations API
+
+Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show');
+Route::get('decoration/{decorationId}/badge/exists', 'DecorationBadgeController@exists');
+Route::get('decoration/{decorationId}/badge/new', 'DecorationBadgeController@chunkCheck');
+Route::post('decoration/{decorationId}/badge/new', 'DecorationBadgeController@store');
+Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@destroy');
+Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+
+// Admin API
+Route::resource('admin', 'AdminController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
  
 // Ref data routes
 Route::get('refdata', 'RefDataController@all');
