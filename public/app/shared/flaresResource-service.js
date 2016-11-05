@@ -5,10 +5,13 @@
 
 var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstrap']);
 
-flaresBase.factory('flResource', function() {
+flaresBase.factory('flResource', ['flResourceDefinitions', function(flResourceDefinitions){
     
-    function FlaresLinkBuilder(urlRoot){
-        this.url = (urlRoot ? urlRoot : '');
+    function FlaresLinkBuilder(opts){
+        opts = opts || {};
+        this.url = opts.prefix || '';
+        this.singular = opts.singular || '';
+        this.plural = opts.plural || '';
         this.frag = '';
     }
     FlaresLinkBuilder.prototype.new = function(){
@@ -63,37 +66,68 @@ flaresBase.factory('flResource', function() {
         return path;
     };
     
-    var factory = function(className){
-        if (className === 'resource'){
-            return new FlaresLinkBuilder('/assets');
-        }      
+    var factory = function(resource){
+        if (resource === 'asset'){
+            return new FlaresLinkBuilder({ prefix: '/assets' });
+        }
         
-        var flb = new FlaresLinkBuilder('');  
-        if (className === 'member'){
-            flb.singular = 'member';
-            flb.plural = 'members';
-            flb.search = function(){
-                this.addUrl([this.plural, 'search']);
-                return this;
-            };
+        var flrd = flResourceDefinitions;
+        if (flrd.hasOwnProperty(resource)){
+            
+            console.log(flrd[resource]);
+            
+            var flb = new FlaresLinkBuilder({
+                singular: flrd[resource].singular,
+                plural: flrd[resource].plural
+            });
+            
+            if (flrd[resource].hasOwnProperty('aliases')){
+                angular.forEach(flrd[resource].aliases, function(aliasParts, aliasName){
+                    (function(aliasParts){
+                        flb[aliasName] = function(){
+                            this.addUrl(aliasParts);
+                        }     
+                    }(aliasParts));
+                });
+            }
+            
+            console.log(flb);
+            
             return flb;
         }
-        if (className === 'activity'){
-            flb.singular = 'activity';
-            flb.plural = 'activities';
-            flb.roll = function(){
-                this.addUrl([this.singular, 'roll']);
-                return this;
-            };
-            flb.awol = function(){
-                this.addUrl([this.plural, 'awol']);
-                return this;
-            };
-            return flb;
-        }
-        return flb;
+
+        // if (resource === 'member'){
+            // flb.search = function(){
+                // this.addUrl([this.plural, 'search']);
+                // return this;
+            // };
+            // return flb;
+        // }
+        
+        // if (resource === 'activity'){
+            // flb.roll = function(){
+                // this.addUrl([this.singular, 'roll']);
+                // return this;
+            // };
+            // flb.awol = function(){
+                // this.addUrl([this.plural, 'awol']);
+                // return this;
+            // };
+            // return flb;
+        // }
+        
+        // if (resource === 'decoration'){
+            // flb.search = function(){
+                // this.addUrl([this.plural, 'search']);
+                // return this;
+            // };
+            // return flb;
+        // }
+        
+        // Default
+        return new FlaresLinkBuilder();
     };
     
     return factory;
 
-});
+}]);

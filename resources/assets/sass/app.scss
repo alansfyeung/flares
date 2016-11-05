@@ -12,8 +12,10 @@
 @import 'partials/alerts';
 @import 'partials/flares-bs-extn';
 
+// Common for all screens
+@import 'partials/forms';
 
-// Main 
+// Specific resource screens
 @import 'partials/dashboard';
 @import 'partials/activity';
 @import 'partials/member';

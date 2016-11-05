@@ -54,11 +54,12 @@ Route::group(['as' => 'member::'], function (){
     });
     
     Route::get('member', function(){
-        return view('member.view-member');
+        return view('member.view');
     });
 });
 
-Route::group(['as' => 'activities::'], function () {
+Route::group(['as' => 'activity::'], function () {
+    
     Route::get('activities', function () {		// dashboard-like overview for all activities
         return view('activities.activityOverview');
     });
@@ -71,9 +72,7 @@ Route::group(['as' => 'activities::'], function () {
     Route::get('activities/awol', function () {		// All activities AWOL dashboard
         return view('activities.awol');
     });
-});
-
-Route::group(['as' => 'activity::'], function () {
+    
     Route::get('activity', function () {
         return view('activity.viewActivity');				// View/edit activity details & nom roll
     });
@@ -81,3 +80,19 @@ Route::group(['as' => 'activity::'], function () {
         return view('activity.activityRoll');				// Mark the roll and view parade states
     });
 });
+
+Route::group(['as' => 'decoration::'], function(){
+    
+    Route::get('decorations', function(){
+        return view('decoration.search');
+    });
+        Route::get('decorations/new', function(){
+        return view('decoration.new');
+    });
+    
+    Route::get('decoration', function(){
+        return view('decoration.view');
+    });
+    
+});
+

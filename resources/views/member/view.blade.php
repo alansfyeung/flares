@@ -112,7 +112,7 @@
             <div class="col-xs-3 col-sm-3">
                 <!-- Header thumbnail Display Picture -->
                 <section ng-controller="pictureController" ng-click="displayPictureModal()">
-                    <div class="thumbnail member-dp">
+                    <div class="thumbnail fl-record-thumbnail">
                         <img ng-src="@{{memberImage.url}}" alt="@{{member.last_name}}" class="image-rounded memberview-thumb">
                     </div>
                 </section>

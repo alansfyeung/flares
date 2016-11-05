@@ -90,9 +90,11 @@
         
         <hr>
         <div class="form-group">
-            <div class="text-right">
-                <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-                <button class="btn btn-primary" type="submit">Create Member</button>
+            <div class="col-sm-12">
+                <div class="text-right">
+                    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Create Member</button>
+                </div>
             </div>
         </div>
     </form>
@@ -262,9 +264,11 @@
             </div>
         </fieldset>
         <hr>
-        <div class="text-right">
-            <button type="button" class="btn btn-default" ng-click="wf.skipDetailedRecord()">Skip</button>
-            <button type="button" class="btn btn-primary" ng-click="wf.submitDetailedRecord()">Update details</button>
+        <div class="col-sm-12">
+            <div class="text-right">
+                <button type="button" class="btn btn-default" ng-click="wf.skipDetailedRecord()">Skip</button>
+                <button type="button" class="btn btn-primary" ng-click="wf.submitDetailedRecord()">Update details</button>
+            </div>
         </div>
     </form>
 </section>
@@ -275,10 +279,12 @@
         @{{member.last_name}}, @{{member.first_name}} &diam;@{{member.data.regt_num}} 
     </div>
     <hr>
-    <div class="text-right">
-        <button class="btn btn-default" ng-click="viewMember()">Go and check out this new member</button>
-        <button class="btn btn-primary" ng-click="reset()">Add another member</button>
-    
+    <div class="col-sm-12">
+        <div class="text-right">
+            <button class="btn btn-default" ng-click="viewMember()">Go and check out this new member</button>
+            <button class="btn btn-primary" ng-click="reset()">Add another member</button>
+        </div>
+    </div>
     
 </section>
     

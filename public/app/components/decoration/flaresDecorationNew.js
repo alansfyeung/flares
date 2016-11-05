@@ -3,103 +3,72 @@
 //   Add new members
 // ==================================
 
-var flaresApp = angular.module('flaresDecorationNew', ['flaresBase']);
+var flaresApp = angular.module('flaresDecoration', ['flaresBase']);
 
-flaresApp.controller('newDecorationController', function($scope, $location, flAPI, flResource){
+flaresApp.controller('newDecorationController', function($scope, $location, $filter, flAPI, flResource){
 
-	// Tracks the flow of screens
-    // Stage 1: Enter name, DOB, gender; de-dupe, generate regt nums
-    // Stage 2: Enter detailed information
-    // Stage 3: Confirmation screen, go to view details
-	var workflowState = {
-		stage: 1,
-        isSaving: false,
-	};
-    
-    
-    //// WHAT DO
-    //// WHAT DO
-    //// WHAT DO
-    
-    // This data should be extracted from reference service
-	$scope.formData = {
-		onboardingTypes: [],
-		sexes: [],
-		intakes: [],
-		postings: [],
-		ranks: []
-	}
-	
-    
-    
+
+
+
     //=======================================
     // DATA
     
     // Onboarding Context
-    $scope.ctx = {
-		hasOverrides: false,
-		name: 'newRecruitment',				
-		thisYear: (new Date).getFullYear(),
-		thisCycle: '1',
-		newRank: 'CDTREC',
-		newPosting: 'MBR',
-		newPlatoon: '3PL',
-	};
     
 	// New member DTO
-	$scope.member = {
-        // Dummy data
+	$scope.dec = {
+        id: null,
         data: {
-            first_name: 'ALan',
-            last_name: 'Yeung',
-            sex: 'M'            
+            tier: 'A',
+            name: 'Comd AAC Commendation (Gold)',
+            desc: 'Awarded for great courage initiative and teamwork',
+            // date_commence: new Date('2006-01-01T00:00:00Z+10:00'),
+            date_commence: new Date('2006-01-01'),
+            authorized_by: 'HQ AAC'
         }
         
     };
     
     // END DATA
     //=======================================
+    
+    var wf = $scope.wf = {};
+	
+	var workflowState = wf.state = {
+		stage: 1,       // Leave deactivated but there's only a single stage
+        totalStages: 1,
+        isSaving: false,
+	};
+
+    // This data should be extracted from reference service
+	var formData = wf.formData = {
+		decorationTiers: []             // TODO
+	};
 	
 	//======================
 	// Workflow Screen navigation
     
-    var wf = $scope.wf = {};
-    
-    // Screen state variable
-    wf.state = workflowState;
     
     // Nav actions
     wf.next = function(){ wf.state.stage++ };
     
     // Form actions
-	wf.submitNewRecord = submitNewRecord;
-	wf.submitDetailedRecord = submitDetailedRecord;
-    
-    $scope.reset = function(){
-        console.log('resetting');
-        $location.url('/');
-    };
-    
+	wf.submitData = submitData;
+
     $scope.cancel = function(){
         $location.path('/');
     };
     
-    $scope.viewMember = function(){
-        // $location.url(['member', '#!', member.regtNum, 'view', 'details'].join('/'));
-        var where = flResource('member').addFragment([member.regtNum, 'view', 'details']).build();
-        $location.url(where);
-    };
-    
-	
+
 	//==================
 	// Fetch reference data for platoons and ranks
 	
     flAPI('refData').getAll().then(function(response){
         // Auto-extract
-        var extract = ['postings', 'ranks', 'sexes', 'onboardingTypes', 'intakes'];
+        var extract = ['decorationTiers'];
         angular.forEach(extract, function(key){
             if (response.data.hasOwnProperty(key)){
-                $scope.formData[key] = response.data[key];
+                wf.formData[key] = response.data[key];
             }
         });
         
@@ -110,103 +79,65 @@ flaresApp.controller('newDecorationController', function($scope, $location, flAP
 
 	//======================
 	// Save-your-change niceties
-	window.onbeforeunload = function(event){
-		if ($scope.workflow.stage > 1){
-			if ($scope.workflow.stage < 4){
-				var message = 'You will lose any unsaved member details.';
-				return message;
-			}
-			if ($scope.workflow.stage < 6){
-				var message = 'Although members are saved, the onboarding process is not yet complete.';
-				return message;
-			}
-		}
+    /* // TEMPORARILY COMMENTED
+	window.onbeforeunload = function(event){		
+        if (wf.state.stage < 2){
+            var message = 'You will lose any unsaved decoration details.';
+            return message;
+        }
 	};
 	
 	$scope.$on('$destroy', function() {
 		delete window.onbeforeunload;
 	});
+    */
     
     //=======================
     // Functions
     
-    function submitNewRecord(){
+    function submitData(){
         
-        var member = $scope.member;
+        var dec = $scope.dec;
 
         // Cheapo validation
         // TODO: make better
-		if($scope.newSimpleStageOne.$invalid){
-			wf.state.errorMessage = 'Resolve validation errors (Are required fields are filled and emails are correctly formatted?)';
+		if($scope.decorationData.$invalid){
+			wf.state.errorMessage = 'Resolve validation errors (Are all required fields filled out?)';
 			return false;
 		}
 
-		// Submission
+		// Need to flatten dates... thanks Laravel/Carbon...
         var payload = {
-            context: $scope.ctx,
-            member: $scope.member.data
+            decoration: angular.extend({}, dec.data, {
+                date_commence: $filter('date')(dec.data.date_commence, "yyyy-MM-dd"),
+                date_conclude: $filter('date')(dec.data.date_conclude, "yyyy-MM-dd")
+            })
         };
         
-        flAPI('member').post(payload).then(function(response){
+        flAPI('decoration').post(payload).then(function(response){
             if (response.data.error){
                 console.warn(response.data.error);
                 return;
             }
             
-            member.lastPersistTime = (new Date).toTimeString();
-            if (response.data.recordId){
-                member.regtNum = response.data.recordId;	
-                member.isSaved = true;
+            dec.lastPersistTime = (new Date).toTimeString();
+            if (response.data.id){
+                dec.id = response.data.id;	
+                dec.isSaved = true;
             }
             
-            wf.next();
+            var where = flResource('decoration').addFragment([$scope.dec.id, 'view', 'details']).build();
+            $location.url(where);
             
-        }, function(response){
-            console.warn('Error: during member add – ', response);
-            wf.state.errorMessage = response;
-        });
-	}
-
-    function submitDetailedRecord(){
-		var sw = $scope.wf.state;
-        var member = $scope.member;
-        
-		var payload = {
-			context: $scope.onboardingContext,
-			member: $scope.member.data
-		};
-		
-        flAPI('member').patch([member.regtNum], payload).then(function(response){				
-            if (response.data.recordId){
-                
-                // Detailed save succeeded, so let's activate them
-                flAPI('member').patch([member.regtNum], {
-                    member: { is_active: '1' }
-                });
-                
-                member.lastPersistTime = (new Date()).toTimeString();
-                member.isUpdated = true;	
-                console.log('Updated:', member);
-                
-                wf.next();
-                
-            }
-        }, function(response){
-            console.warn('Error: member add', response);
-            wf.state.errorMessage = response;
+        }).catch(function(response){
+            console.warn('Error: during decoration add – ', response);
+            wf.state.errorMessage = angular.isObject(response) ? JSON.stringify(response) : response;
         });
 	}
     
-    function skipDetailedRecord(){
-        
-        // Simply mark as active, then continue
-        flAPI('member').patch([member.regtNum], {
-            member: { is_active: '1' }
-        }).then(function(){
-            wf.next();
-        });
-        
-        
-    }
-	
+
 });
+
+
+
+

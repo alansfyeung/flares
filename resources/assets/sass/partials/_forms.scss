@@ -1,0 +1,18 @@
+//=============================
+// SCSS for FLARES form screens
+//=============================
+
+.control-label {
+    &.control-label-required::after {
+        content: ' *';
+        display: inline;
+        font-weight: bold;
+        color: #CF000F;
+    }
+    
+}
+
+.fl-record-thumbnail {
+    margin: 0 auto;
+    max-width: 150px;
+}

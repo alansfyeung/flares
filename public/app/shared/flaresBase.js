@@ -22,6 +22,46 @@ flaresBase.config(function($locationProvider) {
 });
 
 // =================
+// Constants
+// 1. flResourceDefinitions - A source of truth for factories/services
+
+flaresBase.constant('flResourceDefinitions', {
+    refData: {
+        apiBase: '/api/refdata',
+        singular: 'refdata',
+        plural: 'refdata'
+    },
+    member: {
+        apiBase: '/api/member',
+        singular: 'member',
+        plural: 'members',
+        nestedResources: ['posting', 'picture', 'status'],
+        aliases: [{
+            search: ['members', 'search']
+        }]
+    },
+    activity: {
+        apiBase: '/api/activity',
+        singular: 'activity',
+        plural: 'activities',
+        nestedResources: ['roll', 'awol'],
+        aliases: [{
+            roll: ['activity', 'roll'],
+            awol: ['activities', 'awol']
+        }],
+    },
+    decoration: {
+        apiBase: '/api/decoration',
+        singular: 'decoration',
+        plural: 'decorations',
+        aliases: [{
+            search: ['decorations', 'search']
+        }]
+    }
+});
+
+
+// =================
 // Base directives
 // 1. contextMenu - Deploys the $uibModal as a context menu
 // 2. displayMode - for View/Edit screens, toggles fields depending on 'mode' frag in path

@@ -1,4 +1,4 @@
-var flaresApp = angular.module('flaresMemberViewEdit', ['flaresBase', 'flow']);
+var flaresApp = angular.module('flaresDecoration', ['flaresBase', 'flow']);
 
 flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
 
@@ -32,9 +32,9 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
+flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
     
-    // Add some base 
+    // Add some base - unzip base controller's stuff into this controller
     var veController = this;
     angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
 	$scope.state = Object.create(veController.state);        // inherit the proto

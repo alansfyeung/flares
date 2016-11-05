@@ -32,26 +32,22 @@ class DecorationController extends Controller
 		if ($request->has('decoration') && count($request->input('decoration')) > 0){
 
             $postData = $request->input('decoration');
-            
 			DB::beginTransaction();
+            
 			try {
-                
                 $dec = Decoration::create($postData);
                 DB::commit();
-                
                 return response()->json([
                     'id' => $dec->dec_id,
                 ]);
-                
 			}
 			catch (\Exception $ex){
-			
                 DB::rollBack();
                 return response()->json([
                     'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
                 ], 500);
-                
 			}
+            
 		}
 		
         return response()->json([

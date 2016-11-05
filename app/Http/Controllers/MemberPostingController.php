@@ -35,7 +35,7 @@ class MemberPostingController extends Controller
 			}
 			
 			return response()->json([
-				'recordId' => $postingRecordId
+				'id' => $postingRecordId
 			]);
 		}
 		catch (\Exception $ex){

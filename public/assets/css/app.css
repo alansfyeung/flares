@@ -6082,6 +6082,12 @@ footer {
   footer {
     font-size: 0.75em; } }
 
+.control-label.control-label-required::after {
+  content: ' *';
+  display: inline;
+  font-weight: bold;
+  color: #CF000F; }
+
 .dashboard-stat {
   text-align: center; }
 
@@ -6279,6 +6285,9 @@ select.ng-dirty.ng-invalid,
  ***  Todo: modularise, convert to LESS 
  *** 
  */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important; }
+
 .flares-main {
   height: 100%;
   padding: 50px 0;

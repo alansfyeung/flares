@@ -6,7 +6,7 @@
           <ul class="dropdown-menu">
             <li><a href="/members" name="menu.member.search">Overview</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="/members/new" name="menu.member.new">Add new user</a></li>
+            <li><a href="/members/new" name="menu.member.new">Add new</a></li>
             {{-- <li><a href="/members/mass" name="menu.member.massactions">Mass actions</a></li> --}}
             {{-- <li role="separator" class="divider"></li> --}}
             {{-- <li><a href="/members/stats" name="menu.member.stats">Statistics</a></li> --}}
@@ -16,10 +16,10 @@
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Decorations <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Overview</a></li>
+            <li><a href="/decorations">Overview</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Create new decoration</a></li>
-            <li><a href="#">Assign decoration</a></li>
+            <li><a href="/decorations/new">Create new</a></li>
+            <li><a href="#/decorations/gallery">Gallery</a></li>
           </ul>
         </li> 
         {{-- <li class="dropdown">

@@ -5,7 +5,7 @@
 
 var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstrap']);
 
-flaresBase.factory('flAPI', function($http){
+flaresBase.factory('flAPI', ['$http', 'flResourceDefinitions', function($http, flResourceDefinitions){
     /**
      * The FlaresAPI constructor
      * @param endpoint string Path to the resource endpoint
@@ -26,49 +26,55 @@ flaresBase.factory('flAPI', function($http){
             }, this);            
         }
     };
-    FlaresAPI.prototype._buildEndpoint = function(suffixes){
-        suffixes = suffixes || [];
-        var trailing = '';
-        if (suffixes instanceof Array){
-            trailing = suffixes.join('/');
-        }
-        else {
-            trailing = suffixes;
-        }
-        return this.endpoint + (trailing ? '/'+trailing : '');
-    };
     FlaresAPI.prototype.getAll = function(params){      // don't expect ID
-        return $http.get(this._buildEndpoint(), params);
+        return $http.get(buildEndpoint.call(this), params);
     };
     FlaresAPI.prototype.get = function(parts, params){
-        return $http.get(this._buildEndpoint(parts), params);
+        return $http.get(buildEndpoint.call(this, parts), params);
     };
     FlaresAPI.prototype.post = function(data, params){      // don't expect ID
-        return $http.post(this._buildEndpoint(), data, params);
+        return $http.post(buildEndpoint.call(this), data, params);
     };
     FlaresAPI.prototype.put = function(parts, data, params){
-        return $http.put(this._buildEndpoint(parts), data, params);
+        return $http.put(buildEndpoint.call(this, parts), data, params);
     };
     FlaresAPI.prototype.patch = function(parts, data, params){
-        return $http.patch(this._buildEndpoint(parts), data, params);
+        return $http.patch(buildEndpoint.call(this, parts), data, params);
     };
     FlaresAPI.prototype.delete = function(parts, params){
-        return $http.delete(this._buildEndpoint(parts), params);
+        return $http.delete(buildEndpoint.call(this, parts), params);
     };
     // Todo: add a FlaresAPI.prototype.remove, alias of delete?
     
-    var factory = function(className){
-        if (className === 'refData'){
-            return new FlaresAPI('/api/refdata');
+    function buildEndpoint(suffixes){
+        if (suffixes){
+            if (angular.isArray(suffixes)){
+                return this.endpoint + '/' + suffixes.join('/');
+            }
+            return this.endpoint + '/' + suffixes;
         }
-        if (className === 'member'){
-            return new FlaresAPI('/api/member', ['posting', 'picture', 'status']);
+        return this.endpoint;
+    };
+    
+    var factory = function(resource){
+        
+        // Read the ngConstant and derive necessary data!
+        var flrd = flResourceDefinitions;
+        if (flrd.hasOwnProperty(resource)){
+            return new FlaresAPI(flrd[resource].apiBase, flrd[resource].nestedResources || []);
         }
-        if (className === 'activity'){
-            return new FlaresAPI('/api/activity', ['roll', 'awol']);
+        
+        switch (resource){
+            // case 'refData':
+                // return new FlaresAPI('/api/refdata');
+            // case 'member':
+                // return new FlaresAPI('/api/member', ['posting', 'picture', 'status']);
+            // case 'activity':
+                // return new FlaresAPI('/api/activity', ['roll', 'awol']);
+            default:
+                return new FlaresAPI();                
         }
-        return new FlaresAPI();
     }
     
     return factory;
-});
+}]);
