@@ -154,8 +154,8 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
             }
             
             member.lastPersistTime = (new Date).toTimeString();
-            if (response.data.recordId){
-                member.regtNum = response.data.recordId;	
+            if (response.data.id){
+                member.regtNum = response.data.id;	
                 member.isSaved = true;
             }
             
@@ -177,7 +177,7 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
 		};
 		
         flAPI('member').patch([member.regtNum], payload).then(function(response){				
-            if (response.data.recordId){
+            if (response.data.id){
                 
                 // Detailed save succeeded, so let's activate them
                 flAPI('member').patch([member.regtNum], {

@@ -60,8 +60,8 @@ flaresApp.controller('activityAddController', function($scope, $http, flAPI, flR
                     console.warn(response.data.error); 
                     return;
                 }
-                if (response.data.recordId){
-                    $scope.newActivity.actyId = response.data.recordId;	
+                if (response.data.id){
+                    $scope.newActivity.actyId = response.data.id;	
                     $scope.newActivity.isSaved = true;
                 }
                 fulfill(response.data);
@@ -81,8 +81,8 @@ flaresApp.controller('activityAddController', function($scope, $http, flAPI, flR
             createActivity().then(function(data){
                 // Take us to the activity's view
                 // window.location.href = $('[name=menu.activity.overview]').attr('href');
-                // console.log(flResourceflResource.page().activity(data.recordId).getLink());
-                window.location.href = flResource('activity').retrieve().addFragment([data.recordId, 'edit', 'rollbuilder']).getLink();
+                // console.log(flResourceflResource.page().activity(data.id).getLink());
+                window.location.href = flResource('activity').retrieve().addFragment([data.id, 'edit', 'rollbuilder']).getLink();
             });
         }
         return false;

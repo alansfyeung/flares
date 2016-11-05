@@ -190,8 +190,8 @@ flaresApp.controller('newMultiController', function($scope, flAPI){
 					}
 					
 					newMember.lastPersistTime = (new Date()).toTimeString();
-					if (response.data.recordId){
-						newMember.regtNum = response.data.recordId;	
+					if (response.data.id){
+						newMember.regtNum = response.data.id;	
 						newMember.isSaved = true;
 					}
 					
@@ -256,7 +256,7 @@ flaresApp.controller('newMultiController', function($scope, flAPI){
 		// Need IIFE to update the correct member reference on promise fulfill
 		(function(detailedMember){
 			flAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
-				if (response.data.recordId){
+				if (response.data.id){
                     
                     // Detailed save succeeded, so let's activate them
                     flAPI('member').patch([detailedMember.regtNum], {
