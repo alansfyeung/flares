@@ -1,13 +1,15 @@
 <section ng-controller="pictureController" flow-init>
-    <div class="modal-header"><h4 class="modal-title">Change member display picture</h4></div>
-        <div class="modal-body"><div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
+    <div class="modal-header">
+        <h4 class="modal-title">Change member display picture</h4>
+    </div>
+    <div class="modal-body">
+        <div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
             <div class="thumbnail member-dp-lg" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{'uploader-drop-zone': uploader.dropzone, 'uploader-not-ready': !uploader.ready()}">
                 <img ng-src="{{memberImage.url}}" alt="{{member.last_name}}" class="image-rounded" ng-show="!uploader.uploading">
                 <div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
                     <h3 ng-show="file.isUploading()">Uploading</h3>
                     <h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3>
                     <div class="thumbnail">
-                        <img flow-img="file">
                         <img flow-img="file">
                         <div class="caption">{{file.name}} ({{Math.floor(file.size/1024)}} KB)</div>
                     </div>
