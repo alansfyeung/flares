@@ -63,14 +63,15 @@
 	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
 
-    {{-- Application js --}}
-	<script src="/app/shared/flaresBase.js"></script>
-	<script src="/app/shared/flaresBase-controllers.js"></script>
-	<script src="/app/shared/flaresBase-services.js"></script>
-    
     {{-- Plugin/add-on/vendor js --}}
 	<script src="/assets/js/notification-popups.js"></script>
 	@stack('scripts')
 	
+    {{-- Application js --}}
+	<script src="/app/shared/flaresBase.js"></script>
+	<script src="/app/shared/flaresAPI-service.js"></script>
+	<script src="/app/shared/flaresResource-service.js"></script>
+	<script src="/app/shared/flaresBase-controllers.js"></script>
+    
 </body>
 </html>

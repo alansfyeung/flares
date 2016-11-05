@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
-flaresApp.controller('newMultiController', function($scope, flaresAPI){
+flaresApp.controller('newMultiController', function($scope, flAPI){
 	//======================
 	// Vars which are related to overall onboarding process
 	$scope.onboardingContext = {
@@ -183,7 +183,7 @@ flaresApp.controller('newMultiController', function($scope, flaresAPI){
 					member: newMember.data
 				};
 				
-				flaresAPI('member').post(payload).then(function(response){
+				flAPI('member').post(payload).then(function(response){
 					if (response.data.error){
 						console.warn(response.data.error);
 						return;
@@ -217,7 +217,7 @@ flaresApp.controller('newMultiController', function($scope, flaresAPI){
 		// sets the is_active flag on all saved records
 		// angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
 			// if (newMember.isSaved){
-				// flaresAPI('member').patch([newMember.regtNum], {
+				// flAPI('member').patch([newMember.regtNum], {
 					// member: { is_active: '1' }
 				// });
 			// }
@@ -255,11 +255,11 @@ flaresApp.controller('newMultiController', function($scope, flaresAPI){
 		
 		// Need IIFE to update the correct member reference on promise fulfill
 		(function(detailedMember){
-			flaresAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
+			flAPI('member').patch([detailedMember.regtNum], payload).then(function(response){				
 				if (response.data.recordId){
                     
                     // Detailed save succeeded, so let's activate them
-                    flaresAPI('member').patch([detailedMember.regtNum], {
+                    flAPI('member').patch([detailedMember.regtNum], {
                         member: { is_active: '1' }
                     });
                     
@@ -288,7 +288,7 @@ flaresApp.controller('newMultiController', function($scope, flaresAPI){
 	//==================
 	// Fetch reference data for platoons and ranks
 	
-	flaresAPI('refData').getAll().then(function(response){
+	flAPI('refData').getAll().then(function(response){
         // Auto-extract
         var extract = ['postings', 'ranks', 'sexes', 'onboardingTypes', 'intakes'];
         angular.forEach(extract, function(key){

@@ -6,15 +6,15 @@
 // ===========================================
 
 var flaresApp = angular.module('flaresActivityOverview', ['flaresBase']);
-flaresApp.run(function($templateCache){
-    $templateCache.put('activityContextMenuTemplate.html', '<div class="modal-header"><h4 class="modal-title">{{activity.type}} {{activity.name}}</h4><h5 class="modal-subtitle">{{activity.dateTopLine()}} {{activity.dateBottomLine()}}</h5></div> \
-        <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
-    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="parseClick(cancelItem.click)">{{cancelItem.label}}</a></div>');
-    $templateCache.put('activityOverviewFilterTemplate.html', '<div class="modal-header"><h4 class="modal-title">Filter categories</h4></div> \
-        <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
-    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="parseClick(cancelItem.click)">{{cancelItem.label}}</a></div>');
-    
-});
+
+flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
+    $http.get('/app/components/activity/activityContextMenuTemplate.html').then(function(response){
+        $templateCache.put('activityContextMenuTemplate.html', response.data);        
+    });
+    $http.get('/app/components/activity/activityOverviewFilterTemplate.html').then(function(response){
+        $templateCache.put('activityOverviewFilterTemplate.html', response.data);    
+    });
+}]);
 
 flaresApp.factory('activityCategoriser', function(){    
     var categoryDefinitions = [
@@ -210,7 +210,7 @@ flaresApp.factory('activityCategoriser', function(){
     };
 });
 
-flaresApp.controller('activityOverviewController', function($scope, $filter, $window, $location, $controller, $uibModal, flaresAPI, flaresLinkBuilder, activityCategoriser){
+flaresApp.controller('activityOverviewController', function($scope, $filter, $window, $location, $controller, $uibModal, flAPI, flResource, activityCategoriser){
     
     var veController = $controller('baseViewEditController', {$scope: $scope});
     
@@ -231,7 +231,7 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
     };
 
     $scope.goToNewActivity = function(){
-        $window.location.href = flaresLinkBuilder('activity').new().getLink();
+        $window.location.href = flResource('activity').new().getLink();
     };
     
     function openContextMenu(){
@@ -272,7 +272,7 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
     // Function decs
     
     function loadActivities(){
-        flaresAPI('activity').getAll().then(function(response){
+        flAPI('activity').getAll().then(function(response){
             // categories the respose data into upcoming
             if (typeof response === 'object'){
                 var activities = response.data.activities.map(function(currentValue, index, array){
@@ -320,7 +320,7 @@ flaresApp.controller('activityOverviewController', function($scope, $filter, $wi
     
 });
 
-flaresApp.controller('activityContextMenuController', function ($scope, $parse, $filter, $window, $modalInstance, flaresLinkBuilder, flaresAPI, context){
+flaresApp.controller('activityContextMenuController', function ($scope, $parse, $filter, $window, $modalInstance, flResource, flAPI, context){
     
     $scope.activity = context;
     // $scope.activity.dateInfo = function(){
@@ -355,25 +355,25 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
     var clickActions = {
         viewActivity: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            $window.location.href = flResource('activity').retrieve().hash(frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },
         viewActivityHref: function(){
             var frag = [$scope.activity.acty_id, 'view', 'details'];
-            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            return flResource('activity').retrieve().hash(frag).getLink();
         },
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            $window.location.href = flResource('activity').retrieve().hash(frag).getLink();
         },
         editActivityHref: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            return flResource('activity').retrieve().hash(frag).getLink();
         },
         deleteActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            flaresAPI('activity').delete([$scope.activity.acty_id]).then(function(response){
+            flAPI('activity').delete([$scope.activity.acty_id]).then(function(response){
                 // Should have been deleted. Close the modal and refresh teh list
                 loadActivities();
                 $modalInstance.dismiss('cancel');
@@ -390,11 +390,11 @@ flaresApp.controller('activityContextMenuController', function ($scope, $parse, 
         },
         editRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'rollbuilder'];
-            $window.location.href = flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            $window.location.href = flResource('activity').retrieve().hash(frag).getLink();
         },
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'markroll'];
-            $window.location.href = flaresLinkBuilder('activity').roll().hash(frag).getLink();
+            $window.location.href = flResource('activity').roll().hash(frag).getLink();
         },
         cancel: function(){
             $modalInstance.dismiss('cancel');

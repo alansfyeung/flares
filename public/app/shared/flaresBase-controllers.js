@@ -9,7 +9,7 @@ var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstra
 // Base controllers
 // 1. ViewEdit controller base (for forms such as member, activity, etc)
 
-flaresBase.controller('baseViewEditController', function($scope, $http, $window, $location, flaresAPI){
+flaresBase.controller('baseViewEditController', function($scope, $http, $window, $location, flAPI){
     var baseController = this;
     
     // Any family-wide utilities can live here

@@ -1,46 +1,5 @@
 var flaresApp = angular.module('flaresMemberViewEdit', ['flaresBase', 'flow']);
 
-flaresApp.run(function($templateCache){
-    $templateCache.put('memberDisplayPictureTemplate.html', '<section ng-controller="pictureController" flow-init> \
-        <div class="modal-header"><h4 class="modal-title">Change member display picture</h4></div> \
-            <div class="modal-body"><div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message"> \
-                <div class="thumbnail member-dp-lg" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{\'uploader-drop-zone\': uploader.dropzone, \'uploader-not-ready\': !uploader.ready()}"> \
-                    <img ng-src="{{memberImage.url}}" alt="{{member.last_name}}" class="image-rounded" ng-show="!uploader.uploading"> \
-                    <div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading"> \
-                        <h3 ng-show="file.isUploading()">Uploading</h3> \
-                        <h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3> \
-                        <div class="thumbnail"> \
-                            <img flow-img="file" /> \
-                            <div class="caption">{{file.name}} ({{Math.floor(file.size/1024)}} KB)</div> \
-                        </div> \
-                        <div class="progress progress-striped" ng-class="{active: file.isUploading()}"> \
-                            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + \'%\'}" ng-class="{\'progress-bar-success\': file.isComplete()}"> \
-                            <span class="sr-only">1% Complete</span> \
-                            </div> \
-                        </div> \
-                    </div> \
-                </div> \
-            </div> \
-        </div> \
-        <div class="modal-footer" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()"> \
-            <small>Tip: Drag and drop new picture onto the existing picture </small>&nbsp;&nbsp; \
-            <div class="btn-group"> \
-                <span class="btn btn-default" flow-btn>Upload File</span>  \
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> \
-                    <span class="caret"></span> \
-                    <span class="sr-only">Toggle Dropdown</span> \
-                </button> \
-                <ul class="dropdown-menu dropdown-menu-right"> \
-                    <li><a href="{{memberImage.url}}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li> \
-                    <li><a ng-click="deleteLast()"><span class="glyphicon glyphicon-step-backward"></span> Rewind ({{memberImage.count}})</a></li> \
-                    <li><a ng-click="deleteAll()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete all</span></a></li> \
-                </ul> \
-            </div> \
-            <button class="btn btn-default" ng-click="closeModal()">Done</button> \
-        </div> \
-    </section>');
-});
-
 flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
 
 	function imageResizer(fileObj){	// fileObj is an instance of FlowFile
@@ -65,9 +24,15 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 		}
 	}($httpProvider.defaults.xsrfCookieName));
 	
-}])
+}]);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flaresAPI){
+flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
+    $http.get('/app/components/member/memberDisplayPictureTemplate.html').then(function(response){
+        $templateCache.put('memberDisplayPictureTemplate.html', response.data);
+    });
+}]);
+
+flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
     
     // Add some base 
     var veController = this;
@@ -128,7 +93,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			};	
 			sw.isAsync = true;
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
+			flAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
 				console.log('Activation successful');
 				retrieveMember();
 				
@@ -161,11 +126,11 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		sw.isAsync = true;
 		
 		// $http.post('/api/member/'+$scope.member.regt_num+'/posting', {context: $scope.dischargeContext}).then(function(response){
-		flaresAPI('member').postingFor($scope.member.regt_num).post({context: $scope.dischargeContext}).then(function(response){
+		flAPI('member').postingFor($scope.member.regt_num).post({context: $scope.dischargeContext}).then(function(response){
 			console.log('Success: Created discharge posting record');
 			
 			// $http.delete('/api/member/'+$scope.member.regt_num).then(function(response){
-			flaresAPI('member').delete([$scope.member.regt_num]).then(function(response){
+			flAPI('member').delete([$scope.member.regt_num]).then(function(response){
 				retrieveMember();
 				$scope.state.path.mode = 'view';		// Revert
 				$scope.state.path.tab = 'details';
@@ -190,7 +155,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		if ($scope.member.regt_num && !$scope.member.is_active){
 			sw.isAsync = true;
 			// $http.delete('/api/member/'+$scope.member.regt_num, {params: { remove: 'permanent' }}).then(function(response){
-			flaresAPI('member').delete([$scope.member.regt_num], {params: { remove: 'permanent' }}).then(function(response){
+			flAPI('member').delete([$scope.member.regt_num], {params: { remove: 'permanent' }}).then(function(response){
 				$scope.member = {};  // Clear all traces of the old member
 				sw.isMemberLoaded = false;
 				retrieveMember();		// Then this should result in a "Member not found"
@@ -234,7 +199,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	// Fetch reference data for platoons and ranks
 	
 	// $http.get('/api/refdata').then(function(response){
-	flaresAPI('refData').getAll().then(function(response){
+	flAPI('refData').getAll().then(function(response){
 		if (response.data.ranks){
 			$scope.formData.ranks = response.data.ranks;
 		}
@@ -261,7 +226,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	function retrieveMember(){
 		if ($scope.state.path.id){
 			// $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
-			flaresAPI('member').get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
+			flAPI('member').get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
 				processMemberRecord(response.data.member);
 				$scope.state.isMemberLoaded = true;
@@ -298,7 +263,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		});
 		if (hasChanges){
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
+			flAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
 				console.log('Save successful');
 				$scope.originalMember = angular.extend(Object.create($scope.originalRecord), $scope.member);
 				
@@ -312,11 +277,11 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 });
 
-flaresApp.controller('pictureController', function($scope, $rootScope, $http, $timeout, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('pictureController', function($scope, $rootScope, $http, $timeout, flAPI, flResource){
     
 	var maxImageSize = 1024 * 1024;		// 1MB max file size
 	var maxImageSizeDesc = '1MB';
-	var defaultImage = flaresLinkBuilder('resource').addUrl('img/anon.png').getLink();
+	var defaultImage = flResource('resource').addUrl('img/anon.png').getLink();
 	
 	$scope.memberImage = {
 		url: defaultImage,
@@ -360,7 +325,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	
 	$scope.deleteLast = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture').then(function(response){
-		flaresAPI('member').delete([$scope.member.regt_num, 'picture']).then(function(response){
+		flAPI('member').delete([$scope.member.regt_num, 'picture']).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -370,7 +335,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	};
 	$scope.deleteAll = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture', {params: { remove: 'all' }}).then(function(response){
-		flaresAPI('member').delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
+		flAPI('member').delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -406,12 +371,12 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
         if ($scope.member.regt_num){
-            flaresAPI('member').get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
+            flAPI('member').get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
                 if (response.status === 200){
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();
-                        // Todo: replace the below with a more sturdy flaresLinkBuilder solution
-                        $scope.memberImage.url = flaresLinkBuilder().raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        // Todo: replace the below with a more sturdy flResource solution
+                        $scope.memberImage.url = flResource().raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
                         $scope.memberImage.isDefault = false;
                     }
                     else {

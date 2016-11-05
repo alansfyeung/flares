@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresActivityNew', ['flaresBase']);
 
-flaresApp.controller('activityAddController', function($scope, $http, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityAddController', function($scope, $http, flAPI, flResource){
     
     $scope.newActivity = {
         isSaved: false,
@@ -55,7 +55,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             };
             
             // $http.post('/api/activity', payload).then(function(response){
-            flaresAPI('activity').post(payload).then(function(response){
+            flAPI('activity').post(payload).then(function(response){
                 if (response.data.error && response.data.error.code){
                     console.warn(response.data.error); 
                     return;
@@ -81,8 +81,8 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
             createActivity().then(function(data){
                 // Take us to the activity's view
                 // window.location.href = $('[name=menu.activity.overview]').attr('href');
-                // console.log(flaresLinkBuilderflaresLinkBuilder.page().activity(data.recordId).getLink());
-                window.location.href = flaresLinkBuilder('activity').retrieve().addFragment([data.recordId, 'edit', 'rollbuilder']).getLink();
+                // console.log(flResourceflResource.page().activity(data.recordId).getLink());
+                window.location.href = flResource('activity').retrieve().addFragment([data.recordId, 'edit', 'rollbuilder']).getLink();
             });
         }
         return false;
@@ -92,7 +92,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
         if (validateActivityForm()){
             createActivity().then(function(){
                 // Return to the activity overview
-                window.location.href = flaresLinkBuilder('activity').overview().getLink();
+                window.location.href = flResource('activity').overview().getLink();
                 // window.location.href = $('[name=menu\\.activity\\.overview]').attr('href');
             });
         }
@@ -105,7 +105,7 @@ flaresApp.controller('activityAddController', function($scope, $http, flaresAPI,
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
     
-    flaresAPI('refData').get(['activity']).then(function(response){
+    flAPI('refData').get(['activity']).then(function(response){
 		if (response.data.types){
 			$scope.formData.activityTypes = response.data.types;
 		}

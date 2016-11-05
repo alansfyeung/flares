@@ -7,14 +7,16 @@ var flaresBase = window.flaresBase || angular.module('flaresBase', ['ui.bootstra
 
 // ==========================
 // Pre-run config
-flaresBase.run(function($templateCache){
-    // UIB modal backdrop template
-    $templateCache.put('template/modal/backdrop.html', '<div uib-modal-animation-class="fade"  modal-in-class="in" ng-style="{\'z-index\': 1040 + (index && 1 || 0) + index*10}"></div>');
-    // UIB modal window template
-    $templateCache.put('template/modal/window.html', '<div modal-render="{{$isRendered}}" tabindex="-1 role="dialog" class="modal" uib-modal-animation-class="fade" modal-in-class="in" ng-style="{\'z-index\': 1050 + index*10, display: \'block\'}"> \
-        <div class="modal-dialog" ng-class="size ? \'modal-\' + size : \'\'"><div class="modal-content" uib-modal-transclude></div></div> \
-    </div>');
-});
+flaresBase.run(['$http', '$templateCache', function($http, $templateCache){
+    $http.get('/app/shared/uibModalBackdrop.html').then(function(response){
+        $templateCache.put('template/modal/backdrop.html', response.data);
+    });
+    $http.get('/app/shared/uibModalWindow.html').then(function(response){
+        $templateCache.put('template/modal/window.html', response.data);
+    });
+}]);
+
+
 flaresBase.config(function($locationProvider) {
     $locationProvider.html5Mode(false).hashPrefix('!');
 });

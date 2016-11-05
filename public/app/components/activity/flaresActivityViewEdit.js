@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresActivityView', ['flaresBase']);
 
-flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityViewEditController', function($scope, $window, $location, $controller, flAPI, flResource){
     
     // This seems dirty, attaching a controller straight to the $scope
     // But it seems to be the best way of sharing this parentController reference to 
@@ -73,22 +73,22 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
     $scope.actions = {
         markRoll: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'markroll'];
-            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
+            return flResource('activity').roll().hash(frag).getLink();
         },
         paradeState: function(){
             var frag = [$scope.activity.acty_id, 'review', 'paradestate'];
-            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
+            return flResource('activity').roll().hash(frag).getLink();
         },
         reviewAwols: function(){
             var frag = [$scope.activity.acty_id, 'view', 'awol'];
-            return flaresLinkBuilder('activity').awol().hash(frag).getLink();
+            return flResource('activity').awol().hash(frag).getLink();
         }
     };
     
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
     
-    flaresAPI('refData').get(['activity']).then(function(response){
+    flAPI('refData').get(['activity']).then(function(response){
 		if (response.data.types){
 			$scope.formData.activityTypes = response.data.types;
 		}
@@ -113,7 +113,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
 
     function retrieveActivity(){
 		if ($scope.state.path.id){
-			flaresAPI('activity').get([$scope.state.path.id]).then(function(response){
+			flAPI('activity').get([$scope.state.path.id]).then(function(response){
 				// Process then store in VM
                 if (response.data.activity){
                     processActivityRecord(response.data.activity);
@@ -150,7 +150,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
 		});
 		if (hasChanges){
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flaresAPI('activity').patch([$scope.activity.acty_id], payload).then(function(response){
+			flAPI('activity').patch([$scope.activity.acty_id], payload).then(function(response){
 				console.log('Save successful');
 				$scope.originalActivity = angular.extend(Object.create($scope.originalRecord), $scope.activity);
 				
@@ -166,7 +166,7 @@ flaresApp.controller('activityViewEditController', function($scope, $window, $lo
     }
 });
 
-flaresApp.controller('rollBuilderController', function($scope, $filter, $controller, $timeout, flaresAPI){
+flaresApp.controller('rollBuilderController', function($scope, $filter, $controller, $timeout, flAPI){
     
     // $scope.roll = []; 
     var rollRefreshPromise;
@@ -372,7 +372,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $control
     }
 
     function retrieveRefData(){
-        flaresAPI('refData').getAll().then(function(response){
+        flAPI('refData').getAll().then(function(response){
             if (response.data.platoons){
                 $scope.formData.platoons = response.data.platoons;
             }
@@ -386,11 +386,11 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $control
     }
     
     function retrieveMembers(){
-        return flaresAPI('member').getAll();
+        return flAPI('member').getAll();
     }
     
     function retrieveActivityNominalRoll(activityId){
-        return flaresAPI('activity').rollFor(activityId).getAll();
+        return flAPI('activity').rollFor(activityId).getAll();
     }
 
     function mapToMemberList(roll, members){
@@ -431,14 +431,14 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $control
             var payloadAdd = {
                 attendance: adds
             };
-            flaresAPI('activity').rollFor(activityId).post(payloadAdd).then(function(response){
+            flAPI('activity').rollFor(activityId).post(payloadAdd).then(function(response){
                 $scope.lastError = response.data.error;
                 console.log('added', response);
             });            
         }
         
         deletes.forEach(function(rollId){
-            flaresAPI('activity').rollFor(activityId).delete(rollId).then(function(response){
+            flAPI('activity').rollFor(activityId).delete(rollId).then(function(response){
                 $scope.lastError = response.data.error;
                 console.log('deleted', response);
             });
@@ -470,7 +470,7 @@ flaresApp.controller('rollBuilderController', function($scope, $filter, $control
 });
 
 
-flaresApp.controller('permissionController', function($scope, flaresAPI){
+flaresApp.controller('permissionController', function($scope, flAPI){
     
     
 });

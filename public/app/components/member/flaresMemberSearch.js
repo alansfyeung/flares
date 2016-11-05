@@ -6,14 +6,14 @@
 // ==================================
 
 var flaresApp = angular.module('flaresMemberSearch', ['flaresBase']);
-flaresApp.run(function($templateCache){
-    $templateCache.put('memberContextMenuTemplate.html', '<div class="modal-header"><h4 class="modal-title">{{member.last_name}}, {{member.first_name}}</h4><h5 class="modal-subtitle">&diam;{{member.regt_num}} <span class="label" ng-class="memberStatus.labelClassNames">{{memberStatus.label}}</span></h5></div> \
-        <div class="modal-body"><a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a></div> \
-    <div class="modal-footer"><a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a></div>');
-    
-});
 
-flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flaresAPI){
+flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
+    $http.get('/app/components/member/memberContextMenuTemplate.html').then(function(response){
+        $templateCache.put('memberContextMenuTemplate.html', response.data);
+    });
+}]);
+
+flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flAPI){
 	$scope.results = [];
 	$scope.activeMember = null;
     
@@ -48,7 +48,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
             return {};
 		}());
         
-        flaresAPI('member').get(['search'], {
+        flAPI('member').get(['search'], {
 			params: { 'keywords': $scope.searchKeywords }
 		}).then(function(response){
 			$scope.results = response.data.members;
@@ -70,7 +70,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 			return search;
 		}());
 		
-		flaresAPI('member').get(['search'], {
+		flAPI('member').get(['search'], {
 			params: $scope.searchParams
 		}).then(function(response){
 			$scope.results = response.data.members;
@@ -106,7 +106,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 	//==================
 	// Fetch reference data for platoons and ranks
 	
-	flaresAPI('refData').getAll().then(function(response){
+	flAPI('refData').getAll().then(function(response){
 		if (response.data.ranks){
 			$scope.formData.ranks = response.data.ranks;
 			$scope.formData.ranks.unshift({abbr: '', name: 'Any rank'});
@@ -160,7 +160,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 });
 	
     
-flaresApp.controller('memberContextMenuController', function ($scope, $parse, $window, $modalInstance, flaresLinkBuilder, context){
+flaresApp.controller('memberContextMenuController', function ($scope, $parse, $window, $modalInstance, flResource, context){
     
     $scope.member = context;
     $scope.memberStatus = {
@@ -200,7 +200,7 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     var clickActions = {
         linkToMember: function(){
             var frag = [$scope.member.regt_num, 'view', 'details'];
-            $window.location.href = flaresLinkBuilder('member').retrieve().addFragment(frag).getLink();
+            $window.location.href = flResource('member').retrieve().addFragment(frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         }

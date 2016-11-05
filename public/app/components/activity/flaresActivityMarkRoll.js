@@ -30,7 +30,7 @@ flaresApp.filter('rollDisplayValue', function(){
     }
 });
 
-flaresApp.controller('activityRollController', function($scope, $controller, flaresAPI, flaresLinkBuilder){
+flaresApp.controller('activityRollController', function($scope, $controller, flAPI, flResource){
 	// Add some base 
     var thisController = this;
 	$controller('baseViewEditController', {$scope: $scope}).loadInto(this);
@@ -80,22 +80,22 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     $scope.actions = {
         editActivity: function(){
             var frag = [$scope.activity.acty_id, 'edit', 'details'];
-            return flaresLinkBuilder('activity').retrieve().hash(frag).getLink();
+            return flResource('activity').retrieve().hash(frag).getLink();
         },
         paradeState: function(){
             var frag = [$scope.activity.acty_id, 'fill', 'paradestate'];
-            return flaresLinkBuilder('activity').roll().hash(frag).getLink();
+            return flResource('activity').roll().hash(frag).getLink();
         },
         reviewAwols: function(){
             var frag = [$scope.activity.acty_id, 'view', 'awol'];
-            return flaresLinkBuilder('activity').awol().hash(frag).getLink();
+            return flResource('activity').awol().hash(frag).getLink();
         }
     };
     
    
     //==================
 	// Fetch reference data for activityTypes and activityNamePresets
-    flaresAPI('refData').get(['misc'], {name: 'ROLL_SYMBOLS'}).then(function(response){
+    flAPI('refData').get(['misc'], {name: 'ROLL_SYMBOLS'}).then(function(response){
 		if (response.data.misc && response.data.misc.length > 0){
             var symbols = response.data.misc[0].value.split(',');
             RollEntrySymbolScroller.prototype.symbols = symbols;
@@ -108,7 +108,7 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
 
     function retrieveActivityRoll(){
 		if ($scope.state.path.id){
-			flaresAPI('activity').rollFor($scope.state.path.id).getAll().then(function(response){
+			flAPI('activity').rollFor($scope.state.path.id).getAll().then(function(response){
 				if (response.data.activity){
                     $scope.util.convertToDateObjects(['start_date', 'end_date', 'created_at', 'updated_at'], response.data.activity);
 					$scope.activity = response.data.activity;
@@ -154,7 +154,7 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
                     recorded_value: this.scroller.selectedSymbol
                 }
             };
-            flaresAPI('activity').rollFor(actyId).patch([attId], payload).then(function(){
+            flAPI('activity').rollFor(actyId).patch([attId], payload).then(function(){
                 $scope.state.isRollUnsaved = false;
                 self.saving = false;
                 // bind it to data model
@@ -194,7 +194,7 @@ flaresApp.controller('activityRollController', function($scope, $controller, fla
     };
 	
     function retrieveRefData(){
-        flaresAPI('refData').getAll().then(function(response){
+        flAPI('refData').getAll().then(function(response){
             if (response.data.platoons){
                 $scope.refData.platoons = response.data.platoons;
             }

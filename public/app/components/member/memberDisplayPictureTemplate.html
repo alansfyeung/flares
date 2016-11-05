@@ -1,0 +1,39 @@
+<section ng-controller="pictureController" flow-init>
+    <div class="modal-header"><h4 class="modal-title">Change member display picture</h4></div>
+        <div class="modal-body"><div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
+            <div class="thumbnail member-dp-lg" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{'uploader-drop-zone': uploader.dropzone, 'uploader-not-ready': !uploader.ready()}">
+                <img ng-src="{{memberImage.url}}" alt="{{member.last_name}}" class="image-rounded" ng-show="!uploader.uploading">
+                <div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
+                    <h3 ng-show="file.isUploading()">Uploading</h3>
+                    <h3 class="text-success" ng-show="file.isComplete()"><span class="glyphicon glyphicon-ok-sign"></span> Successful</h3>
+                    <div class="thumbnail">
+                        <img flow-img="file">
+                        <img flow-img="file">
+                        <div class="caption">{{file.name}} ({{Math.floor(file.size/1024)}} KB)</div>
+                    </div>
+                    <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + \'%\'}" ng-class="{\'progress-bar-success\': file.isComplete()}">
+                        <span class="sr-only">1% Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" ng-show="uploader.ready() && !uploader.uploading" flow-upload-started="uploadStart()" flow-complete="uploadFinish()">
+        <small>Tip: Drag and drop new picture onto the existing picture </small>&nbsp;&nbsp;
+        <div class="btn-group">
+            <span class="btn btn-default" flow-btn>Upload File</span>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="{{memberImage.url}}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li>
+                <li><a ng-click="deleteLast()"><span class="glyphicon glyphicon-step-backward"></span> Rewind ({{memberImage.count}})</a></li>
+                <li><a ng-click="deleteAll()"><span class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span> Delete all</span></a></li>
+            </ul>
+        </div>
+        <button class="btn btn-default" ng-click="closeModal()">Done</button>
+    </div>
+</section>

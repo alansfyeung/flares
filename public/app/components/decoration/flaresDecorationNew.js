@@ -3,9 +3,9 @@
 //   Add new members
 // ==================================
 
-var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
+var flaresApp = angular.module('flaresDecorationNew', ['flaresBase']);
 
-flaresApp.controller('newSimpleController', function($scope, $location, flAPI, flResource){
+flaresApp.controller('newDecorationController', function($scope, $location, flAPI, flResource){
 
 	// Tracks the flow of screens
     // Stage 1: Enter name, DOB, gender; de-dupe, generate regt nums

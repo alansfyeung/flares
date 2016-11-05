@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{activity.type}} {{activity.name}}</h4>
+    <h5 class="modal-subtitle">{{activity.dateTopLine()}} {{activity.dateBottomLine()}}</h5>
+</div>
+<div class="modal-body">
+    <a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a>
+</div>
+<div class="modal-footer">
+    <a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="parseClick(cancelItem.click)">{{cancelItem.label}}</a>
+</div>
