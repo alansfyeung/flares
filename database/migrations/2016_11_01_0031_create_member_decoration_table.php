@@ -20,6 +20,7 @@ class CreateMemberDecorationTable extends Migration
             $table->string('regt_num', 10);
             $table->unsignedInteger('dec_id');
             
+            $table->text('citation')->nullable();
             $table->dateTime('date')->nullable();
 
             $table->timestamps();
