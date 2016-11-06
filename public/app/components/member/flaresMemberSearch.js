@@ -28,26 +28,20 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
     
     // $scope.searchKeywords = (typeof $location.search() === 'object' && $location.search().keywords) || '';
     $scope.searchKeywords = '';
-	$scope.searchParams = angular.merge({
-		rank: '',
-		first_name: '',
-		last_name: '',
-		sex: '',
-		regt_num: '',
-		is_active: '',
-		discharged: ''
-	}, $location.search() || {});
+	// $scope.searchParams = angular.merge({
+		// rank: '',
+		// first_name: '',
+		// last_name: '',
+		// sex: '',
+		// regt_num: '',
+		// is_active: '',
+		// discharged: ''
+	// }, $location.search() || {});
+    $scope.searchParams = $location.search() || {};
 	
     $scope.submitSimpleSearch = function(){
-        $location.search(function(){
-            if ($scope.searchKeywords){
-                return {
-                    keywords: $scope.searchKeywords
-                };
-            }
-            return {};
-		}());
         
+        $location.search({ keywords: $scope.searchKeywords });
         flAPI('member').get(['search'], {
 			params: { 'keywords': $scope.searchKeywords }
 		}).then(function(response){
@@ -57,19 +51,12 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 		}, function(response){
 			console.warn('Error - member search', response);
 		});
+        
     };
     
 	$scope.submitAdvancedSearch = function(){
-		$location.search(function(){
-			var search = {};
-			angular.forEach($scope.searchParams, function(value, key){
-				if (value){
-					this[key] = value;
-				}
-			}, search);
-			return search;
-		}());
-		
+
+		$location.search($scope.searchParams);
 		flAPI('member').get(['search'], {
 			params: $scope.searchParams
 		}).then(function(response){
@@ -79,6 +66,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 		}, function(response){
 			console.warn('Error - member search', response);
 		});
+        
 	};
 	
     $scope.selectMember = function(member){
@@ -89,7 +77,8 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 	
     
     //==================
-	// submit the search if params were already given
+    // submit the search if params were already given
+    // Or perform a default search of most recents
 	if ($location.search() && Object.keys($location.search()).length > 0){
         console.log('keywords', $location.search().keywords);
         if ($location.search().keywords){
@@ -99,6 +88,18 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
             $scope.submitAdvancedSearch();
         }
 	}
+    else {
+        // TODO: Add result limit to the search function
+        flAPI('member').get(['search'], {
+			params: { 'orderBy': 'CREATED' }
+		}).then(function(response){
+			$scope.results = response.data.members;
+			angular.forEach($scope.results, parseMemberSearchResult);
+		}, function(response){
+			console.warn('Error - default member search', response);
+		});
+    }
+    
 	
 	angular.element('[name=search-surname]').focus();
     

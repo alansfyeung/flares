@@ -21,6 +21,17 @@ class MemberController extends Controller
 	// const ResponseCodes::ERR_DB_PERSIST = 5001;
 	// const ResponseCodes::ERR_REGT_NUM = 5002;
     
+    protected $orderByAliases;
+    
+    public function __construct(){
+        $this->orderByAliases = collect([
+            'CREATED' => ['created_at'],
+            'NAME' => ['last_name', 'first_name'],
+            'SCHOOL' => ['school'],
+        ]);
+    }
+    
+    
     /**
      * Display a listing of the resource.
      *
@@ -59,6 +70,14 @@ class MemberController extends Controller
 		else {
 			$query = Member::select();
 		}
+        
+        // Determine sort order. The param value must be mapped to prevent injection.
+        $orderByAlias = $request->query('orderBy', 'CREATED');
+        $orderBy = collect($this->orderByAliases->get($orderByAlias));
+        $orderByDir = strtolower($request->query('orderByDir', 'desc'));
+        if (!in_array($orderByDir, ['desc', 'asc'])){
+            $orderByDir = 'desc';
+        }
 		
 		// join on pp table 
 		$query->join('posting_promo as pp1', function ($join) {
@@ -77,6 +96,9 @@ class MemberController extends Controller
         });
         $query->whereNull('pp2.promo_id');          // pp1 bubbles to the top
 		$query->select('members.*', 'pp1.new_rank as rank');
+        $orderBy->each(function($orderByColumn, $key) use ($query, $orderByDir) {
+            $query->orderBy($orderByColumn, $orderByDir);
+        });
 
 		if ($request->has('keywords')){
 			$keywords = explode(' ', $request->query('keywords'));
