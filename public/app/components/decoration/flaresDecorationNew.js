@@ -33,11 +33,10 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     //=======================================
     
     var state = {
-            stage: 1,       // Leave deactivated but there's only a single stage
-            totalStages: 1,
-            isSaving: false,
-            submitPreference: 1         // 1 for submit and view; 2 for submit and another
-        }
+        stage: 1,       // Leave deactivated but there's only a single stage
+        totalStages: 1,
+        isSaving: false,
+        submitPreference: 1         // 1 for submit and view; 2 for submit and another
     };
 
     // This data should be extracted from reference service
