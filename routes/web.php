@@ -84,7 +84,7 @@ Route::group(['as' => 'activity::'], function () {
 Route::group(['as' => 'decoration::'], function(){
     
     Route::get('decorations', function(){
-        return view('decoration.search');
+        return view('decoration.index');
     });
         Route::get('decorations/new', function(){
         return view('decoration.new');

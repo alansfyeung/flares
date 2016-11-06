@@ -14,7 +14,7 @@
                         <div class="caption">{{file.name}} ({{Math.floor(file.size/1024)}} KB)</div>
                     </div>
                     <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + \'%\'}" ng-class="{\'progress-bar-success\': file.isComplete()}">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + '%'}" ng-class="{'progress-bar-success': file.isComplete()}">
                         <span class="sr-only">1% Complete</span>
                         </div>
                     </div>

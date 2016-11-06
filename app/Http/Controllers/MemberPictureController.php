@@ -15,7 +15,7 @@ use App\Http\Custom\ResponseCodes;
 
 class MemberPictureController
 {		
-    use ProcessesMemberRecordsTrait;
+    use ProcessesMemberRecordsTrait, HandlesImageUploadsTrait;
 
 	private $tmpDir;			// Use the PHP default
 	
@@ -145,28 +145,5 @@ class MemberPictureController
 		}
 		return $wasDeleted ? response('', Response::HTTP_OK) : response('', Response::HTTP_NOT_FOUND);
     }
-	
-	
-	
-	// =======
-	// Private
-	
-	private function parseImageMimeType($ext)
-	{
-		if (strpos($ext, '.') === 0){
-			// remove leading dot
-			$ext = substr($ext, 1);
-		}
-		
-		$ext = strtolower($ext);
-		switch ($ext){
-			case 'png':
-				return 'image/png';
-			case 'jpg':
-			case 'jpeg':
-				return 'image/jpeg';
-		}
-		
-		return false;
-	}
+    
 }

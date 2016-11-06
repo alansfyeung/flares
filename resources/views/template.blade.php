@@ -65,13 +65,14 @@
 
     {{-- Plugin/add-on/vendor js --}}
 	<script src="/assets/js/notification-popups.js"></script>
-	@stack('scripts')
+	@stack('vendor-scripts')
 	
     {{-- Application js --}}
 	<script src="/app/shared/flaresBase.js"></script>
 	<script src="/app/shared/flaresAPI-service.js"></script>
 	<script src="/app/shared/flaresResource-service.js"></script>
 	<script src="/app/shared/flaresBase-controllers.js"></script>
+	@stack('scripts')
     
 </body>
 </html>

@@ -35,9 +35,9 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
 flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
     
     // Add some base 
-    var veController = this;
-    angular.extend(veController, $controller('baseViewEditController', {$scope: $scope})); 
-	$scope.state = Object.create(veController.state);        // inherit the proto
+    var memberViewEditController = this;
+    angular.extend(memberViewEditController, $controller('resourceController', {$scope: $scope})); 
+	$scope.state = Object.create(memberViewEditController.state);        // inherit the proto
 	$scope.state.isDischarge = function(){
 		return this.path.mode === 'discharge';
 	};
@@ -191,7 +191,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 	
 	// Read the url
-    if (veController.loadWorkflowPath()){
+    if (memberViewEditController.loadWorkflowPath()){
         retrieveMember();
     }
 	
@@ -245,7 +245,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		}
 	};
 	function processMemberRecord(member){
-        veController.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
+        memberViewEditController.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
 		$scope.member = member;
 		$scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
 	};

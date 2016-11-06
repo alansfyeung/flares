@@ -7,6 +7,8 @@
 
 @push('scripts')
 <script src="/app/components/member/flaresMemberViewEdit.js"></script>
+@endpush
+@push('vendor-scripts')
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
 @endpush
 
@@ -20,7 +22,7 @@
         <!-- DotDotDot menu toggle -->
         <span uib-dropdown>
             <a class="btn btn-link" uib-dropdown-toggle>
-                <span class="glyphicon glyphicon-option-vertical"></span>
+                Menu <span class="glyphicon glyphicon-option-vertical"></span>
             </a>
             <div class="uib-dropdown-menu dropdown-menu-right">
                 <!-- For fully active members -->

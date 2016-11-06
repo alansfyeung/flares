@@ -9,15 +9,24 @@ class Decoration extends Model
 {	
 	protected $primaryKey = 'dec_id';
 	protected $dates = ['deleted_at', 'date_commence', 'date_conclude'];
+    
     protected $guarded = [
         'dec_id', 
-        'icon_blob',            // Prevent icon stuff from being mass assigned
-        'icon_mime_type',   
-        'icon_uri',             // currently unused
-        'icon_w', 
-        'icon_h', 
+        'badge_blob',            // Prevent icon stuff from being mass assigned
+        'badge_uri',             // currently unused
+        'badge_w', 
+        'badge_h', 
+        'badge_mime_type',   
         'created_at', 
         'updated_at'
+    ];
+    
+    protected $hidden = [ 
+        'badge_blob',
+        'badge_uri',
+        'badge_w', 
+        'badge_h',
+        'badge_mime_type', 
     ];
     
 }

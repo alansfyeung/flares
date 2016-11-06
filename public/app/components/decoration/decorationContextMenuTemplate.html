@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{dec.name}}</h4>
+    <h5 class="modal-subtitle">Tier {{dec.tier}} decoration</h5>
+</div>
+<div class="modal-body">
+    <a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="menuItem.action()">{{menuItem.label}}</a>
+</div>
+<div class="modal-footer">
+    <a class="btn btn-block" ng-repeat="cancelItem in footerButtons" ng-class="cancelItem.classNames" ng-click="cancel()">{{cancelItem.label}}</a>
+</div>

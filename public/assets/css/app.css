@@ -6004,10 +6004,6 @@ a[sidebar-toggle] {
 .page-header .btn {
   font-size: 0.8em; }
 
-.page-header .dropdown-menu {
-  padding: 0;
-  margin: 5px 0 0; }
-
 .page-header .btn-link,
 .page-header .btn-link:active {
   color: #ccc;
@@ -6087,6 +6083,10 @@ footer {
   display: inline;
   font-weight: bold;
   color: #CF000F; }
+
+.fl-record-thumbnail {
+  margin: 0 auto;
+  max-width: 150px; }
 
 .dashboard-stat {
   text-align: center; }
@@ -6211,6 +6211,28 @@ select.ng-dirty.ng-invalid,
 .memberadd-spreadsheet select[required].ng-dirty.ng-valid,
 .ng-submitted .memberadd-spreadsheet select[required].ng-valid {
   border: 1px solid #27ae60; }
+
+.fl-dec-badge-wrapper {
+  padding: 12px; }
+  .fl-dec-badge-wrapper .fl-dec-badge {
+    display: block;
+    margin: 0 auto; }
+
+.fl-dec-badge {
+  width: 80px;
+  height: 45px;
+  background-color: #333;
+  border: 3px solid #eaeaea; }
+  .fl-dec-badge img {
+    height: 100%;
+    width: 100%; }
+  .fl-dec-badge.mystery {
+    background: #666;
+    color: white; }
+  .fl-dec-badge.mystery::after {
+    display: block;
+    text-align: center;
+    line-height: 100%; }
 
 .roll-view-container {
   margin: 1em 0; }

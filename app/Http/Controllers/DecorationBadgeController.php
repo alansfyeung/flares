@@ -14,7 +14,8 @@ use App\Http\Custom\ResponseCodes;
 
 
 class DecorationBadgeController
-{		
+{
+    use HandlesImageUploadsTrait;
 
 	private $tmpDir;			// Use the PHP default
 	
@@ -30,6 +31,7 @@ class DecorationBadgeController
 		
 		$config = new \Flow\Config();
 		$config->setTempDir($this->tmpDir);
+        $flowRequest = new \Flow\Request();
 		$file = new \Flow\File($config);
 
 		if ($file->validateChunk()) {
@@ -51,10 +53,10 @@ class DecorationBadgeController
                 return response('File Save Failed', Response::HTTP_INTERNAL_SERVER_ERROR);		// 201
             }
 			
-			$mimeType = $this->parseImageMimeType(strrchr($file->name(), '.'));
+			$mimeType = $this->parseImageMimeType(strrchr($flowRequest->getFileName(), '.'));
 			if (!$mimeType){
 				// Not going to save if we don't know the mime type
-				return response('Cannot determine image mime type from filename: ' . $file->name(), Response::HTTP_UNSUPPORTED_MEDIA_TYPE); 	// 415
+				return response('Cannot determine image mime type from filename: ' . $flowRequest->getFileName(), Response::HTTP_UNSUPPORTED_MEDIA_TYPE); 	// 415
 			}
             
             // TODO: Shrink this image
@@ -102,12 +104,12 @@ class DecorationBadgeController
     {
         // Get the most recent image, serve it as whatever mimetype is recorded
 		$dec = Decoration::findOrFail($decorationId);
-        if ($mp->badge_blob !== null){
-            return response($mp->badge_blob)->header('Content-Type', $mp->badge_mime_type);            
-        } elseif ($mp->badge_uri !== null) {
-            $url = $mp->badge_uri;
+        if ($dec->badge_blob !== null){
+            return response($dec->badge_blob)->header('Content-Type', $dec->badge_mime_type);            
+        } elseif ($dec->badge_uri !== null) {
+            $url = $dec->badge_uri;
             // Assume it's a local image if not fully qualified url
-            if (!str_contains($mp->badge_uri, '://')){   
+            if (!str_contains($dec->badge_uri, '://')){   
                 $url = secure_asset($url);                
             }
             return redirect($url);
@@ -134,28 +136,5 @@ class DecorationBadgeController
             
         }
     }
-	
-	
-	
-	// =======
-	// Private
-	
-	private function parseImageMimeType($ext)
-	{
-		if (strpos($ext, '.') === 0){
-			// remove leading dot
-			$ext = substr($ext, 1);
-		}
-		
-		$ext = strtolower($ext);
-		switch ($ext){
-			case 'png':
-				return 'image/png';
-			case 'jpg':
-			case 'jpeg':
-				return 'image/jpeg';
-		}
-		
-		return false;
-	}
+    
 }
