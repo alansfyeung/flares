@@ -17,12 +17,12 @@
 {{-- Enter details --}}
 <section>
 
-    <div class="alert alert-warning" ng-if="wf.state.errorMessage">
-        @{{wf.state.errorMessage}}
+    <div class="alert alert-warning" ng-if="state.errorMessage">
+        @{{state.errorMessage}}
     </div>
 
     <form class="form-horizontal" ng-submit="wf.submitData()" name="decorationData">
-        <h2>Decoration details <small ng-if="wf.state.totalStages > 1">Stage 1 of 2</small></h2>
+        <h2>Decoration details <small ng-if="state.totalStages > 1">Stage 1 of 2</small></h2>
         <hr>
         
         <fieldset>
@@ -87,7 +87,8 @@
             <div class="col-sm-12">
                 <div class="text-right">
                     <button class="btn btn-default pull-left" type="button" ng-click="cancel()">Cancel</button>
-                    <button class="btn btn-primary" type="submit">Create decoration</button>
+                    <button class="btn btn-default" type="submit" ng-click="">Submit and create another</button>
+                    <button class="btn btn-primary" type="submit">Submit then view</button>
                 </div>            
             </div>
         </div>

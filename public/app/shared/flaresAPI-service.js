@@ -47,18 +47,15 @@
             return $http.delete(buildEndpoint.call(this, parts), params);
         };
         // Todo: add a FlaresAPI.prototype.remove, alias of delete?
-        FlaresAPI.prototype.sub = subresource.bind(FlaresAPI.prototype);
-        FlaresAPI.prototype.child = subresource.bind(FlaresAPI.prototype);
         
-        FlaresAPI.prototype.url = function(parts){
-            return buildEndpoint.call(this, parts);
-        };
-        
-        function subresource(subresourceName, parentId){
+        FlaresAPI.prototype.sub = function(subresourceName, parentId){
             if (!parentId) throw '[flAPI] ID must be specified';
             var sub = Object.create(this);
             sub.endpoint = [this.endpoint, parentId, subresourceName].join('/');
             return sub;
+        };
+        FlaresAPI.prototype.url = function(parts){
+            return buildEndpoint.call(this, parts);
         };
         
         function buildEndpoint(suffixes){

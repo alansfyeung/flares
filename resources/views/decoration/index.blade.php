@@ -37,7 +37,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="dec in decorations" ng-click="selectDecoration(dec)">
-                <td><img ng-src="{{scope.badgeSrc(dec)}}"></td>
+                <td><span class="fl-dec-badge smaller"><img ng-src="{{badgeSrc(dec)}}"></span></td>
                 <td>{{dec.tier}}</td>
                 <td>{{dec.name}}</td>
             </tr>

@@ -21,8 +21,8 @@ flaresApp.controller('indexController', function($scope, $location, $controller,
     
     $scope.badgeSrc = function(dec){
         var decId = dec;
-        if (angular.isObject(dec) && dec.data.id){
-            decId = dec.data.id;
+        if (angular.isObject(dec) && dec.dec_id){
+            decId = dec.dec_id;
         }
         var link = flAPI('decoration').sub('badge', decId).url();
         console.log(link);
