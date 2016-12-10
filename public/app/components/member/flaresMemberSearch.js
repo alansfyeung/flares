@@ -184,15 +184,18 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     }
     
     $scope.bodyButtons = [{
-        label: 'View/edit member',
-        classNames: ['btn-primary'],
+        label: 'Member profile',
+        classNames: ['btn-default'],
         click: 'linkToMember'
-    }, 
-    // {
-        // label: 'Find roll entries [TBA]',
-        // classNames: ['btn-default']
-    // }
-    ];
+    }, {
+        label: 'View decorations',
+        classNames: ['btn-default'],
+        click: 'viewDecorations'
+    }, {
+        label: 'Assign decoration',
+        classNames: ['btn-primary'],
+        click: 'assignDecoration'
+    }];
     $scope.footerButtons = [{
         label: 'Cancel',
         classNames: ['btn-default']
@@ -201,9 +204,18 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     var clickActions = {
         linkToMember: function(){
             var frag = [$scope.member.regt_num, 'view', 'details'];
-            $window.location.href = flResource('member').retrieve().addFragment(frag).getLink();
+            console.log(flResource('member').setFragment(frag).getLink());
+            $window.location.href = flResource('member').addFragment(frag).getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
+        },
+        viewDecorations: function(){
+            var frag = [$scope.member.regt_num];
+            $window.location.href = flResource('member').single('decorations').addFragment(frag).getLink();
+        },
+        assignDecoration: function(){
+            var frag = [$scope.member.regt_num];
+            $window.location.href = flResource('member').single('decorations/new').addFragment(frag).getLink();
         }
     };
     

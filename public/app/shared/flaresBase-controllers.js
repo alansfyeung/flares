@@ -13,14 +13,11 @@
     flaresBase.controller('resourceController', function($scope, $http, $window, $location, flAPI){
         var resourceController = this;
         
-        // Any family-wide utilities can live here
-        $scope.util = {};
-        
-        this.loadInto = function(childController, callback){
-            angular.extend(childController, resourceController);
-            $scope.state = Object.create(resourceController.state);
-            (callback || function(){})();       // invoke the callback or whatever
-        };
+        // this.loadInto = function(childController, callback){
+            // angular.extend(childController, resourceController);
+            // $scope.state = Object.create(resourceController.state);
+            // (callback || function(){})();       // invoke the callback or whatever
+        // };
         
         $scope.record = {};     // Expect this to be aliased in child instance.
         $scope.originalRecord = {};         // Expect this to be aliased in child instance.
@@ -43,6 +40,15 @@
                 return this.path.mode === 'edit';
             };
         });
+        
+        $scope.config = {};
+        $scope.config.unloadWarning = 'WARNING: Your changes might not be saved.';
+        $scope.config.hasMode = true;
+        $scope.config.hasTab = true;
+        
+        this.extendConfig = function(newConfig){
+            $scope.config = angular.extend($scope.config, newConfig);
+        };
         
         this.parseUrl = function(){
             // Read the $location
@@ -128,7 +134,12 @@
             
         };
         
-        this.convertToDateObjects = function(dateFields, record){
+        //==============================================
+        // Any family-wide utilities can live here
+        //==============================================
+        
+        this.util = {};
+        this.util.convertToDateObjects = function(dateFields, record){
             angular.forEach(dateFields, function(datePropKey){
                 if (this[datePropKey]){
                     var timestamp = Date.parse(this[datePropKey]);
@@ -142,13 +153,26 @@
             }, record);
         };
         
-        // Since convertToDateObjects is useful, bind it to the scope as well.
-        $scope.util.convertToDateObjects = this.convertToDateObjects;
-        
         // Change the URL path if state path details are updated (e.g. clicked on tab)
         $scope.$watch('state.path', function(){
             resourceController.updateLocation();
         }, true);
+        
+        
+        //==========================
+        // Save-your-change niceties
+        //==========================
+        
+        window.onbeforeunload = function(event){
+            if ($scope.state.isEdit()){
+                return resourceController.unloadWarning || 'NO WARNING SET';
+            }
+        };
+            
+        $scope.$on('$destroy', function() {
+            delete window.onbeforeunload;
+        });
+        
         
     }); 
     

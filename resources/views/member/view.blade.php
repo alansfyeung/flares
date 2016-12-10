@@ -65,19 +65,20 @@
 @endsection
 
 @section('alerts')
+<div ng-cloak ng-show="member.regt_num">
     <!-- Loading failure warnings -->
-    <div class="alert alert-info" ng-cloak ng-show="!state.isRequested">
+    <div class="alert alert-info" ng-show="!state.isRequested">
         <strong>No Member ID specified:</strong> Please go back and request the member record again
     </div>
-    <div class="alert alert-warning" ng-cloak ng-show="member.errorNotFound">
+    <div class="alert alert-warning" ng-show="member.errorNotFound">
         <strong>Member Lookup failed:</strong> The user with Regt# &diams;@{{state.path.id}} couldn't be found.
     </div>
-    <div class="alert alert-danger" ng-cloak ng-show="member.errorServerSide">
+    <div class="alert alert-danger" ng-show="member.errorServerSide">
         <strong>Member Lookup failed:</strong> There was a server-side error and this record could not be retrieved
     </div>
 
     <!-- Inactive and discharged warnings -->
-    <div class="alert alert-danger" ng-cloak ng-if="state.isLoaded && !member.is_active">
+    <div class="alert alert-warning" ng-show="!member.is_active">
         <h4>Incomplete Member Record</h4>
         <p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
         <p>
@@ -85,10 +86,11 @@
             <button type="button" class="btn btn-default" ng-click="activate()" ng-disabled="state.isAsync">Activate member</button>
         </p>
     </div>
-    <div class="alert alert-warning" ng-cloak ng-if="state.isLoaded && member.deleted_at">
+    <div class="alert alert-danger" ng-show="member.deleted_at">
         <h4>Discharged Member</h4>
         <p>This member has been discharged so this record cannot be edited.</p>
     </div>
+</div>
 @endsection
 
 @section('content')

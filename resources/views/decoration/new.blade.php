@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Description</label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" type="text" rows="3" ng-model="dec.data.desc" placeholder="e.g. Awarded to the most outstanding NCO effort during the year" required></textarea>
+                    <textarea class="form-control" type="text" rows="3" ng-model="dec.data.desc" placeholder="e.g. Awarded to the most outstanding NCO effort during the year"></textarea>
                 </div>
             </div>
             <div class="form-group" ng-if="dec.data.tier === 'E'">
@@ -87,8 +87,8 @@
             <div class="col-sm-12">
                 <div class="text-right">
                     <button class="btn btn-default pull-left" type="button" ng-click="cancel()">Cancel</button>
-                    <button class="btn btn-default" type="submit" ng-click="">Submit and create another</button>
-                    <button class="btn btn-primary" type="submit">Submit then view</button>
+                    <button class="btn btn-default" type="submit" ng-click="state.submitPreference = 2">Submit and create another</button>
+                    <button class="btn btn-primary" type="submit" ng-click="state.submitPreference = 1">Submit then view</button>
                 </div>            
             </div>
         </div>

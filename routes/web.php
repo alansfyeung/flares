@@ -56,6 +56,14 @@ Route::group(['as' => 'member::'], function (){
     Route::get('member', function(){
         return view('member.view');
     });
+    
+    Route::get('member/decorations', function(){
+        return view('member.viewDecorations');
+    });
+    Route::get('member/decorations/new', function(){
+        return view('member.assign-decoration');
+    });
+    
 });
 
 Route::group(['as' => 'activity::'], function () {

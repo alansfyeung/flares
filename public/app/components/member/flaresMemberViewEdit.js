@@ -35,9 +35,14 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
 flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
     
     // Add some base 
-    var memberViewEditController = this;
-    angular.extend(memberViewEditController, $controller('resourceController', {$scope: $scope})); 
-	$scope.state = Object.create(memberViewEditController.state);        // inherit the proto
+    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
+    
+    var c = this;
+    c.extendConfig({
+        'unloadWarning': 'You are editing this member record, and will lose any unsaved changes.'
+    });
+    
+	$scope.state = Object.create(c.state);        // inherit the proto
 	$scope.state.isDischarge = function(){
 		return this.path.mode === 'discharge';
 	};
@@ -191,7 +196,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 	
 	// Read the url
-    if (memberViewEditController.loadWorkflowPath()){
+    if (c.loadWorkflowPath()){
         retrieveMember();
     }
 	
@@ -204,21 +209,6 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			$scope.formData.ranks = response.data.ranks;
 		}
 	});
-	
-	
-	//======================
-	// Save-your-change niceties
-	window.onbeforeunload = function(event){
-		if ($scope.state.isEdit()){
-			var message = 'You are editing this member record, and will lose any unsaved changes.';
-			return message;
-		}
-	};
-		
-	$scope.$on('$destroy', function() {
-		delete window.onbeforeunload;
-	});
-	
     
     // ====================
     // Function decs
@@ -245,7 +235,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		}
 	};
 	function processMemberRecord(member){
-        memberViewEditController.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
+        c.util.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
 		$scope.member = member;
 		$scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
 	};
@@ -281,7 +271,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     
 	var maxImageSize = 1024 * 1024;		// 1MB max file size
 	var maxImageSizeDesc = '1MB';
-	var defaultImage = flResource('asset').addUrl('img/anon.png').getLink();
+	var defaultImage = flResource('asset').setUrl('img/anon.png').getLink();
 	
 	$scope.memberImage = {
 		url: defaultImage,

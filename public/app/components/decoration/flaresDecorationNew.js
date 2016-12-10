@@ -47,7 +47,7 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
 	//======================
 	// Workflow Screen navigation
     
-    var wf = {};
+    var wf = $scope.wf = {};
     
     // Nav actions
     wf.next = function(){ state.stage++ };
@@ -56,10 +56,10 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
 	wf.submitData = function(){
         submitData().then(function(){
             if ($scope.state.submitPreference === 2){
-                $window.location.href = flResource('decoration').addFragment([$scope.dec.id, 'view', 'details']).build();                
+                $window.location.reload();           
             }
             else {
-                $window.location.reload();                
+                $window.location.href = flResource('decoration').addFragment([$scope.dec.id, 'view', 'details']).build();                
             }
         });
     };
