@@ -13,7 +13,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberSearchController', function($scope, $location, $uibModal, flAPI){
+flaresApp.controller('memberSearchController', function($scope, $location, $window, $uibModal, flAPI, flResource){
 	$scope.results = [];
 	$scope.activeMember = null;
     
@@ -71,9 +71,14 @@ flaresApp.controller('memberSearchController', function($scope, $location, $uibM
 	
     $scope.selectMember = function(member){
         $scope.activeMember = member;
+        $window.location.href = flResource('member')
+            .setFragment([$scope.activeMember.regt_num, 'view', 'details'])
+            .getLink();
+    };    
+    $scope.selectMemberContext = function(member){
+        $scope.activeMember = member;
         openContextMenu();
     };
-
 	
     
     //==================
@@ -188,10 +193,6 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
         classNames: ['btn-default'],
         click: 'linkToMember'
     }, {
-        label: 'View decorations',
-        classNames: ['btn-default'],
-        click: 'viewDecorations'
-    }, {
         label: 'Assign decoration',
         classNames: ['btn-primary'],
         click: 'assignDecoration'
@@ -203,9 +204,9 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     
     var clickActions = {
         linkToMember: function(){
-            var frag = [$scope.member.regt_num, 'view', 'details'];
-            console.log(flResource('member').setFragment(frag).getLink());
-            $window.location.href = flResource('member').setFragment(frag).getLink();
+            $window.location.href = flResource('member')
+                .setFragment([$scope.member.regt_num, 'view', 'details'])
+                .getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();
         },

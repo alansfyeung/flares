@@ -15,27 +15,29 @@
     // return view('welcome');
 // });
 
+// Route::get('login', 'Auth\LoginController@getLogin');
+// Route::post('login', 'Auth\LoginController@postLogin');
+// Route::get('logout', 'Auth\LoginController@getLogout');
+Auth::routes();
+
+
 
 /* Dashboard */
 Route::get('/', ['as' => 'dashboard', function () {
     return view('dashboard');
 }]);
 
-Route::get('login', 'Auth\AuthController@getLogin');
-Route::post('login', 'Auth\AuthController@postLogin');
-Route::get('logout', 'Auth\AuthController@getLogout');
 
-
-/* 
+/*
  * FLARES view router. Each view bootstraps its own 
  * Angular 1 app. 
  */
-Route::group(['as' => 'member::'], function (){
+Route::group(['as' => 'member::', 'middleware' => 'auth'], function (){
 
     // Route::get('members', 'PagePresenter@memberSearch');
     // Route::get('members/new', 'PagePresenter@memberNew');
     Route::get('members', function () {				// Member search page
-        return view('member.search');
+        return view('member.index');
     });
     Route::get('members/new', function () {         // Simple 1 page form
         return view('member.new-simple');
@@ -66,7 +68,7 @@ Route::group(['as' => 'member::'], function (){
     
 });
 
-Route::group(['as' => 'activity::'], function () {
+Route::group(['as' => 'activity::', 'middleware' => 'auth'], function () {
     
     Route::get('activities', function () {		// dashboard-like overview for all activities
         return view('activities.activityOverview');
@@ -89,7 +91,7 @@ Route::group(['as' => 'activity::'], function () {
     });
 });
 
-Route::group(['as' => 'decoration::'], function(){
+Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function(){
     
     Route::get('decorations', function(){
         return view('decoration.index');

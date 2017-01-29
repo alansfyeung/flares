@@ -32,7 +32,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
+flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI, flResource){
     
     // Add some base 
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -215,11 +215,28 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     
 	function retrieveMember(){
 		if ($scope.state.path.id){
+            var regtNum = $scope.state.path.id;
 			// $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
-			flAPI('member').get([$scope.state.path.id], {params: {detail: 'high'}}).then(function(response){
+			flAPI('member').get([regtNum], {params: {detail: 'high'}}).then(function(response){
 				// Process then store in VM
-				processMemberRecord(response.data.member);
-				$scope.state.isMemberLoaded = true;
+                var member = response.data.member;
+				processMemberRecord(member);
+                $scope.member = member;
+                $scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
+				
+                flAPI('member').nested('decoration', regtNum).getAll().then(function(response){
+                    console.log(response);
+                    var decorations = [];
+                    angular.forEach(response.data.decorations, function(decoration){
+                        processMemberDecorationRecord(decoration);
+                        decoration.url = flResource().raw(['api', 'decoration', decoration.dec_id, 'badge'], [+new Date]);
+                        decorations.push(decoration);
+                    }, decorations);
+                    $scope.member.decorations = decorations;
+                    $scope.originalMember.decorations = decorations;
+                });
+                
+                $scope.state.isMemberLoaded = true;
 				
 			}, function(response){
 				if (response.status == 404){
@@ -234,11 +251,16 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			console.warn('Member ID not specified');
 		}
 	};
+    
 	function processMemberRecord(member){
         c.util.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
-		$scope.member = member;
-		$scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
 	};
+    
+    function processMemberDecorationRecord(memberDecoration){
+        c.util.convertToDateObjects(['date', 'updated_at', 'deleted_at'], memberDecoration);
+        c.util.convertToDateObjects(['date_commence', 'date_conclude', 'updated_at'], memberDecoration.decoration);
+	};
+    
 	function updateMemberRecord(){
 		var hasChanges = false;
 		var payload = {

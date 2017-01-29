@@ -1,5 +1,5 @@
 {{-- Activities NEW --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresActivityNew')
 @section('ng-controller', 'activityAddController')

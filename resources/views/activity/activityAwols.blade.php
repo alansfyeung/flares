@@ -2,7 +2,7 @@
 Activity AWOLs 
 Displays a historical aggregation of AWOLs across all activities
 --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresActivityAwols')
 @section('ng-controller', 'activitySearchController')

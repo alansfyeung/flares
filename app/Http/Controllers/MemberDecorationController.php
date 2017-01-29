@@ -16,7 +16,7 @@ class MemberDecorationController extends Controller
 {   
     public function index($memberId)
     {
-		$member = Member::findOrFail($memberId);
+		$member = Member::with('decorations.decoration')->where('regt_num', $memberId)->firstOrFail();
         return response()->json([
             'decorations' => $member->decorations->toArray()
         ]);

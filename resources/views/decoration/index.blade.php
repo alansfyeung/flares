@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'indexController')
@@ -24,14 +24,16 @@
     </div>
     <table class="table table-hover" ng-show="decorations.length > 0">
         <colgroup>
-            <col style="width: 140px;">
+            <col style="width: 120px;">
             <col style="width: 40px;">
+            <col style="width: 120px;">
             <col>
         </colgroup>
         <thead>
             <tr>
                 <th>Badge</th>
                 <th>Tier</th>
+                <th>Shortcode</th>
                 <th>Name</th>
             </tr>
         </thead>
@@ -39,6 +41,7 @@
             <tr ng-repeat="dec in decorations" ng-click="selectDecoration(dec)">
                 <td><span class="fl-dec-badge smaller"><img ng-src="{{badgeSrc(dec)}}"></span></td>
                 <td>{{dec.tier}}</td>
+                <td>{{dec.shortcode | markBlanks}}</td>
                 <td>{{dec.name}}</td>
             </tr>
         </tbody>

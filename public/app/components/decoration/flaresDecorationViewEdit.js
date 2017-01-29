@@ -26,7 +26,7 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 	
 }]);
 
-flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
+flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $uibModal, flAPI, flResource){
 
     // Add some base - unzip base controller's stuff into this controller
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -223,7 +223,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                 if (response.data.exists){
                     var cacheDefeater = +Date.now();
                     // Todo: replace the below with a more sturdy flResource solution
-                    $scope.image.url = '/api/decoration/' + decID + '/badge?' + cacheDefeater;
+                    $scope.image.url = flResource().raw(['api', 'decoration', decID, 'badge'], [cacheDefeater]);
                     $scope.image.isLoaded = true;
                 }
                 else {

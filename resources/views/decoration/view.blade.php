@@ -1,5 +1,5 @@
 {{-- Display a single member --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'decorationViewEditController')
@@ -19,7 +19,6 @@
             <a id="decoration-menu" class="btn btn-link" uib-dropdown-toggle>
                 Menu <span class="glyphicon glyphicon-chevron-down"></span>
             </a>
-            <!-- For fully active members -->
             <ul class="dropdown-menu uib-dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu" aria-labelledby="decoration-menu">
                 <li role="menuitem"><a href="#">Assign to a user</a></li>
                 <li class="divider"></li>
@@ -28,6 +27,8 @@
         </span>
     </aside>
 	<h1>
+        <a href="./decorations">All Decorations</a>
+        &rsaquo;
         <span display-mode="edit">Edit</span>
         <span display-mode="view">View</span>
         Decoration
@@ -62,7 +63,7 @@
                     <tr>
                         <td>Description</td>
                         <td display-mode="view">{{dec.desc | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="desc" ng-model="dec.desc"></td>
+                        <td display-mode="edit"><textarea name="desc" ng-model="dec.desc" rows="5"></textarea>
                     </tr>
                     <tr>
                         <td>Tier</td>
@@ -74,6 +75,11 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Shortcode </td>
+                        <td display-mode="view">{{dec.shortcode | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.shortcode" placeholder="Shortcode (10 letters)"></td>
+                    </tr>
+                    <tr>
                         <td>Date Commenced</td>
                         <td display-mode="view">{{dec.date_commence | date | markBlanks}}</td>
                         <td display-mode="edit"><input type="date" name="date_commence" ng-model="dec.date_commence" placeholder="yyyy-MM-dd"></td>
@@ -82,6 +88,11 @@
                         <td>Date Concluded</td>
                         <td display-mode="view">{{dec.date_conclude | date | markBlanks}}</td>
                         <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.date_conclude" placeholder="yyyy-MM-dd"></td>
+                    </tr>
+                    <tr>
+                        <td>Service period </td>
+                        <td display-mode="view">{{dec.service_period_months | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="service_period_months" ng-model="dec.service_period_months" placeholder="In months"></td>
                     </tr>
                     <tr>
                         <td>Authorised by </td>

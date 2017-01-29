@@ -19,13 +19,36 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+    
+    /**
+     * Set the username field to use for authenticating
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'username';
+    }
+    
+    /**
+     * Handle an authentication attempt.
+     *
+     * @return Response
+     */
+    public function authenticate()
+    {
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            // Authentication passed...
+            return redirect()->intended('dashboard');
+        }
+    }
 
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.

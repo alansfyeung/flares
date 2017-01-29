@@ -117,12 +117,12 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
 			return false;
 		}
 
-		// Need to flatten dates... thanks Laravel/Carbon... (sarcasm)
         var payload = {
-            decoration: angular.extend({}, dec.data, {
-                date_commence: $filter('date')(dec.data.date_commence, "yyyy-MM-dd"),
-                date_conclude: $filter('date')(dec.data.date_conclude, "yyyy-MM-dd")
-            })
+            decoration: dec.data,
+            // decoration: angular.extend({}, dec.data, {
+                // date_commence: $filter('date')(dec.data.date_commence, "yyyy-MM-dd"),
+                // date_conclude: $filter('date')(dec.data.date_conclude, "yyyy-MM-dd")
+            // })
         };
         
         // Check conclusion date form flag

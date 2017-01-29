@@ -5991,15 +5991,16 @@ a[sidebar-toggle] {
   /* 206 Maroon Dull */
   color: white;
   box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.15); }
-
-.page-header h1 {
-  font-size: 1.25em;
-  font-weight: normal;
-  margin-top: 0.55em;
-  margin-bottom: 0.5em; }
-
-.page-header h1 small {
-  color: #CCC; }
+  .page-header h1 {
+    color: white;
+    font-size: 1.25em;
+    font-weight: normal;
+    margin-top: 0.55em;
+    margin-bottom: 0.5em; }
+    .page-header h1 small {
+      color: #CCC; }
+  .page-header a {
+    color: whitesmoke; }
 
 .page-header .btn {
   font-size: 0.8em; }
@@ -6220,13 +6221,14 @@ select.ng-dirty.ng-invalid,
 
 .fl-dec-badge {
   display: inline-block;
-  width: 80px;
-  height: 50px;
+  box-sizing: content-box;
+  width: 120px;
+  height: 40px;
   background-color: #333;
   border: 3px solid #eaeaea; }
   .fl-dec-badge.smaller {
     width: 60px;
-    height: 35px; }
+    height: 20px; }
   .fl-dec-badge img {
     height: 100%;
     width: 100%; }

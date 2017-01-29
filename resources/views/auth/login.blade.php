@@ -1,11 +1,15 @@
 {{--
 Login page
 --}}
-@extends('template')
+@extends('layouts.template')
 
 @section('ng-app', 'flaresLogin')
 @section('ng-controller', 'loginController')
 @section('title', 'Login')
+
+@push('scripts')
+<script src="/app/components/auth/flaresLogin.js"></script>
+@endpush
 
 
 @section('heading')
@@ -15,30 +19,47 @@ Login page
 @section('content')
 <div class="row">
 	<div class="col-sm-6 col-sm-push-3">
-		<form class="form" method="POST" action="/auth/login">
+		<form class="form" method="POST" action="{{ url('/login') }}">
                     
-
+            {{--
+            <fieldset ng-show="loginType == 'forums'">
+                <h2></h2>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="email" value="{{ old('email') }}" placeholder="Forums user name">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Forums Password">
+                </div>
+            </fieldset>
+            --}}
+            
             <fieldset ng-show="loginType == 'fallback'">
             
                 <div class="form-group">
                     <h1 class="text-muted">Sign in to FLARES.</h1>
                 </div>
             
-                @foreach ($errors->all() as $error)
-                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> {{ $error }}</div>
-                @endforeach
-
                 <div class="form-group">
-                    <a class="btn btn-block btn-primary" ng-click="">Sign in using 206 forums</a>
+                    <a class="btn btn-block btn-primary" ng-click="">Sign in using 206 forums (TBC)</a>
                 </div>
                 
                 <span class="login-hr-device"></span>
             
                 <div class="form-group">
-                    <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Flares username">
+                    <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Forums user name">
+                    @if ($errors->has('username'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('username') }}</strong>
+                        </span>
+                    @endif
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                    @if ($errors->has('password'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                    @endif
                 </div>
             </fieldset>
             

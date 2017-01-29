@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresMemberSearch')
 @section('ng-controller', 'memberSearchController')
@@ -95,6 +95,15 @@
     <section class="search-results">
         <div class="label label-default">@{{results.length}} results for search</div>
         <table class="table table-hover" ng-show="results.length > 0">
+            <colgroup>
+                <col style="width: 120px;">
+                <col>
+                <col>
+                <col style="width: 180px;">
+                <col style="width: 80px;">
+                <col style="width: 120px;">
+                <col style="width: 80px;">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Regt Num</th>
@@ -103,16 +112,18 @@
                     <th>Rank</th>
                     <th>Sex</th>
                     <th>Age</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}"  ng-click="selectMember(result)">
+                <tr ng-repeat="result in results" ng-class="{'danger': !result.is_active, 'warning': result.deleted_at}" ng-click="selectMember(result)">
                     <td>@{{result.regt_num}}</td>
                     <td>@{{result.last_name}}</td>
                     <td>@{{result.first_name}}</td>
                     <td>@{{result.rank}}</td>
                     <td>@{{result.sex}}</td>
                     <td>@{{result.ageDetails}}</td>
+                    <td><button class="btn btn-primary" ng-click="selectMemberContext(result); $event.stopPropagation();">More</button></td>
                 </tr>
             </tbody>
         </table>

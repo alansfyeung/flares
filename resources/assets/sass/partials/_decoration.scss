@@ -12,20 +12,19 @@
 .fl-dec-badge {
 
     display: inline-block;
+    box-sizing: content-box;
     
-    // Ratio 4:3
-    // width: 80px; height: 60px;
-    // Ratio 16:9
-    width: 80px;
-    height: 48px;
+    // Ratio 3:1
+    width: 120px;
+    height: 40px;
     background-color: #333;
     border: 3px solid #eaeaea;
     
     // For list-based displays
     &.smaller {
-        // Ratio 16:9
+        // Ratio 3:1
         width: 60px;
-        height: 35px;
+        height: 20px;
     }
     
     img {

@@ -1,5 +1,5 @@
 {{-- Add a single member using the simple form --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'newDecorationController')
@@ -50,6 +50,12 @@
                     <textarea class="form-control" type="text" rows="3" ng-model="dec.data.desc" placeholder="e.g. Awarded to the most outstanding NCO effort during the year"></textarea>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Shortcode</label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" ng-model="dec.data.shortcode" maxlength="10" placeholder="10 letter max">
+                </div>
+            </div>
             <div class="form-group" ng-if="dec.data.tier === 'E'">
                 <label class="control-label col-sm-3">Forums special rank ID</label>
                 <div class="col-sm-3">
@@ -64,17 +70,11 @@
                 <label class="control-label col-sm-3 control-label-required">Date of commencement</label>
                 <div class="col-sm-3">
                     <input type="date" class="form-control" ng-model="dec.data.date_commence">
-                    <p class="help-block">The decoration can only be assigned to members after this date</p>
+                    <p class="help-block">The decoration can only be assigned to members after this date. <a ng-click="setCommencementToday()">Set to today's date</a></p>
                 </div>
-                <div class="col-sm-3">
-                    <button type="button" class="btn btn-link" ng-click="setCommencementToday()">Set to today's date</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-3">Date of conclusion</label>
                 <div class="col-sm-3">
                     <input type="date" class="form-control" ng-model="dec.data.date_conclude" ng-disabled="dec.hasNoConclusionDate">
-                    <p class="help-block">The decoration can only be assigned to members before this date; leave blank for no expiry</p>
+                    <p class="help-block">The decoration can only be assigned to members before this date</p>
                 </div>
                 <div class="col-sm-3">
                     <div class="checkbox">
@@ -86,8 +86,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3">Authorised by</label>
+                <label class="control-label col-sm-3">Service requirement (months)</label>
                 <div class="col-sm-3">
+                    <input class="form-control" type="number" ng-model="dec.data.service_requirement_months" placeholder="e.g. 12">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Authorised by</label>
+                <div class="col-sm-6">
                     <input class="form-control" type="text" ng-model="dec.data.authorized_by" placeholder="e.g. OC">
                 </div>
             </div>

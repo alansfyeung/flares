@@ -10,10 +10,11 @@
 
 // Bootstrap augmentations
 @import 'partials/alerts';
-@import 'partials/flares-bs-extn';
+@import 'partials/bootstrap-extn';
 
 // Common for all screens
 @import 'partials/forms';
+@import 'partials/nav';
 
 // Specific resource screens
 @import 'partials/dashboard';

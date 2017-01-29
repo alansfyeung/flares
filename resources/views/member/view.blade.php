@@ -1,5 +1,5 @@
 {{-- Display a single member --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresMemberViewEdit')
 @section('ng-controller', 'memberViewEditController')
@@ -17,12 +17,15 @@
 <div ng-cloak ng-show="member.regt_num">
 	<aside class="titlebar-actions pull-right" ng-show="!(member.deleted_at || state.isDischarge())">
         <!-- EDIT BUTTON -->
-		<button class="btn btn-link" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()"><span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> @{{state.isEdit() ? 'Save' : 'Edit'}}</button>
+		<button class="btn btn-link" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()">
+            <span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> 
+            @{{state.isEdit() ? 'Save' : 'Edit'}}
+            </button>
 		<button class="btn btn-link" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
         <!-- DotDotDot menu toggle -->
         <span uib-dropdown>
             <a class="btn btn-link" uib-dropdown-toggle>
-                Menu <span class="glyphicon glyphicon-option-vertical"></span>
+                Menu <span class="glyphicon glyphicon-chevron-down"></span>
             </a>
             <div class="uib-dropdown-menu dropdown-menu-right">
                 <!-- For fully active members -->
@@ -60,7 +63,11 @@
             
         </span>
 	</aside>
-	<h1>Member Service Record</h1>
+	<h1>
+        <a href="./members">Members</a>
+        &rsaquo;
+        Member Service Record
+    </h1>
 </div>
 @endsection
 
@@ -134,6 +141,7 @@
                     <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
                     <li role="presentation"><a bs-show-tab href="#healthmed" aria-controls="healthmed" role="tab">Health &amp; Med</a></li>
                     <li role="presentation"><a bs-show-tab href="#iddocs" aria-controls="iddocs" role="tab">Docs &amp; ID</a></li>
+                    <li role="presentation"><a bs-show-tab href="#decorations" aria-controls="decorations" role="tab">Decorations</a></li>
                     <li role="presentation"><a bs-show-tab href="#postings" aria-controls="postings" role="tab">Postings</a></li>
                     <li role="presentation"><a bs-show-tab href="#attendance" aria-controls="attendance" role="tab">Attendance</a></li>
                     <li role="presentation"><a bs-show-tab href="#payments" aria-controls="payments" role="tab">Payments</a></li>
@@ -390,6 +398,35 @@
                             </table>
                         </section>
                     </div>
+                    
+                    <div role="tabpanel" class="tab-pane" id="decorations">
+                        <section>
+                            <h3>Decorations</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Decoration</th>
+                                        <th>Citation</th>
+                                        <th>Date awarded</th>
+                                        <th>Score</th>
+                                        <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dec in member.decorations">
+                                        <td><img ng-src="@{{dec.url}}" alt="@{{dec.decoration.shortcode}}"></td>
+                                        <td>@{{dec.decoration.shortcode || dec.decoration.name}} @{{dec.decoration.tier}}</td>
+                                        <td>@{{dec.citation}}</td>
+                                        <td>@{{dec.date | date:'dd MMM yyyy'}}</td>
+                                        <td>@{{dec.awd_score}}</td>
+                                        <td>@{{dec.awd_grade}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                    
                     <div role="tabpanel" class="tab-pane" id="postings">
                         <section>
                             <h3>Promotions and Postings</h3>

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\User;
 use Illuminate\Console\Command;
 
-class RegisterUser extends Command
+class CreateUser extends Command
 {
     /**
      * The name and signature of the console command.
@@ -78,10 +78,10 @@ class RegisterUser extends Command
      */
     private function create(array $data)
     {
-        $user = User::create([
+        $user = new User(); 
+        $user->fill([
             'username' => $data['username'],
             'email' => $data['email'],
-            //'password' => bcrypt($data['password']),
         ]);
         $user->password = bcrypt($data['password']);
         $user->save();

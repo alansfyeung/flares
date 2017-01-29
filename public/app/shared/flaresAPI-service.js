@@ -7,7 +7,7 @@
 
     var flaresBase = angular.module('flaresBase');
 
-    flaresBase.factory('flAPI', ['$http', 'flResourceDefinitions', function($http, flResourceDefinitions){
+    flaresBase.factory('flAPI', ['$http', '$filter', 'flResourceDefinitions', function($http, $filter, flResourceDefinitions){
         /**
          * The FlaresAPI constructor
          * @param endpoint string Path to the resource endpoint
@@ -36,12 +36,15 @@
             return $http.get(buildEndpoint.call(this, parts), params);
         };
         FlaresAPI.prototype.post = function(data, params){      // don't expect ID
+            data = flattenPayloadDates(data);
             return $http.post(buildEndpoint.call(this), data, params);
         };
         FlaresAPI.prototype.put = function(parts, data, params){
+            data = flattenPayloadDates(data);
             return $http.put(buildEndpoint.call(this, parts), data, params);
         };
         FlaresAPI.prototype.patch = function(parts, data, params){
+            data = flattenPayloadDates(data);
             return $http.patch(buildEndpoint.call(this, parts), data, params);
         };
         FlaresAPI.prototype.delete = function(parts, params){
@@ -58,6 +61,30 @@
         FlaresAPI.prototype.url = function(parts){
             return buildEndpoint.call(this, parts);
         };
+        
+        /**
+         * Flatton dates to a simpler format for Laravel/Carbon
+         * If ISO timestamps are sent, then it returns the following error:
+         * `{code: 0, reason: "Unexpected data found.↵Trailing data"}`
+         */
+        function flattenPayloadDates(payload){            
+            // Need to flatten dates... thanks Laravel/Carbon... (sarcasm)
+            return iteratePayload(payload);
+            function iteratePayload(dataObject){
+                for (var key in dataObject){
+                    if (dataObject.hasOwnProperty(key)){
+                        if (dataObject[key] instanceof Date){
+                            dataObject[key] = $filter('date')(dataObject[key], "yyyy-MM-dd");
+                        }
+                        else if (typeof dataObject[key] === 'object' && dataObject[key].constructor === 'object'){
+                            // Recursively map dates
+                            dataObject[key] = iteratePayload(dataObject[key])
+                        }
+                    }
+                }
+                return dataObject;
+            }
+        }
         
         function buildEndpoint(suffixes){
             if (suffixes){

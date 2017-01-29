@@ -40,8 +40,7 @@ class DecorationController extends Controller
                 return response()->json([
                     'id' => $dec->dec_id,
                 ]);
-			}
-			catch (\Exception $ex){
+			} catch (\Exception $ex) {
                 DB::rollBack();
                 return response()->json([
                     'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
@@ -66,10 +65,9 @@ class DecorationController extends Controller
 	{
         $updated = false;
 		try {
-			if ($request->has('decoration')){
+			if ($request->has('decoration')) {
 				$updated = Decoration::updateOrCreate(['dec_id' => $id], $request->input('decoration'));
-			}
-			else {
+			} else {
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
 			}
 			return response()->json([

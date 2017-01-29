@@ -1,5 +1,5 @@
 {{-- Add multiple members --}}
-@extends('primary')
+@extends('layouts.primary')
 
 @section('ng-app', 'flaresMemberNew')
 @section('ng-controller', 'newMultiController')

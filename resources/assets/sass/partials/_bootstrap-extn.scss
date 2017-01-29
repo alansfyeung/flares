@@ -31,43 +31,47 @@ a[sidebar-toggle] {
     background: #8b4346;        /* 206 Maroon Dull */
     color: white;
     box-shadow: inset 0px 4px 6px rgba(0,0,0,0.15);
+    h1 {
+        color: white;
+        font-size: 1.25em;
+        font-weight: normal;
+        margin-top: 0.55em;
+        margin-bottom: 0.5em;
+        small {
+            color: #CCC;
+        }
+    }
+    a {
+        color: whitesmoke;
+        // border-bottom: 1px solid whitesmoke;
+    }
 }
-.page-header h1 {
-    font-size: 1.25em;
-    font-weight: normal;
-    margin-top: 0.55em;
-    margin-bottom: 0.5em;
-}
-.page-header h1 small {
-    color: #CCC;
-}
-.page-header .btn {
-    font-size: 0.8em;
-}
-
-.page-header .btn-link,
-.page-header .btn-link:active {
-    color: #ccc;
-    text-decoration: none;
-}
-.page-header .btn-link:hover {
-    color: whitesmoke;
-    text-decoration: none;
-}
-
-.page-header .title-actions,
-.page-header .titlebar-actions {
-    float: right;
-    margin-top: -5px;
-}
-.page-header .title-actions.pull-right,
-.page-header .titlebar-actions.pull-right {
-    margin-right: 0px;
-}
-
-.page-header .titlebar-audit-info {
-    color: #222;
-    padding: 5px 15px;
+.page-header {
+    .btn {
+        font-size: 0.8em;
+    }
+    .btn-link,
+    .btn-link:active {
+        color: #ccc;
+        text-decoration: none;
+    }
+    .btn-link:hover {
+        color: whitesmoke;
+        text-decoration: none;
+    }
+    .title-actions,
+    .titlebar-actions {
+        float: right;
+        margin-top: -5px;
+    }
+    .title-actions.pull-right,
+    .titlebar-actions.pull-right {
+        margin-right: 0px;
+    }
+    .titlebar-audit-info {
+        color: #222;
+        padding: 5px 15px;
+    }
 }
 
 footer {
