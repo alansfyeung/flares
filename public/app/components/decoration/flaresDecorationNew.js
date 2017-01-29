@@ -16,18 +16,7 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     // Onboarding Context
     
 	// New member DTO
-	$scope.dec = {
-        id: null,
-        data: {
-            // tier: 'A',
-            // name: 'Comd AAC Commendation (Gold)',
-            // desc: 'Awarded for great courage initiative and teamwork',
-            // // date_commence: new Date('2006-01-01T00:00:00Z+10:00'),
-            // date_commence: new Date('2006-01-01'),
-            // authorized_by: 'HQ AAC'
-        }
-        
-    };
+	$scope.dec = new Decoration();
     
     // END DATA
     //=======================================
@@ -47,13 +36,13 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
 	//======================
 	// Workflow Screen navigation
     
-    var wf = $scope.wf = {};
+    $scope.wf = {};
     
     // Nav actions
-    wf.next = function(){ state.stage++ };
+    $scope.wf.next = function(){ state.stage++ };
     
     // Form actions
-	wf.submitData = function(){
+	$scope.wf.submitData = function(){
         submitData().then(function(){
             if ($scope.state.submitPreference === 2){
                 $window.location.reload();           
@@ -64,8 +53,17 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
         });
     };
     
+	// End Workflow Screen navigation
+    //======================
+    
     $scope.cancel = function(){
         $location.path('/');
+    };
+    
+    $scope.setCommencementToday = function(){
+        if ($scope.dec.data){            
+            $scope.dec.data.date_commence = new Date();
+        }
     };
     
 
@@ -86,6 +84,9 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
         
 	});
 
+    // End reference data
+	//======================
+    
 	//======================
 	// Save-your-change niceties
     /* // TEMPORARILY COMMENTED
@@ -116,13 +117,18 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
 			return false;
 		}
 
-		// Need to flatten dates... thanks Laravel/Carbon...
+		// Need to flatten dates... thanks Laravel/Carbon... (sarcasm)
         var payload = {
             decoration: angular.extend({}, dec.data, {
                 date_commence: $filter('date')(dec.data.date_commence, "yyyy-MM-dd"),
                 date_conclude: $filter('date')(dec.data.date_conclude, "yyyy-MM-dd")
             })
         };
+        
+        // Check conclusion date form flag
+        if (dec.hasNoConclusionDate){
+            dec.data.date_conclude = null;
+        }
         
         return flAPI('decoration').post(payload).then(function(response){
             if (response.data.error){
@@ -145,6 +151,22 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
             $scope.state.isSaving = false;
         });
 	}
+    
+    //=====================
+    // Classes
+    
+    function Decoration(){
+        this.id = null;
+        this.hasNoConclusionDate = true;
+        this.data = {
+            // tier: 'A',
+            // name: 'Comd AAC Commendation (Gold)',
+            // desc: 'Awarded for great courage initiative and teamwork',
+            // // date_commence: new Date('2006-01-01T00:00:00Z+10:00'),
+            // date_commence: new Date('2006-01-01'),
+            // authorized_by: 'HQ AAC'
+        };
+    }
     
 
 });

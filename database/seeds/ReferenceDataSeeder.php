@@ -12,7 +12,9 @@ class ReferenceDataSeeder extends Seeder
     public function run()
     {
         DB::table('ref_misc')->insert([
-            ['name' => 'ROLL_SYMBOLS', 'value' => '/,A,S,L']
+            ['name' => 'ROLL_SYMBOLS', 'value' => '/,A,S,L'],
+            ['name' => 'PROFILE_UNKNOWN_IMAGE_PATH', 'value' => '/assets/img/anon.png'],
+            ['name' => 'BADGE_UNKNOWN_IMAGE_PATH', 'value' => '/assets/img/unknownbadge.jpg'],
         ]);
         
         DB::table('ref_platoons')->insert([
@@ -23,7 +25,7 @@ class ReferenceDataSeeder extends Seeder
             ['abbr' => 'HQ', 'name' => 'Headquarters', 'pos' => '50'],
             ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100'],
             ['abbr' => 'ACS', 'name' => 'Adult Cadet Staff', 'pos' => '110'],
-            ['abbr' => 'D', 'name' => 'Delta Platoon', 'pos' => '200']
+            ['abbr' => 'D', 'name' => 'Delta Platoon', 'pos' => '200'],
         ]);
         
         DB::table('ref_postings')->insert([
@@ -50,7 +52,7 @@ class ReferenceDataSeeder extends Seeder
             ['abbr' => 'SECO', 'name' => 'Section Commander', 'pos' => '20'],
             ['abbr' => 'SIG', 'name' => 'Signaller', 'pos' => '22'],
             ['abbr' => 'TRGOFFR', 'name' => 'Training Offier', 'pos' => '112'],
-            ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100']
+            ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100'],
         ]);
         
         DB::table('ref_ranks')->insert([
@@ -72,7 +74,7 @@ class ReferenceDataSeeder extends Seeder
             ['abbr' => 'VAS', 'name' => 'Volunteer Adult Staff', 'pos' => '100'],
             ['abbr' => 'CAPT (AAC)', 'name' => 'Captain (AAC)', 'pos' => '210'],
             ['abbr' => 'WO1 (AAC)', 'name' => 'Warrant Officer Class 1 (AAC)', 'pos' => '155'],
-            ['abbr' => 'WO2 (AAC)', 'name' => 'Warrant Officer Class 2 (AAC)', 'pos' => '150']
+            ['abbr' => 'WO2 (AAC)', 'name' => 'Warrant Officer Class 2 (AAC)', 'pos' => '150'],
         ]);
     }
 }

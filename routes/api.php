@@ -30,6 +30,7 @@ Route::post('member/{memberId}/picture/new', 'MemberPictureController@store');
 Route::delete('member/{memberId}/picture', 'MemberPictureController@destroy');
 Route::resource('member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 Route::resource('member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
+Route::resource('member.decoration', 'MemberDecorationController', ['only' => ['index', 'store', 'show', 'destroy']]);
 
 // Route::resource('api/member.documents', 'MemberDocumentController');
 // Route::resource('api/awards', 'AwardsController');

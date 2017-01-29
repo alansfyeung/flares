@@ -44,8 +44,6 @@
             
             {{-- The main screen functionality --}}
             @yield('content')
-            
-            
         </div>
     </div>
     @show

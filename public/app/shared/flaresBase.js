@@ -38,7 +38,7 @@
             apiBase: '/api/member',
             singular: 'member',
             plural: 'members',
-            nestedResources: ['posting', 'picture', 'status'],
+            nestedResources: ['posting', 'picture', 'status', 'decoration'],
             aliases: [{
                 search: ['members', 'search']
             }]

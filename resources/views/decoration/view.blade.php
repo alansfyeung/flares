@@ -84,6 +84,11 @@
                         <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.date_conclude" placeholder="yyyy-MM-dd"></td>
                     </tr>
                     <tr>
+                        <td>Authorised by </td>
+                        <td display-mode="view">{{dec.authorized_by | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="authorized_by" ng-model="dec.authorized_by" placeholder="Award authority"></td>
+                    </tr>
+                    <tr>
                         <td>Database ID</td>
                         <td>{{dec.dec_id | markBlanks}}</td>
                     </tr>

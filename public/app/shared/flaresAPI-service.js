@@ -15,11 +15,12 @@
          */
         function FlaresAPI(endpoint, subresources){     
             this.endpoint = endpoint;
-            if (subresources instanceof Array){
+            if (angular.isArray(subresources)){                
                 subresources.forEach(function(subresourceName){
                     // Create a "subresource" shortcut e.g. 
                     // FlaresAPI.member.postingFor('2065141').get();
                     this[subresourceName+'For'] = function(parentId){
+                        console.warn('resourceFor notation is deprecated and will be removed');
                         if (!parentId) console.warn('[FlaresAPI] ID must be specified');
                         var sub = Object.create(this);
                         sub.endpoint = [this.endpoint, parentId, subresourceName].join('/');
@@ -48,7 +49,7 @@
         };
         // Todo: add a FlaresAPI.prototype.remove, alias of delete?
         
-        FlaresAPI.prototype.sub = function(subresourceName, parentId){
+        FlaresAPI.prototype.nested = function(subresourceName, parentId){
             if (!parentId) throw '[flAPI] ID must be specified';
             var sub = Object.create(this);
             sub.endpoint = [this.endpoint, parentId, subresourceName].join('/');

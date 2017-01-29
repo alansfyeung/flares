@@ -39,7 +39,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     
     var c = this;
     c.extendConfig({
-        'unloadWarning': 'You are editing this member record, and will lose any unsaved changes.'
+        unloadWarning: 'You are editing this member record, and will lose any unsaved changes.'
     });
     
 	$scope.state = Object.create(c.state);        // inherit the proto

@@ -1,9 +1,9 @@
 (function(){
     'use strict';
-    // ==========================
+    // =========================================
     // Services
     // flResource (formerly flaresLinkBuilder)
-    // ==========================
+    // =========================================
 
     var flaresBase = angular.module('flaresBase');
 
@@ -51,11 +51,13 @@
         };
         
         FlaresLinkBuilder.prototype.setFragment = function(fragParts){     // expect an array or a string
+            var fragPrefix = '#!/';
+            var fragSep = '/';
             if (fragParts instanceof Array){
-                this.frag = '#!/' + fragParts.join('/');
+                this.frag = fragPrefix + fragParts.join(fragSep);
             }
             else if (typeof fragParts === 'string'){
-                this.frag = '#/' + fragParts;
+                this.frag = fragPrefix + fragParts;
             }
             return this;
         };

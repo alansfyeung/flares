@@ -29,10 +29,15 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $uibModal, flAPI){
 
     // Add some base - unzip base controller's stuff into this controller
-    var decorationViewEditController = this;
-    angular.extend(decorationViewEditController, $controller('resourceController', {$scope: $scope})); 
+    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
     
-    $scope.state = Object.create(decorationViewEditController.state);        // inherit the proto
+    var c = this;
+    c.extendConfig({
+        unloadWarning: 'You are editing this decoration record, and will lose any unsaved changes.'
+    });
+    
+    
+    $scope.state = Object.create(c.state);        // inherit the proto
 	$scope.dec = Object.create($scope.record);
 	$scope.shadow = Object.create($scope.originalRecord);
 
@@ -53,18 +58,18 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 	};
     
 	// Read the url
-    if (decorationViewEditController.loadWorkflowPath()){
+    if (c.loadWorkflowPath()){
         retrieveDecoration();
     }
 
     
     $scope.formData = {
         tiers: {
-            A: 'A',
-            B: 'B',
-            C: 'C',
-            D: 'D',
-            E: 'E',
+            A: 'A (placeholder)',
+            B: 'B (placeholder)',
+            C: 'C (placeholder)',
+            D: 'D (placeholder)',
+            E: 'E (placeholder)',
         }
     }
     
@@ -90,7 +95,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 		}
 	};
 	function processDecoration(dec){
-        decorationViewEditController.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
+        c.util.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
 		$scope.dec = dec;
 		$scope.shadow = angular.extend(Object.create($scope.originalRecord), dec);
 	};
@@ -116,19 +121,8 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 		}
 	};
     
-    
+    // End function decs
     //======================
-	// Save-your-change niceties
-	window.onbeforeunload = function(event){
-		if ($scope.state.isEdit()){
-			var message = 'You are editing this decoration record, and will lose any unsaved changes.';
-			return message;
-		}
-	};
-	$scope.$on('$destroy', function() {
-		delete window.onbeforeunload;
-	});
-
 	
 });
 

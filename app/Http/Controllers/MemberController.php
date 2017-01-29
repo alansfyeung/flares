@@ -217,7 +217,7 @@ class MemberController extends Controller
                 
                 DB::commit();
                 return response()->json([
-                    'recordId' => $recordId,
+                    'id' => $recordId,
                     'initialPostingId' => $initialPostingId
                 ]);
 			}
@@ -291,7 +291,7 @@ class MemberController extends Controller
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
 			}
 			return response()->json([
-                'recordId' => $updated
+                'id' => $updated
             ]);
 		}
 		catch (\Exception $ex){

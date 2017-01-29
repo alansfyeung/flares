@@ -12,6 +12,7 @@ class Member extends Model
 	protected $primaryKey = 'regt_num';
 	protected $dates = ['deleted_at', 'dob'];
 	protected $guarded = ['is_fully_enrolled', 'coms_username', 'coms_id', 'forums_username', 'forums_userid'];
+    protected $dateFormat = '';
 	
 	// Disable any auto-increment business
 	public $incrementing = false;
@@ -24,6 +25,9 @@ class Member extends Model
 	public function pictures(){
 		return $this->hasMany('App\MemberPicture', 'regt_num'); 
 	}
+    public function decorations(){
+        return $this->hasMany('App\MemberDecoration', 'regt_num');
+    }
 	public function current_posting(){
         // return $this->hasOne('App\PostingPromo', 'regt_num')->select('new_posting as posting', 'effective_date', 'is_discharge')->whereNotNull('new_posting')->orderBy('effective_date', 'desc');
         return $this->hasOne('App\Promotion', 'regt_num')->whereNotNull('new_posting')->orderBy('effective_date', 'desc');

@@ -94,7 +94,8 @@ class DecorationBadgeController
 	 */
 	public function exists($decorationId){
         $dec = Decoration::findOrFail($decorationId);
-        return response()->json([ 'exists' => true ]);
+        $imageExists = !($dec->badge_blob === null && $dec->badge_uri === null);
+        return response()->json([ 'exists' => $imageExists ]);
 	}
 
 	/*
@@ -114,6 +115,7 @@ class DecorationBadgeController
             }
             return redirect($url);
         }
+        return response('', 404);
     }
 
     public function destroy(Request $request, $decorationId)

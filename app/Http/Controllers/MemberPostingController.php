@@ -50,7 +50,7 @@ class MemberPostingController extends Controller
 		/* 
 		 * This method is totally redundant (as it's a lookup by postingpromo id) 
 		 */
-        $postingRecord = Promtion::findOrFail($postingId);
+        $postingRecord = Promotion::findOrFail($postingId);
         return response()->json([
 			'posting_promo' => $postingRecord
 		]);

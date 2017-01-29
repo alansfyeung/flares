@@ -53,7 +53,7 @@ class ActivityController extends Controller
 		}
 		
 		return response()->json([
-			'recordId' => $recordId
+			'id' => $recordId
         ]);
     }
 
@@ -106,7 +106,7 @@ class ActivityController extends Controller
 				throw new \Exception('No activity values in post data', ResponseCodes::ERR_POSTDATA_MISSING);
 			}
             return response()->json([
-                'recordId' => $updated
+                'id' => $updated
             ]);            
 		}
 		catch (\Exception $ex){

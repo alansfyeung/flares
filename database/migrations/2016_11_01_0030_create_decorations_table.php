@@ -16,7 +16,7 @@ class CreateDecorationsTable extends Migration
             $table->increments('dec_id');
             $table->string('name', 100);
             $table->string('tier', 100);
-            $table->text('desc');
+            $table->text('desc')->nullable();
             
             // Image as blob
             $table->binary('badge_blob')->nullable();

@@ -144,7 +144,9 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
 		// Submission
         var payload = {
             context: $scope.ctx,
-            member: $scope.member.data
+            member: angular.extend({}, $scope.member.data, {
+                dob: $filter('date')($scope.member.data.dob, 'yyyy-MM-dd')          // filthy date conversion
+            })
         };
         
         flAPI('member').post(payload).then(function(response){

@@ -43,9 +43,8 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Sex</label>
                 <div class="col-sm-3">
-                    <select class="form-control" ng-model="member.data.sex" ng-disabled="member.isSaved" required>
+                    <select class="form-control" ng-options="sex for sex in formData.sexes" ng-model="member.data.sex" ng-disabled="member.isSaved" required>
                         <option value="" selected>-- Sex --</option>
-                        <option ng-repeat="sex in formData.sexes" value="@{{sex}}">@{{sex}}</option>
                     </select>                    
                 </div>
             </div>
@@ -64,8 +63,8 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Onboarding Type</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-model="ctx.onboardingTypes" required>
-                        <option ng-repeat="obType in formData.onboardingTypes" value="@{{obType.id}}">@{{obType.name}}</option>
+                    <select class="form-control" ng-options="obType.name for obType in formData.onboardingTypes" ng-model="ctx.onboardingTypes" required>
+                        <option value="">-- Choose an onboarding type --</option>
                     </select>
                 </div>
             </div>
@@ -73,16 +72,16 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Rank</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-model="ctx.newRank" required>
-                        <option ng-repeat="rank in formData.ranks" value="@{{rank.abbr}}">@{{rank.name}}</option>
+                    <select class="form-control" ng-options="rank.name for rank in formData.ranks" ng-model="ctx.newRank" required>
+                        <option value="">-- Choose an initial rank --</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-3">Initial Posting</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-model="ctx.newPosting" required>
-                        <option ng-repeat="posting in formData.postings" value="@{{posting.abbr}}">@{{posting.name}}</option>
+                    <select class="form-control" ng-options="posting.name for posting in formData.postings" ng-model="ctx.newPosting" required>
+                        <option value="">-- Choose an initial posting --</option>
                     </select> 
                 </div>
             </div>

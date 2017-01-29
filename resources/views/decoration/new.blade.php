@@ -66,17 +66,28 @@
                     <input type="date" class="form-control" ng-model="dec.data.date_commence">
                     <p class="help-block">The decoration can only be assigned to members after this date</p>
                 </div>
+                <div class="col-sm-3">
+                    <button type="button" class="btn btn-link" ng-click="setCommencementToday()">Set to today's date</button>
+                </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-3">Date of conclusion</label>
                 <div class="col-sm-3">
-                    <input type="date" class="form-control" ng-model="dec.data.date_conclude">
+                    <input type="date" class="form-control" ng-model="dec.data.date_conclude" ng-disabled="dec.hasNoConclusionDate">
                     <p class="help-block">The decoration can only be assigned to members before this date; leave blank for no expiry</p>
+                </div>
+                <div class="col-sm-3">
+                    <div class="checkbox">
+                        <label for="checkbox-no-expiry">
+                            <input id="checkbox-no-expiry" type="checkbox" ng-model="dec.hasNoConclusionDate"> 
+                            No date of conclusion
+                        </label>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3 control-label-required">Authorised by</label>
-                <div class="col-sm-9">
+                <label class="control-label col-sm-3">Authorised by</label>
+                <div class="col-sm-3">
                     <input class="form-control" type="text" ng-model="dec.data.authorized_by" placeholder="e.g. OC">
                 </div>
             </div>

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMemberDecorationTable extends Migration
+class CreateMemberDecorationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateMemberDecorationTable extends Migration
      */
     public function up()
     {
-        Schema::create('member_decoration', function(Blueprint $table){
+        Schema::create('member_decorations', function(Blueprint $table){
             
             // "Award ID"
             $table->increments('awd_id');
@@ -26,8 +26,6 @@ class CreateMemberDecorationTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            
-            // todo: FK to leave table
             $table->foreign('regt_num')->references('regt_num')->on('members');
             $table->foreign('dec_id')->references('dec_id')->on('decorations');
             
@@ -41,12 +39,12 @@ class CreateMemberDecorationTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('member_decoration')){
-            Schema::table('member_decoration', function ($table) {
-                $table->dropForeign('member_decoration_regt_num_foreign');
-                $table->dropForeign('member_decoration_dec_id_foreign');
+        if (Schema::hasTable('member_decorations')){
+            Schema::table('member_decorations', function ($table) {
+                $table->dropForeign('member_decorations_regt_num_foreign');
+                $table->dropForeign('member_decorations_dec_id_foreign');
             });
-            Schema::drop('member_decoration');
+            Schema::drop('member_decorations');
         }
     }
 }
