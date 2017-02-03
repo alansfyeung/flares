@@ -203,7 +203,7 @@ trait ProcessesMemberRecordsTrait
      * @param  Array $opts
      * @return String
      */ 
-	protected function generateInitialPostingRecord($id, $opts = 0)
+	protected function generateInitialPostingRecord($id, $opts = null)
 	{
 		/*
 		 * Place as: 
@@ -218,8 +218,19 @@ trait ProcessesMemberRecordsTrait
 		if (is_array($opts)){
 			// overwrite vars above with the overrides
 			extract($opts);
+            
+            // Cleanup
+            if (is_array($newPlatoon)){
+                $newPlatoon = $newPlatoon['abbr'];
+            }
+            if (is_array($newPosting)){
+                $newPosting = $newPosting['abbr'];
+            }
+            if (is_array($newRank)){
+                $newRank = $newRank['abbr'];
+            }
 		}
-		
+        
 		$postingRecord = [
 			'regt_num' => $id,
 			'effective_date' => $effectiveDate,
@@ -229,6 +240,7 @@ trait ProcessesMemberRecordsTrait
 			'promo_auth' => $promoAuth,
 			'recorded_by' => $recordedBy
 		];
+        
 		$id = DB::table('posting_promo')->insertGetId($postingRecord);		
 		return $id;
 	}

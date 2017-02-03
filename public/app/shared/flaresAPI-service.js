@@ -36,16 +36,13 @@
             return $http.get(buildEndpoint.call(this, parts), params);
         };
         FlaresAPI.prototype.post = function(data, params){      // don't expect ID
-            data = flattenPayloadDates(data);
-            return $http.post(buildEndpoint.call(this), data, params);
+            return $http.post(buildEndpoint.call(this), filterPayloadData(data), params);
         };
         FlaresAPI.prototype.put = function(parts, data, params){
-            data = flattenPayloadDates(data);
-            return $http.put(buildEndpoint.call(this, parts), data, params);
+            return $http.put(buildEndpoint.call(this, parts), filterPayloadData(data), params);
         };
         FlaresAPI.prototype.patch = function(parts, data, params){
-            data = flattenPayloadDates(data);
-            return $http.patch(buildEndpoint.call(this, parts), data, params);
+            return $http.patch(buildEndpoint.call(this, parts), filterPayloadData(data), params);
         };
         FlaresAPI.prototype.delete = function(parts, params){
             return $http.delete(buildEndpoint.call(this, parts), params);
@@ -63,20 +60,43 @@
         };
         
         /**
+         * Master filter function. Run through a list of declared filter funcs, 
+         * in that particular order.
+         */
+        function filterPayloadData(data){
+            var filters = [flattenPayloadDates];
+            var filteredData = angular.copy(data);
+            angular.forEach(filters, function(filterFunc){
+                filteredData = filterFunc(filteredData);
+            });
+            return filteredData;
+        }
+        
+        /**
          * Flatton dates to a simpler format for Laravel/Carbon
          * If ISO timestamps are sent, then it returns the following error:
          * `{code: 0, reason: "Unexpected data found.↵Trailing data"}`
          */
-        function flattenPayloadDates(payload){            
+        function flattenPayloadDates(payload){
             // Need to flatten dates... thanks Laravel/Carbon... (sarcasm)
             return iteratePayload(payload);
             function iteratePayload(dataObject){
                 for (var key in dataObject){
                     if (dataObject.hasOwnProperty(key)){
-                        if (dataObject[key] instanceof Date){
+                        // DATE OBJECTS
+                        if (angular.isDate(dataObject[key])){
                             dataObject[key] = $filter('date')(dataObject[key], "yyyy-MM-dd");
                         }
-                        else if (typeof dataObject[key] === 'object' && dataObject[key].constructor === 'object'){
+                        // ISO-8601 STRINGS
+                        else if (angular.isString(dataObject[key])){
+                            if (dataObject[key].match(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i)){
+                                var dateFromValue = new Date(dataObject[key]);
+                                dataObject[key] = $filter('date')(dateFromValue, "yyyy-MM-dd");
+                            }
+                        }
+                        // NESTED OBJECTS
+                        // Todo: better object check?
+                        else if (angular.isObject(dataObject[key])){
                             // Recursively map dates
                             dataObject[key] = iteratePayload(dataObject[key])
                         }

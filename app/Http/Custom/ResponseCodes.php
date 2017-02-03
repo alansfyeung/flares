@@ -16,4 +16,7 @@ class ResponseCodes
 	
 	const ERR_PERM_NOPE = 7000;
 	const ERR_PERM_NOT_ADMIN = 7001;
+    
+    const ERR_DECORATION_SHORTCODES_EXHAUSTED = 5020;
+    
 }

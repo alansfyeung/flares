@@ -20,7 +20,7 @@
         // };
         
         $scope.record = {};     // Expect this to be aliased in child instance.
-        $scope.originalRecord = {};         // Expect this to be aliased in child instance.
+        $scope.originalRecord = angular.copy($scope.record);         // Expect this to be aliased in child instance.
         
         // This should be the prototype for child controller state objects
         this.state = new (function(){
