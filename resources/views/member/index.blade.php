@@ -1,20 +1,20 @@
 {{-- Search all members --}}
 @extends('layouts.primary')
 
-@section('ng-app', 'flaresMemberSearch')
-@section('ng-controller', 'memberSearchController')
+@section('ng-app', 'flaresMemberIndex')
+@section('ng-controller', 'memberIndexController')
 @section('title', 'Members')
 
 @section('heading')
-<h1>Search all members</h1>
+<h1>All members</h1>
 @endsection
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberSearch.js"></script>
+<script src="/app/components/member/flaresMemberIndex.js"></script>
 @endpush
 
 @section('advancedSearchForm')
-<form class="form-horizontal" ng-cloak ng-show="state.advancedSearch" ng-submit="submitAdvancedSearch()">
+<form class="form-horizontal" ng-cloak ng-show="state.isAdvancedSearch" ng-submit="submitAdvancedSearch()">
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="form-group">
@@ -40,7 +40,7 @@
 		</div>
 		
 		<div class="col-sm-6">
-			<div class="form-group">
+			<div class="form-group" ng-if="formData.ranks">
 				<label class="control-label col-sm-3">Rank</label>
 				<div class="col-sm-9">
 					<select class="form-control" ng-model="searchParams.rank" tabindex="3">
@@ -85,7 +85,7 @@
             </div>
         </div>
         <p>
-            <small><a class="btn btn-link" ng-click="state.advancedSearch = !state.advancedSearch;">Advanced search</a></small>
+            <small><a class="btn btn-link" ng-click="state.isAdvancedSearch = !state.isAdvancedSearch;">Advanced search</a></small>
         </p>
     </form>
     
@@ -93,7 +93,7 @@
     
 	<hr>
     <section class="search-results">
-        <div class="label label-default">@{{results.length}} results for search</div>
+        <div class="label label-default" ng-show="state.isSearch">@{{results.length}} results for search</div>
         <table class="table table-hover" ng-show="results.length > 0">
             <colgroup>
                 <col style="width: 120px;">
@@ -123,7 +123,7 @@
                     <td>@{{result.rank}}</td>
                     <td>@{{result.sex}}</td>
                     <td>@{{result.ageDetails}}</td>
-                    <td><button class="btn btn-primary" ng-click="selectMemberContext(result); $event.stopPropagation();">More</button></td>
+                    <td><a class="fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
                 </tr>
             </tbody>
         </table>

@@ -5,7 +5,7 @@
 //   Todo: omni-search bar (a la Google)
 // ==================================
 
-var flaresApp = angular.module('flaresMemberSearch', ['flaresBase']);
+var flaresApp = angular.module('flaresMemberIndex', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     $http.get('/app/components/member/memberContextMenuTemplate.html').then(function(response){
@@ -13,18 +13,15 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberSearchController', function($scope, $location, $window, $uibModal, flAPI, flResource){
+flaresApp.controller('memberIndexController', function($scope, $location, $window, $uibModal, flAPI, flResource){
 	$scope.results = [];
 	$scope.activeMember = null;
     
     $scope.state = {
-        advancedSearch: false
+        isSearch: false,
+        isAdvancedSearch: false,
     };
-	$scope.formData = {
-		ranks: [
-			{ id: '', name: 'Any rank' }
-		]
-	};
+	$scope.formData = {};
     
     // $scope.searchKeywords = (typeof $location.search() === 'object' && $location.search().keywords) || '';
     $scope.searchKeywords = '';
@@ -96,7 +93,11 @@ flaresApp.controller('memberSearchController', function($scope, $location, $wind
     else {
         // TODO: Add result limit to the search function
         flAPI('member').get(['search'], {
-			params: { 'orderBy': 'CREATED' }
+			params: { 
+                'orderBy': 'CREATED',
+                'orderByDir': 'desc',
+                'limit': 10
+            }
 		}).then(function(response){
 			$scope.results = response.data.members;
 			angular.forEach($scope.results, parseMemberSearchResult);
@@ -106,7 +107,7 @@ flaresApp.controller('memberSearchController', function($scope, $location, $wind
     }
     
 	
-	angular.element('[name=search-surname]').focus();
+	// angular.element('[name=search-surname]').focus();
     
     
 	//==================
@@ -136,7 +137,6 @@ flaresApp.controller('memberSearchController', function($scope, $location, $wind
         else {
             result.age = '0';
             result.ageDetails = '??';
-            
         }
     }
     
@@ -189,12 +189,12 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     }
     
     $scope.bodyButtons = [{
-        label: 'Member profile',
-        classNames: ['btn-default'],
+        label: 'Edit member profile',
+        classNames: ['btn-primary'],
         click: 'linkToMember'
     }, {
         label: 'Assign decoration',
-        classNames: ['btn-primary'],
+        classNames: ['btn-default'],
         click: 'assignDecoration'
     }];
     $scope.footerButtons = [{
@@ -205,7 +205,7 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
     var clickActions = {
         linkToMember: function(){
             $window.location.href = flResource('member')
-                .setFragment([$scope.member.regt_num, 'view', 'details'])
+                .setFragment([$scope.member.regt_num, 'edit', 'details'])
                 .getLink();
             // Or if you want to return a value to the parent controller,
             // $modalInstance.close();

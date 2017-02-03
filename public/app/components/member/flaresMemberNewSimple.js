@@ -7,43 +7,12 @@ var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
 flaresApp.controller('newSimpleController', function($scope, $location, flAPI, flResource){
 
-	// Tracks the flow of screens
-    // Stage 1: Enter name, DOB, gender; de-dupe, generate regt nums
-    // Stage 2: Enter detailed information
-    // Stage 3: Confirmation screen, go to view details
-	var workflowState = {
-		stage: 1,
-        isSaving: false,
-	};
-    
-    
-    //// WHAT DO
-    //// WHAT DO
-    //// WHAT DO
-    
-    // This data should be extracted from reference service
-	$scope.formData = {
-		onboardingTypes: [],
-		sexes: [],
-		intakes: [],
-		postings: [],
-		ranks: []
-	}
-	
-    
-    
     //=======================================
     // DATA
     
     // Onboarding Context
-    $scope.ctx = {
-		hasOverrides: false,
-		name: 'newRecruitment',				
-		thisYear: (new Date).getFullYear(),
-		thisCycle: '1',
-		newRank: 'CDTREC',
-		newPosting: 'MBR',
-		newPlatoon: '3PL',
+    $scope.context = {
+		hasOverrides: false
 	};
     
 	// New member DTO
@@ -57,17 +26,29 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
         
     };
     
+    $scope.formData = {};
+    
     // END DATA
     //=======================================
 	
+    // This data should be extracted from reference service
+    
 	//======================
 	// Workflow Screen navigation
     
     var wf = $scope.wf = {};
     
     // Screen state variable
-    wf.state = workflowState;
-    
+    // Tracks the flow of screens
+    // Stage 1: Enter name, DOB, gender; de-dupe, generate regt nums
+    // Stage 2: Enter detailed information
+    // Stage 3: Confirmation screen, go to view details
+	wf.state = {
+		stage: 1,
+        isSaving: false,
+        showOnboardingType: false,
+	};
+
     // Nav actions
     wf.next = function(){ wf.state.stage++ };
     
@@ -104,8 +85,15 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
         });
         
         // Then set defaults for all those values
-        // TODO
-        
+        if (angular.isArray(response.data.onboardingTypes) && response.data.onboardingTypes.length){
+            $scope.context.onboardingType = response.data.onboardingTypes[0];
+        }
+        if (angular.isArray(response.data.ranks) && response.data.ranks.length){
+            $scope.context.newRank = response.data.ranks[0];
+        }
+        if (angular.isArray(response.data.postings) && response.data.postings.length){
+            $scope.context.newPosting = response.data.postings[0];
+        }
 	});
 
 	//======================
@@ -132,8 +120,6 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
     
     function submitNewRecord(){
         
-        var member = $scope.member;
-
         // Cheapo validation
         // TODO: make better
 		if($scope.newSimpleStageOne.$invalid){
@@ -143,7 +129,7 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
 
 		// Submission
         var payload = {
-            context: $scope.ctx,
+            context: $scope.context,
             member: $scope.member.data
         };
                 
@@ -153,10 +139,10 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
                 return;
             }
             
-            member.lastPersistTime = (new Date).toTimeString();
+            $scope.member.lastPersistTime = (new Date).toTimeString();
             if (response.data.id){
-                member.regtNum = response.data.id;	
-                member.isSaved = true;
+                $scope.member.regtNum = response.data.id;	
+                $scope.member.isSaved = true;
             }
                         
             wf.next();
@@ -168,25 +154,22 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
 	}
 
     function submitDetailedRecord(){
-		var sw = $scope.wf.state;
-        var member = $scope.member;
-        
 		var payload = {
-			context: $scope.onboardingContext,
+			context: $scope.context,
 			member: $scope.member.data
 		};
 		
-        flAPI('member').patch([member.regtNum], payload).then(function(response){				
+        flAPI('member').patch([$scope.member.regtNum], payload).then(function(response){				
             if (response.data.id){
                 
                 // Detailed save succeeded, so let's activate them
-                flAPI('member').patch([member.regtNum], {
+                flAPI('member').patch([$scope.member.regtNum], {
                     member: { is_active: '1' }
                 });
                 
-                member.lastPersistTime = (new Date()).toTimeString();
-                member.isUpdated = true;	
-                console.log('Updated:', member);
+                $scope.member.lastPersistTime = (new Date()).toTimeString();
+                $scope.member.isUpdated = true;	
+                console.log('Updated:', $scope.member);
                 
                 wf.next();
                 

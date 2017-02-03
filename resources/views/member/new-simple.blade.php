@@ -59,28 +59,36 @@
             </div>
         </fieldset>
         <hr>
-        <fieldset>
+        <div ng-hide="wf.showOnboardingType">
+            <strong>Onboarding as &ndash;</strong> @{{context.onboardingType.name}}, @{{context.newRank.name}}, @{{context.newPosting.name}}
+            &bull; <a ng-click="wf.showOnboardingType = true">Change</a>
+        </div>
+        <fieldset ng-show="wf.showOnboardingType">
             <div class="form-group">
+                <div class="col-xs-12 text-right">
+                    <a ng-click="wf.showOnboardingType = false">Hide</a>                    
+                </div>
+            </div>
+            <div class="form-group" ng-if="formData.onboardingTypes">
                 <label class="control-label col-sm-3">Onboarding Type</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-options="obType.name for obType in formData.onboardingTypes" ng-model="ctx.onboardingTypes" required>
+                    <select class="form-control" ng-options="obType.name for obType in formData.onboardingTypes" ng-model="context.onboardingType" required>
                         <option value="">-- Choose an onboarding type --</option>
                     </select>
                 </div>
             </div>
-        
-            <div class="form-group">
+            <div class="form-group" ng-if="formData.ranks">
                 <label class="control-label col-sm-3">Rank</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-options="rank.name for rank in formData.ranks" ng-model="ctx.newRank" required>
+                    <select class="form-control" ng-options="rank.name for rank in formData.ranks" ng-model="context.newRank" required>
                         <option value="">-- Choose an initial rank --</option>
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" ng-if="formData.postings">
                 <label class="control-label col-sm-3">Initial Posting</label>
                 <div class="col-sm-9">
-                    <select class="form-control" ng-options="posting.name for posting in formData.postings" ng-model="ctx.newPosting" required>
+                    <select class="form-control" ng-options="posting.name for posting in formData.postings" ng-model="context.newPosting" required>
                         <option value="">-- Choose an initial posting --</option>
                     </select> 
                 </div>

@@ -29,45 +29,36 @@
 @verbatim
 <div ng-show="member.regt_num">
 
-    <div class="row">
-        <div class="col-sm-6 col-md-3">
-        
-            <h2>
-                {{member.last_name}}, {{member.first_name}} &nbsp;
-                <br>
-                <small style="display: inline-block">&diams; {{member.regt_num}}</small>
-            </h2>
+    <h2>
+        {{member.last_name}}, {{member.first_name}} &nbsp;
+        <br>
+        <small style="display: inline-block">&diams; {{member.regt_num}}</small>
+    </h2>
+    <hr>
+    
+    <div class="row" ng-show="award.saved">
+        <div class="col-sm-8">
+            <h2>Saved</h2>
+            
             <hr>
-            
-            
-        </div>
-        <div class="col-sm-6 col-md-9">
-    
-            <div ng-show="award.saved">
-                <h2>Saved</h2>
-                <div>
-                    <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
-                    <button type="button" ng-click="assignAnother()" class="btn btn-primary">Assign another</button>
-                </div>
+            <div class="text-right">
+                <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+                <button type="button" ng-click="assignAnother()" class="btn btn-primary">Assign another</button>
             </div>
-    
-            <form class="form-horizontal" ng-submit="submit()" ng-hide="award.saved">
+        </div>
+    </div>
+
+    <div class="row" ng-hide="award.saved">
+        <div class="col-sm-8">
+            <form class="form-horizontal" ng-submit="submit()">
                 <fieldset>
                     <div class="form-group">
-                        <label class="control-label">Decoration to assign</label>
+                        <label class="control-label col-sm-3">Decoration to assign</label>
+                        <div class="col-sm-9">
                             <select class="form-control" ng-options="dec.name for dec in decorations track by dec.dec_id" ng-model="award.selectedDecoration">
                                 <option value="">Choose a decoration</option>
-                            </select>                    
-                    </div>
-                    <div class="alert alert-info clearfix" ng-show="award.selectedDecoration">
-                        <div class="pull-right">
-                            <div class="thumbnail fl-record-thumbnail">
-                                <img ng-src="{{award.selectedDecorationPictureUrl}}" alt="{{award.name}}" class="image-rounded memberview-thumb">
-                            </div>
+                            </select>
                         </div>
-                        <h4>{{award.selectedDecoration.name}}</h4>
-                        <p>{{award.selectedDecoration.desc}}</p>
-                        <p>Tier {{award.selectedDecoration.tier}} award</p>
                     </div>
                 </fieldset>
 
@@ -98,6 +89,21 @@
                 </div>
             
             </form>
+            
+            
+        </div>
+        <div class="col-sm-4">
+    
+            <div class="alert alert-info clearfix" ng-show="award.selectedDecoration">
+                <div class="pull-right">
+                    <div class="thumbnail fl-record-thumbnail">
+                        <img ng-src="{{award.selectedDecorationBadgeUrl}}" alt="{{award.name}}" class="image-rounded memberview-thumb">
+                    </div>
+                </div>
+                <h4>{{award.selectedDecoration.name}}</h4>
+                <p>{{award.selectedDecoration.desc}}</p>
+                <p>Tier {{award.selectedDecoration.tier}} award</p>
+            </div>
     
     
         </div>

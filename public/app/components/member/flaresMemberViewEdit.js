@@ -192,7 +192,23 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
             // Cancellation
             console.log('Modal dismissed at: ' + new Date());
         });
-    }
+    };
+    
+    $scope.removeAward = function(award){
+        if (confirm('Are you sure you want to delete this award?')){
+            award.isDeleting = true;
+            flAPI('member').nested('decoration', $scope.member.regt_num).delete(award.id).then(function(){
+                var deletedIndex = $scope.member.awards.indexOf(award);
+                $scope.member.awards.splice(deletedIndex, 1);
+            }).catch(function(err){
+                award.isDeleting = false;
+                console.warn(err);
+            });
+        }
+        else {
+            return false;
+        }
+    };
 	
 	
 	// Read the url
@@ -222,18 +238,20 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
                 var member = response.data.member;
 				processMemberRecord(member);
                 $scope.member = member;
-                $scope.originalMember = angular.extend(Object.create($scope.originalRecord), member);
+                $scope.originalMember = angular.copy(member);
+                
 				
                 flAPI('member').nested('decoration', regtNum).getAll().then(function(response){
                     console.log(response);
-                    var decorations = [];
-                    angular.forEach(response.data.decorations, function(decoration){
-                        processMemberDecorationRecord(decoration);
-                        decoration.url = flResource().raw(['media', 'decoration', decoration.dec_id, 'badge'], [+new Date]);
-                        decorations.push(decoration);
-                    }, decorations);
-                    $scope.member.decorations = decorations;
-                    $scope.originalMember.decorations = decorations;
+                    var awards = [];
+                    angular.forEach(response.data.decorations, function(decorationData){
+                        var award = { data: decorationData, id: decorationData.awd_id };
+                        processMemberDecorationRecord(award.data);
+                        award.url = flResource().raw(['media', 'decoration', award.data.dec_id, 'badge'], [+new Date]);
+                        this.push(award);
+                    }, awards);
+                    $scope.member.awards = awards;
+                    $scope.originalMember.awards = awards;
                 });
                 
                 $scope.state.isMemberLoaded = true;

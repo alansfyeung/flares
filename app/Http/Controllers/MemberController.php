@@ -78,6 +78,15 @@ class MemberController extends Controller
         if (!in_array($orderByDir, ['desc', 'asc'])){
             $orderByDir = 'desc';
         }
+        
+        $limit = intval($request->query('limit'));
+        $offset = intval($request->query('offset'));
+        if ($limit > 0){
+            $query->take($limit);
+        }
+        if ($offset > 0){
+            $query->skip($offset);
+        }
 		
 		// join on pp table 
 		$query->join('posting_promo as pp1', function ($join) {
@@ -157,8 +166,8 @@ class MemberController extends Controller
 		$context = $this->getContextDefaults();
 		if ($request->has('context')){
 			$postDataContext = $request->input('context');
-			if (array_key_exists('name', $postDataContext)){
-				$contextDefaults = $this->getContextDefaults($postDataContext['name']);
+			if (array_key_exists('onboardingType', $postDataContext)){
+				$contextDefaults = $this->getContextDefaults($postDataContext['onboardingType']);
 			}
 			else {
 				$contextDefaults = $this->getContextDefaults();

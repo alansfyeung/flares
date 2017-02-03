@@ -58,12 +58,11 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
     $scope.$watch('award.selectedDecoration', function(newVal){
         // Check out if the badge image exists
         if (newVal && newVal.dec_id){
-            flAPI('decoration').nested('badge', [newVal.dec_id]).get('exists').then(function(response){
+            flAPI('decoration').nested('badge', [newVal.dec_id]).get().then(function(response){
                 if (response.data.exists){
-                    $scope.award.selectedDecorationPictureUrl = flAPI('decoration').nested('badge', [newVal.dec_id]).url();
+                    $scope.award.selectedDecorationBadgeUrl = flResource().raw(['/media', 'decoration', newVal.dec_id, 'badge'], [+new Date]);
                 } else {
-                    console.log(decorationDefaultBadgeUrl);
-                    $scope.award.selectedDecorationPictureUrl = decorationDefaultBadgeUrl;
+                    $scope.award.selectedDecorationBadgeUrl = decorationDefaultBadgeUrl;
                 }
             });
         }
@@ -160,7 +159,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
         this.saved = false;
         this.saveError = false;
         this.selectedDecoration = 0;
-        this.selectedDecorationPictureUrl = '';
+        this.selectedDecorationBadgeUrl = '';
         this.data = {
             dec_id: 0,
             citation: '',

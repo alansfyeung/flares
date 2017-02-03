@@ -22,7 +22,7 @@ class MemberDecorationController extends Controller
         ]);
     }
 
-    public function show($awardId)
+    public function show($memberId, $awardId)
     {
         $award = MemberDecoration::findOrFail($awardId);
         return response()->json([
@@ -59,10 +59,11 @@ class MemberDecorationController extends Controller
 		}
     }
 
-    public function destroy($awardId)
+    public function destroy($memberId, $awardId)
     {
         try {
-            MemberDecoration::findOrFail($awardId);
+            $award = MemberDecoration::findOrFail($awardId);
+            $award->delete();
             return response('', 204);
         } catch (\Exception $ex) {
             return response()->json([
