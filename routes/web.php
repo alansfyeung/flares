@@ -93,26 +93,33 @@ Route::group(['as' => 'activity::', 'middleware' => 'auth'], function () {
     });
 });
 
-Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function(){
+Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function (){
     
-    Route::get('decorations', function(){
+    Route::get('decorations', function (){
         return view('decoration.index');
     });
-    Route::get('decorations/new', function(){
+    Route::get('decorations/new', function (){
         return view('decoration.new');
     });
     
-    Route::get('decoration', function(){
+    Route::get('decoration', function (){
         return view('decoration.view');
     });
     
 });
 
 
+/**
+ * Public routes
+ */
+Route::group(['as' => 'public::', 'prefix' => 'public'], function () {
+    Route::get('decoration/{shortcode}', 'DecorationPublicController');
+});
+
 /** 
  * Image and other media content endpoints (separate this from the concerns of the API)
  */
-Route::group(['as' => 'media::', 'prefix' => 'media'], function() { 
+Route::group(['as' => 'media::', 'prefix' => 'media'], function () { 
     Route::get('member/{memberId}/picture', 'MemberPictureController@show')->name('member-picture');
     Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show')->name('decoration-badge');
 });

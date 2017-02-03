@@ -39,3 +39,13 @@
 .titlebar-actions .btn-link {
     background: rgba(0,0,0,.2);
 }
+
+// Context modal triggers that appear when hovered
+table tr {
+    .fl-context-modal-button {
+        display: none;
+    }
+    &:hover .fl-context-modal-button {
+        display: inline-block;
+    }
+}

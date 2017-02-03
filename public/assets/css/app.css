@@ -6339,4 +6339,10 @@ select.ng-dirty.ng-invalid,
 .titlebar-actions .btn-link {
   background: rgba(0, 0, 0, 0.2); }
 
+table tr .fl-context-modal-button {
+  display: none; }
+
+table tr:hover .fl-context-modal-button {
+  display: inline-block; }
+
 /*# sourceMappingURL=app.css.map */
