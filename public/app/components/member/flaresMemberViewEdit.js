@@ -229,7 +229,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
                     var decorations = [];
                     angular.forEach(response.data.decorations, function(decoration){
                         processMemberDecorationRecord(decoration);
-                        decoration.url = flResource().raw(['api', 'decoration', decoration.dec_id, 'badge'], [+new Date]);
+                        decoration.url = flResource().raw(['media', 'decoration', decoration.dec_id, 'badge'], [+new Date]);
                         decorations.push(decoration);
                     }, decorations);
                     $scope.member.decorations = decorations;
@@ -388,7 +388,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();
                         // Todo: replace the below with a more sturdy flResource solution
-                        $scope.memberImage.url = flResource().raw(['api', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        $scope.memberImage.url = flResource().raw(['media', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
                         $scope.memberImage.isDefault = false;
                     }
                     else {

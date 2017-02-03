@@ -223,7 +223,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                 if (response.data.exists){
                     var cacheDefeater = +Date.now();
                     // Todo: replace the below with a more sturdy flResource solution
-                    $scope.image.url = flResource().raw(['api', 'decoration', decID, 'badge'], [cacheDefeater]);
+                    $scope.image.url = flResource().raw(['media', 'decoration', decID, 'badge'], [cacheDefeater]);
                     $scope.image.isLoaded = true;
                 }
                 else {
