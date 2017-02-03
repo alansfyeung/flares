@@ -23,8 +23,7 @@ Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']
 // Member API -- note that Search alias route MUST go before the resourceful route
 Route::get('member/search', 'MemberController@search');
 Route::get('member/{memberId}/status', 'MemberController@status');
-Route::get('member/{memberId}/picture', 'MemberPictureController@show');
-Route::get('member/{memberId}/picture/exists', 'MemberPictureController@exists');
+Route::get('member/{memberId}/picture', 'MemberPictureController@exists');
 Route::get('member/{memberId}/picture/new', 'MemberPictureController@chunkCheck');
 Route::post('member/{memberId}/picture/new', 'MemberPictureController@store');
 Route::delete('member/{memberId}/picture', 'MemberPictureController@destroy');
@@ -44,8 +43,7 @@ Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 's
 
 // Decorations API
 
-Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show');
-Route::get('decoration/{decorationId}/badge/exists', 'DecorationBadgeController@exists');
+Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@exists');                                          // TBA: repurpose
 Route::get('decoration/{decorationId}/badge/new', 'DecorationBadgeController@chunkCheck');
 Route::post('decoration/{decorationId}/badge/new', 'DecorationBadgeController@store');
 Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@destroy');

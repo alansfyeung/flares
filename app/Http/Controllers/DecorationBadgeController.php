@@ -60,12 +60,17 @@ class DecorationBadgeController
 			}
             
             // TODO: Shrink this image
-            
             // Shrink this image
 
 			$dec = Decoration::find($decorationId);
 			$dec->badge_blob = $blob;
 			$dec->badge_mime_type = $mimeType;
+			
+			$dec->badge_w = 90;         // hardcode for now until image shrink
+			$dec->badge_h = 30;         // hardcode for now until image shrink
+            
+            $dec->badge_uri = $dec->shortcode . strrchr($flowRequest->getFileName(), '.');
+            
 			$dec->save();
             
 			return response('Upload OK', Response::HTTP_CREATED);		// 201
@@ -94,8 +99,13 @@ class DecorationBadgeController
 	 */
 	public function exists($decorationId){
         $dec = Decoration::findOrFail($decorationId);
-        $imageExists = !($dec->badge_blob === null && $dec->badge_uri === null);
-        return response()->json([ 'exists' => $imageExists ]);
+        // $imageExists = !($dec->badge_blob === null && $dec->badge_uri === null);
+        $imageExists = !($dec->badge_blob === null);
+        $response = [ 'exists' => $imageExists ];
+        if ($imageExists){
+            $response['url'] = route('media::decoration-badge', ['decorationId' => $decorationId]);
+        }
+        return response()->json($response);
 	}
 
 	/*
@@ -106,15 +116,18 @@ class DecorationBadgeController
         // Get the most recent image, serve it as whatever mimetype is recorded
 		$dec = Decoration::findOrFail($decorationId);
         if ($dec->badge_blob !== null){
-            return response($dec->badge_blob)->header('Content-Type', $dec->badge_mime_type);            
-        } elseif ($dec->badge_uri !== null) {
-            $url = $dec->badge_uri;
-            // Assume it's a local image if not fully qualified url
-            if (!str_contains($dec->badge_uri, '://')){   
-                $url = secure_asset($url);                
-            }
-            return redirect($url);
-        }
+            return response($dec->badge_blob)->withHeaders([
+                'Content-Type' => $dec->badge_mime_type,
+                'Cache-Control' => 'public, max-age=604800',
+            ]);
+        } // elseif ($dec->badge_uri !== null) {
+            // $url = $dec->badge_uri;
+            // // Assume it's a local image if not fully qualified url
+            // if (!str_contains($dec->badge_uri, '://')){   
+                // $url = secure_asset($url);
+            // }
+            // return redirect($url);
+        // }
         return response('', 404);
     }
 

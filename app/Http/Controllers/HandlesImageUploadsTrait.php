@@ -20,6 +20,6 @@ trait HandlesImageUploadsTrait
 				return 'image/jpeg';
 		}
 		
-		return false;
+		return null;
 	}
 }

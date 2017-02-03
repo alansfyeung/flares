@@ -23,16 +23,18 @@ Auth::routes();
 
 
 /* Dashboard */
-Route::get('/', ['as' => 'dashboard', function () {
-    return view('dashboard');
-}]);
+Route::group(['middleware' => 'auth'], function () {
 
+    Route::get('/', ['as' => 'dashboard', function () {
+        return view('dashboard');
+    }]);
+});
 
 /*
  * FLARES view router. Each view bootstraps its own 
  * Angular 1 app. 
  */
-Route::group(['as' => 'member::', 'middleware' => 'auth'], function (){
+Route::group(['as' => 'member::', 'middleware' => 'auth'], function () {
 
     // Route::get('members', 'PagePresenter@memberSearch');
     // Route::get('members/new', 'PagePresenter@memberNew');
@@ -96,7 +98,7 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function(){
     Route::get('decorations', function(){
         return view('decoration.index');
     });
-        Route::get('decorations/new', function(){
+    Route::get('decorations/new', function(){
         return view('decoration.new');
     });
     
@@ -106,3 +108,11 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function(){
     
 });
 
+
+/** 
+ * Image and other media content endpoints (separate this from the concerns of the API)
+ */
+Route::group(['as' => 'media::', 'prefix' => 'media'], function() { 
+    Route::get('member/{memberId}/picture', 'MemberPictureController@show')->name('member-picture');
+    Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show')->name('decoration-badge');
+});

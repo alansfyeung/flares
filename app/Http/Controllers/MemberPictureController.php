@@ -104,9 +104,15 @@ class MemberPictureController
 	public function exists($memberId){
 		$all = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->get();
 		if ($all->isEmpty()){
-			return response()->json(['count' => 0, 'exists' => false], 404);
+			return response()->json([
+                'count' => 0, 'exists' => false], 404);
 		}
-		return response()->json(['count' => $all->count(), 'exists' => true]);
+		return response()
+            ->json([
+                'count' => $all->count(), 
+                'url' => route('media::member-picture', ['memberId' => $memberId]),
+                'exists' => true,
+            ]);
 	}
 
 	/*
@@ -117,7 +123,10 @@ class MemberPictureController
         // Get the most recent image, serve it as whatever mimetype is recorded
 		$mp = MemberPicture::where('regt_num', $memberId)->orderBy('created_at', 'desc')->firstOrFail();
 		$blob = $mp->photo_blob;
-		return response($blob)->header('Content-Type', $mp->mime_type);
+		return response($blob)->withHeaders([
+            'Content-Type' => $mp->mime_type,
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
     }
 
     public function destroy(Request $request, $memberId)
