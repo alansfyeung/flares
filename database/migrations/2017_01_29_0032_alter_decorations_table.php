@@ -13,7 +13,8 @@ class AlterDecorationsTable extends Migration
     public function up()
     {
         Schema::table('decorations', function(Blueprint $table){ 
-            $table->string('shortcode', 10)->nullable();
+            $table->string('shortcode', 10)->unique()->nullable();
+            $table->integer('precedence')->nullable();
             $table->integer('service_period_months')->nullable();
         });
     }
@@ -25,9 +26,10 @@ class AlterDecorationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $tabl->dropColumn('shortcode');
-            $tabl->dropColumn('service_period_months');
+        Schema::table('decorations', function (Blueprint $table) {
+            $table->dropColumn('shortcode');
+            // $table->dropColumn('precedence');
+            $table->dropColumn('service_period_months');
         });
     }
 }
