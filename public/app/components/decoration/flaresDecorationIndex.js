@@ -24,8 +24,7 @@ flaresApp.controller('indexController', function($scope, $location, $controller,
         if (angular.isObject(dec) && dec.dec_id){
             decId = dec.dec_id;
         }
-        var link = flAPI('decoration').nested('badge', decId).url();
-        return link;
+        return flResource().raw(['media', 'decoration', decId, 'badge']);
     }
     
     flAPI('decoration').getAll().then(function(resp){
