@@ -211,8 +211,9 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
             // $modalInstance.close();
         },
         viewDecorations: function(){
-            var frag = $scope.member.regt_num;
-            $window.location.href = flResource('member').single('decorations').setFragment(frag).getLink();
+            $window.location.href = flResource('member')
+                .setFragment([$scope.member.regt_num, 'edit', 'decorations'])
+                .getLink();
         },
         assignDecoration: function(){
             var frag = $scope.member.regt_num;

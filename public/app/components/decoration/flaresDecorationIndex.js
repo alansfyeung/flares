@@ -6,7 +6,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('indexController', function($scope, $location, $controller, $uibModal, flAPI, flResource){
+flaresApp.controller('indexController', function($scope, $window, $location, $controller, $uibModal, flAPI, flResource){
     
     $scope.gotoCreateNew = flResource('decoration').new().getLink();
 
@@ -15,7 +15,13 @@ flaresApp.controller('indexController', function($scope, $location, $controller,
     
     $scope.selectDecoration = function(dec){
         $scope.selectedDecoration = dec;
-        console.log($scope.selectedDecoration);
+        console.log(dec);
+        $window.location.href = flResource('decoration')
+            .setFragment([$scope.selectedDecoration.dec_id, 'view', 'details'])
+            .getLink();
+    };    
+    $scope.selectDecorationContext = function(dec){
+        $scope.selectedDecoration = dec;
         openContextMenu();
     };
     
@@ -68,21 +74,23 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
     $scope.dec = context;
     
     $scope.bodyButtons = [{
-        label: 'View decoration',
-        classNames: ['btn-primary'],
-        action: decorationDeepLink.bind(null, 'view', 'details')
-    }, {
-        label: 'Assign to member',
-        classNames: ['btn-success'],
-        action: decorationDeepLink.bind(null, 'edit', 'assign')
-    }, {
         label: 'Edit decoration',
-        classNames: ['btn-default'],
+        classNames: ['btn-primary'],
         action: decorationDeepLink.bind(null, 'edit', 'details')
     }, {
-        label: 'View assigned',
+        label: 'View public page',
+        classNames: ['btn-success'],
+        action: function(){
+            if ($scope.dec.shortcode){
+                $window.open(flResource().raw(['public', 'decoration', $scope.dec.shortcode]), 'Preview Award', 'width=800, height=600');
+                $modalInstance.close();
+            }
+            // $window.location.href = flResource('decoration').retrieve().addFragment(frag).getLink();
+        }
+    }, {
+        label: 'Assign to member',
         classNames: ['btn-default'],
-        action: decorationDeepLink.bind(null, 'view', 'assign')
+        action: decorationDeepLink.bind(null, 'edit', 'assign')
     }];
     $scope.footerButtons = [{
         label: 'Cancel',

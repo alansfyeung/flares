@@ -218,23 +218,25 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
         var decID = $scope.dec.dec_id;
-        flAPI('decoration').get([decID, 'badge', 'exists']).then(function(response){
-            if (response.status === 200){
-                if (response.data.exists){
-                    var cacheDefeater = +Date.now();
-                    // Todo: replace the below with a more sturdy flResource solution
-                    $scope.image.url = flResource().raw(['media', 'decoration', decID, 'badge'], [cacheDefeater]);
-                    $scope.image.isLoaded = true;
+        if (decID){
+            flAPI('decoration').nested('badge', decID).getAll().then(function(response){
+                if (response.status === 200){
+                    if (response.data.exists){
+                        var cacheDefeater = +Date.now();
+                        // Todo: replace the below with a more sturdy flResource solution
+                        $scope.image.url = flResource().raw(['media', 'decoration', decID, 'badge'], [cacheDefeater]);
+                        $scope.image.isLoaded = true;
+                    }
+                    else {
+                        $scope.image.resetToDefault();
+                    }
+                    $scope.image.count = response.data.count;
                 }
-                else {
-                    $scope.image.resetToDefault();
-                }
-                $scope.image.count = response.data.count;
-            }
-        }, function(response){
-            console.warn('WARN: Image not found for '+decID, response.status);
-            $scope.image.resetToDefault();
-        });
+            }, function(response){
+                console.warn('WARN: Image not found for '+decID, response.status);
+                $scope.image.resetToDefault();
+            });
+        }
 	}
     
     function updateUploaderDestination(){

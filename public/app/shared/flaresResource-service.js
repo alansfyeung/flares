@@ -91,10 +91,13 @@
         };
         FlaresLinkBuilder.prototype.build = FlaresLinkBuilder.prototype.getLink;
         
-        FlaresLinkBuilder.prototype.raw = function(pathParts, queryStringParts, hashFragParts){
+        FlaresLinkBuilder.prototype.raw = function(pathParts, queryStringParts, hashFragParts, opts){
             pathParts = pathParts || [];
             queryStringParts = queryStringParts || [];
             hashFragParts = hashFragParts || [];            // expect hash frag to be separated by slashes
+            opts = angular.extend({
+                absolutePath: true,
+            }, opts || {});
             var path = '';
             path = pathParts.join('/');
             if (queryStringParts.length > 0){
@@ -102,6 +105,9 @@
             }
             if (hashFragParts.length > 0){
                 path += '#' + queryStringParts.join('/');
+            }
+            if (opts.absolutePath && path.charAt(0) !== '/'){
+                path = '/' + path;
             }
             return path;
         };

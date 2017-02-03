@@ -28,6 +28,7 @@
             <col style="width: 40px;">
             <col style="width: 120px;">
             <col>
+            <col style="width: 80px;">
         </colgroup>
         <thead>
             <tr>
@@ -35,6 +36,7 @@
                 <th>Tier</th>
                 <th>Shortcode</th>
                 <th>Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +45,7 @@
                 <td>{{dec.tier}}</td>
                 <td>{{dec.shortcode | markBlanks}}</td>
                 <td>{{dec.name}}</td>
+                <td><a class="fl-context-modal-button" ng-click="selectDecorationContext(dec); $event.stopPropagation();">More</a></td>
             </tr>
         </tbody>
     </table>
