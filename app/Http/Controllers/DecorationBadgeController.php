@@ -118,7 +118,7 @@ class DecorationBadgeController
         if ($dec->badge_blob !== null){
             return response($dec->badge_blob)->withHeaders([
                 'Content-Type' => $dec->badge_mime_type,
-                'Cache-Control' => 'public, max-age=604800',
+                'Cache-Control' => 'public, max-age=86400',
             ]);
         } // elseif ($dec->badge_uri !== null) {
             // $url = $dec->badge_uri;
