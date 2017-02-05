@@ -144,7 +144,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
                     payload.decoration[key] = value;
                 }
             });
-			flAPI('decoration').patch([$scope.dec.dec_id], payload).then(function(response){
+			flAPI('decoration').patch([$scope.dec.id], payload).then(function(response){
 				$scope.state.successMessage = 'Save successful';
 				$scope.shadowDec = angular.copy($scope.dec);
 				
@@ -205,7 +205,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	};
 	
 	$scope.deleteLast = function(){
-		flAPI('decoration').delete([$scope.dec.dec_id, 'picture']).then(function(response){
+		flAPI('decoration').delete([$scope.dec.id, 'picture']).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -214,7 +214,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		});
 	};
 	$scope.deleteAll = function(){
-		flAPI('decoration').delete([$scope.dec.dec_id, 'picture'], {params: { remove: 'all' }}).then(function(response){
+		flAPI('decoration').delete([$scope.dec.id, 'picture'], {params: { remove: 'all' }}).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -232,14 +232,14 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	});
     
     
-    $scope.$watch('dec.dec_id', function(newValue){
+    $scope.$watch('dec.id', function(newValue){
         reloadMemberImage();
         updateUploaderDestination();
 	});
     
     // If the modal uploads a new pic, make sure all other pictureControllers update
     $scope.$on('flares::displayPictureChanged', function(){
-        if ($scope.dec.dec_id){
+        if ($scope.dec.id){
             reloadMemberImage();            
         }
     });
@@ -251,7 +251,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     function reloadMemberImage(){
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
-        var decID = $scope.dec.dec_id;
+        var decID = $scope.dec.id;
         if (decID){
             flAPI('decoration').nested('badge', decID).getAll().then(function(response){
                 if (response.status === 200){
@@ -274,9 +274,9 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	}
     
     function updateUploaderDestination(){
-        var decID = $scope.dec.dec_id;
+        var decID = $scope.dec.id;
         if ($scope.$flow && decID){
-            $scope.$flow.opts.target = '/api/decoration/'+$scope.dec.dec_id+'/badge/new';
+            $scope.$flow.opts.target = '/api/decoration/'+$scope.dec.id+'/badge/new';
             // $scope.$flow.opts.target = flAPI('decoration').sub('badge/new', decID).url();
             console.log('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
