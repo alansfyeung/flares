@@ -15,6 +15,12 @@ class ReferenceDataSeeder extends Seeder
             ['name' => 'ROLL_SYMBOLS', 'value' => '/,A,S,L'],
             ['name' => 'PROFILE_UNKNOWN_IMAGE_PATH', 'value' => '/assets/img/anon.png'],
             ['name' => 'BADGE_UNKNOWN_IMAGE_PATH', 'value' => '/assets/img/unknownbadge.jpg'],
+            ['name' => 'DECORATIONS_TIER_LIST', 'value' => 'A,B,C,D,E'],
+            ['name' => 'DECORATIONS_TIER_A', 'value' => 'Offical AAC'],
+            ['name' => 'DECORATIONS_TIER_B', 'value' => 'Unit Achievement'],
+            ['name' => 'DECORATIONS_TIER_C', 'value' => 'Training'],
+            ['name' => 'DECORATIONS_TIER_D', 'value' => 'Activity Participation'],
+            ['name' => 'DECORATIONS_TIER_E', 'value' => 'Other Participation'],
         ]);
         
         DB::table('ref_platoons')->insert([
@@ -66,7 +72,8 @@ class ReferenceDataSeeder extends Seeder
             ['abbr' => 'CPL (AAC)', 'name' => 'Corporal (AAC)', 'pos' => '130'],
             ['abbr' => 'CUO', 'name' => 'Cadet Under Officer', 'pos' => '70'],
             ['abbr' => 'LCPL (AAC)', 'name' => 'Lance Corporal (AAC)', 'pos' => '120'],
-            ['abbr' => 'LT (AAC)', 'name' => 'Lieutenant (AAC)', 'pos' => '200'],
+            ['abbr' => '2LT (AAC)', 'name' => 'Second Lieutenant (AAC)', 'pos' => '200'],
+            ['abbr' => 'LT (AAC)', 'name' => 'Lieutenant (AAC)', 'pos' => '210'],
             ['abbr' => 'MAJ (AAC)', 'name' => 'Major (AAC)', 'pos' => '220'],
             ['abbr' => 'RAH', 'name' => 'Registered Adult Helper', 'pos' => '100'],
             ['abbr' => 'SGT (AAC)', 'name' => 'Sergeant (AAC)', 'pos' => '140'],
