@@ -54,9 +54,5 @@ Route::resource('admin', 'AdminController', ['only' => ['index', 'store', 'show'
  
 // Ref data routes
 Route::get('refdata', 'RefDataController@all');
-Route::get('refdata/misc', 'RefDataController@misc');
-Route::get('refdata/platoons', 'RefDataController@platoons');
-Route::get('refdata/ranks', 'RefDataController@ranks');
-Route::get('refdata/postings', 'RefDataController@postings');
-Route::get('refdata/activity', 'RefDataController@activity');
+Route::get('refdata/{key}', 'RefDataController@get');
 
