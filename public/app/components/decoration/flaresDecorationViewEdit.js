@@ -38,6 +38,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
     
     $scope.state = Object.create(c.state);        // inherit the proto
+    $scope.forms = {};
 	$scope.dec = Object.create($scope.record);
 	$scope.shadowDec = Object.create($scope.record);
 
@@ -93,11 +94,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     $scope.formData = {
         decorationTiers: []
     }
-
-    
-    $scope.$watch('dec.data.tier', function(newValue, oldValue, whatever){
-        console.log(newValue, oldValue);
-    });
     
     // ====================
     // Function decs
@@ -134,12 +130,12 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
 	};
 	function updateDecoration(){
-		var hasChanges = $scope.decorationDetails.$dirty;
+		var hasChanges = $scope.forms.decorationDetails && $scope.forms.decorationDetails.$dirty;
 		if (hasChanges){
             var payload = {
                 decoration: {}
             };
-            angular.forEach($scope.dec, function(value, key){
+            angular.forEach($scope.dec.data, function(value, key){
                 if (!angular.equals($scope.shadowDec[key], value)){
                     payload.decoration[key] = value;
                 }
@@ -153,6 +149,10 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 				console.warn('Error: dec update', response);
 			});
 		}
+        else {
+            console.warn('Nothing was saved');
+            console.log('THe form object was %O', $scope.forms.decorationDetails);
+        }
 	};
     
     // End function decs

@@ -47,7 +47,7 @@
     <div class="row">
     
         <div class="col-sm-8">
-            <form name="decorationDetails">
+            <form name="forms.decorationDetails">
                 <div class="form-group">
                     <input display-mode="edit" type="text" class="form-control input-lg" name="name" ng-model="dec.data.name">            
                     <h2 display-mode="view">
