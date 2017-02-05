@@ -37,7 +37,7 @@ class DecorationController extends Controller
 			try {
                 
                 // Set precedence to be next available within tier
-                $maxPrecedenceResult = DB::table('decorations')->select('COALESCE(MAX(precedence), 0) as max')->where('tier', $postData['tier'])->first();
+                $maxPrecedenceResult = DB::table('decorations')->select(DB::raw('MAX(COALESCE(precedence, 0)) as max'))->where('tier', $postData['tier'])->first();
                 $maxPrecedence = intval($maxPrecedenceResult->max);
                 $nextPrecedence = $maxPrecedence + 1;
                 $postData['precedence'] = $nextPrecedence;
@@ -55,7 +55,7 @@ class DecorationController extends Controller
                 else {
                     $shortcodeLength = 6;
                     $shortcodeMasterOffset = 0;
-                    $shortcodeMaster = preg_replace('/\s+', '', $postData['name']);
+                    $shortcodeMaster = preg_replace('/\s+/', '', $postData['name']);
                     $shortcode = substr($shortcodeMaster, $shortcodeMasterOffset, $shortcodeLength);         // emphasis on "short"
                     $shortcodeDecollider = function($shortcode, $suffix = '') use ($shortcodeMaster, &$shortcodeMasterOffset, $shortcodeLength) {
                         if ($shortcodeMasterOffset + $shortcodeLength + 1 < strlen($shortcodeMaster)){
@@ -68,7 +68,7 @@ class DecorationController extends Controller
                     };
                 }
                 
-                $shortcodeCollisionCheck = DB::table('decorations')->select('1')->where('shortcode', $shortcode)->first();
+                $shortcodeCollisionCheck = DB::table('decorations')->select(DB::raw('1'))->where('shortcode', $shortcode)->first();
                 $isCollision = !empty($shortcodeCollisionCheck);
                 while ($isCollision && $collisionAvoidCounter < $collisionAvoidMax){
                     $collisionAvoidCounter++;

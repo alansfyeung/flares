@@ -12,7 +12,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div ng-show="dec.dec_id">
+<div ng-if="state.isDecorationLoaded">
     <aside class="titlebar-actions pull-right">
         <!-- DotDotDot menu toggle -->
         <span uib-dropdown>
@@ -39,7 +39,7 @@
 @section('content')
 @verbatim
 
-<div ng-show="dec.dec_id">
+<div ng-if="state.isDecorationLoaded">
 
     <div class="alert alert-warning" ng-if="state.errorMessage">{{state.errorMessage}}</div>
     <div class="alert alert-success" ng-if="state.successMessage">{{state.successMessage}}</div>
@@ -49,12 +49,11 @@
         <div class="col-sm-8">
             <form name="decorationDetails">
                 <div class="form-group">
-                    <input display-mode="edit" type="text" class="form-control input-lg" name="name" ng-model="dec.name">            
+                    <input display-mode="edit" type="text" class="form-control input-lg" name="name" ng-model="dec.data.name">            
                     <h2 display-mode="view">
-                        {{dec.name}}
+                        {{dec.data.name}}
                         <button class="btn btn-link" ng-click="beginEdit()">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                            Edit
+                            <span class="glyphicon glyphicon-pencil"></span> Edit
                         </button>
                     </h2> 
                 </div>
@@ -62,46 +61,44 @@
                 <table class="table record-view">
                     <tr>
                         <td>Description</td>
-                        <td display-mode="view">{{dec.desc | markBlanks}}</td>
-                        <td display-mode="edit"><textarea name="desc" ng-model="dec.desc" rows="5"></textarea>
+                        <td display-mode="view">{{dec.data.desc | markBlanks}}</td>
+                        <td display-mode="edit"><textarea name="desc" ng-model="dec.data.desc" rows="5"></textarea>
                     </tr>
                     <tr>
                         <td>Tier</td>
-                        <td display-mode="view">{{dec.tier | markBlanks}}</td>
+                        <td display-mode="view">{{dec.data.tier | markBlanks}}</td>
                         <td display-mode="edit">
-                            <select name="tier" ng-model="dec.tier">
-                                <option ng-repeat="(tierCode, tierDesc) in formData.tiers" value="{{tierCode}}">{{tierCode}} - {{tierDesc}}</option>
-                            </select>
+                            <select name="tier" ng-options="tier.tier as tier.tierName for tier in formData.decorationTiers" ng-model="dec.data.tier"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Shortcode </td>
-                        <td display-mode="view">{{dec.shortcode | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.shortcode" placeholder="Shortcode (10 letters)"></td>
+                        <td display-mode="view">{{dec.data.shortcode | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.data.shortcode" placeholder="Shortcode (10 letters)"></td>
                     </tr>
                     <tr>
                         <td>Date Commenced</td>
-                        <td display-mode="view">{{dec.date_commence | date | markBlanks}}</td>
-                        <td display-mode="edit"><input type="date" name="date_commence" ng-model="dec.date_commence" placeholder="yyyy-MM-dd"></td>
+                        <td display-mode="view">{{dec.data.date_commence | date | markBlanks}}</td>
+                        <td display-mode="edit"><input type="date" name="date_commence" ng-model="dec.data.date_commence" placeholder="yyyy-MM-dd"></td>
                     </tr>
                     <tr>
                         <td>Date Concluded</td>
-                        <td display-mode="view">{{dec.date_conclude | date | markBlanks}}</td>
-                        <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.date_conclude" placeholder="yyyy-MM-dd"></td>
+                        <td display-mode="view">{{dec.data.date_conclude | date | markBlanks}}</td>
+                        <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.data.date_conclude" placeholder="yyyy-MM-dd"></td>
                     </tr>
                     <tr>
                         <td>Service period </td>
-                        <td display-mode="view">{{dec.service_period_months | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="service_period_months" ng-model="dec.service_period_months" placeholder="In months"></td>
+                        <td display-mode="view">{{dec.data.service_period_months | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="service_period_months" ng-model="dec.data.service_period_months" placeholder="In months"></td>
                     </tr>
                     <tr>
                         <td>Authorised by </td>
-                        <td display-mode="view">{{dec.authorized_by | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="authorized_by" ng-model="dec.authorized_by" placeholder="Award authority"></td>
+                        <td display-mode="view">{{dec.data.authorized_by | markBlanks}}</td>
+                        <td display-mode="edit"><input type="text" name="authorized_by" ng-model="dec.data.authorized_by" placeholder="Award authority"></td>
                     </tr>
                     <tr>
                         <td>Database ID</td>
-                        <td>{{dec.dec_id | markBlanks}}</td>
+                        <td>{{dec.data.dec_id | markBlanks}}</td>
                     </tr>
                 </table>
                 
@@ -118,7 +115,7 @@
                         <div flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
                             <div class="fl-dec-badge-wrapper" flow-drag-enter="uploader.dropzone = true" flow-drag-leave="uploader.dropzone = false" flow-drop flow-drop-enabled="uploader.ready()" ng-class="{'uploader-drop-zone': uploader.dropzone, 'uploader-not-ready': !uploader.ready()}">
                                 <div class="fl-dec-badge" ng-hide="uploader.uploading">
-                                    <img ng-if="image.isLoaded" ng-src="{{image.url}}" alt="{{dec.name}}">
+                                    <img ng-if="image.isLoaded" ng-src="{{image.url}}" alt="{{dec.data.name}}">
                                 </div>
                                 <div class="text-center" ng-repeat="file in $flow.files" ng-show="uploader.uploading">
                                     <h3 ng-show="file.isUploading()">Uploading</h3>

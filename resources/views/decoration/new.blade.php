@@ -18,7 +18,7 @@
 <section>
 
     <div class="alert alert-warning" ng-if="state.errorMessage">
-        @{{state.errorMessage}}
+        <pre>@{{state.errorMessage}}</pre>
     </div>
 
     <form class="form-horizontal" ng-submit="wf.submitData()" name="decorationData">
@@ -29,13 +29,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-3 control-label-required">Tier</label>
                 <div class="col-sm-3">
-                    <select class="form-control" ng-model="dec.data.tier" ng-disabled="member.isSaved" required>
-                        <option value="A">A - Official AAC awards</option>
-                        <option value="B">B - Discretionary unit awards</option>
-                        <option value="C">C - Unit achievement awards</option>
-                        <option value="D">D - Special activity participation</option>
-                        <option value="E" selected>E - Forums participation badges</option>
-                    </select>                    
+                    <select class="form-control" ng-options="decTier.tier as decTier.tierName for decTier in formData.decorationTiers" ng-model="dec.data.tier" ng-disabled="member.isSaved" required></select>                    
                 </div>
             </div>
             <div class="form-group">
@@ -63,14 +57,17 @@
                     <p class="help-block">Enter the numeric ID of the forums special rank, for sync purposes</p>
                 </div>
             </div>
-            <div class="alert alert-info">Note: Precedence within tier is automatically calculated and can be edited after creation</div>
+            <div class="row">
+                <div class="col-sm-3">Precedence</div>
+                <div class="col-sm-9"><div class="alert alert-info">Note: Precedence within tier is automatically calculated to be the next available value, and can be edited after creation.</div></div>
+            </div>
         </fieldset>
         <hr>
         <fieldset>
             <div class="form-group">
                 <label class="control-label col-sm-3 control-label-required">Date of commencement</label>
                 <div class="col-sm-3">
-                    <input type="date" class="form-control" ng-model="dec.data.date_commence">
+                    <input type="date" class="form-control" ng-model="dec.data.date_commence" required>
                     <p class="help-block">The decoration can only be assigned to members after this date. <a ng-click="setCommencementToday()">Set to today's date</a></p>
                 </div>
                 <div class="col-sm-3">
@@ -89,7 +86,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Service requirement (months)</label>
                 <div class="col-sm-3">
-                    <input class="form-control" type="number" ng-model="dec.data.service_requirement_months" placeholder="e.g. 12">
+                    <input class="form-control" type="number" ng-model="dec.data.service_period_months" placeholder="e.g. 12">
                 </div>
             </div>
             <div class="form-group">

@@ -26,7 +26,7 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 	
 }]);
 
-flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $uibModal, flAPI, flResource){
+flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $q, $uibModal, flAPI, flResource){
 
     // Add some base - unzip base controller's stuff into this controller
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -39,8 +39,10 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
     $scope.state = Object.create(c.state);        // inherit the proto
 	$scope.dec = Object.create($scope.record);
-	$scope.shadow = Object.create($scope.originalRecord);
+	$scope.shadowDec = Object.create($scope.record);
 
+    $scope.state.isDecorationLoaded = false;
+    
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
     }
@@ -50,7 +52,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     }
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
-			$scope.dec = angular.extend(Object.create($scope.record), $scope.shadow);
+			$scope.dec = angular.copy($scope.shadowDec);
 			$scope.state.path.mode = 'view';
 			return;
 		}
@@ -59,45 +61,77 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
 	// Read the url
     if (c.loadWorkflowPath()){
-        retrieveDecoration();
+        retrieveDecoration()
+            .then(function(){
+                // Nothing so far
+            });
+    }
+
+    //==================
+    // Fetch reference data for decorations
+    // ONLY AFTER decoration has been initially retrieved
+    // so that $scope.dec would already exist
+    //==================
+    
+    flAPI('refData').get('decorationTiers').then(function(response){
+        // Specifically extract decorations
+        if (response.data.length){
+            $scope.formData.decorationTiers = response.data;
+            
+            // Hydration chore
+            // Hydrate the tier value string ==> object
+            // angular.forEach($scope.formData.decorationTiers, function(decorationTier){
+                // if (decorationTier.tier === $scope.dec.data.tier){
+                    // $scope.dec.data.tier = decorationTier;
+                // }
+            // });
+            
+        }
+    });
+    
+    
+    $scope.formData = {
+        decorationTiers: []
     }
 
     
-    $scope.formData = {
-        tiers: {
-            A: 'A (placeholder)',
-            B: 'B (placeholder)',
-            C: 'C (placeholder)',
-            D: 'D (placeholder)',
-            E: 'E (placeholder)',
-        }
-    }
+    $scope.$watch('dec.data.tier', function(newValue, oldValue, whatever){
+        console.log(newValue, oldValue);
+    });
     
     // ====================
     // Function decs
     
 	function retrieveDecoration(){
 		if ($scope.state.path.id){
-			flAPI('decoration').get([$scope.state.path.id]).then(function(response){
-				// Process then store in VM
-				processDecoration(response.data.decoration);
-			}, function(response){
-				if (response.status == 404){
-					$scope.dec.errorNotFound = true;
-				}
-				else {
-					$scope.dec.errorServerSide = true;
-				}
-			});
+			return flAPI('decoration').get([$scope.state.path.id])
+                .then(function(response){
+                    // Process then store in VM
+                    var dec = response.data.decoration;
+                    processDecoration(dec);         // by reference
+                    $scope.dec = {
+                        id: dec.dec_id,
+                        data: dec,
+                    };
+                    $scope.shadowDec = angular.copy($scope.dec);
+                    $scope.state.isDecorationLoaded = true;
+                })
+                .catch(function(response){
+                    if (response.status == 404){
+                        $scope.dec.errorNotFound = true;
+                    }
+                    else {
+                        $scope.dec.errorServerSide = true;
+                    }
+                });
 		}
 		else {
 			console.warn('Dec ID not specified');
+            return $q.reject('Dec ID not specified');
 		}
 	};
 	function processDecoration(dec){
         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
-		$scope.dec = dec;
-		$scope.shadow = angular.extend(Object.create($scope.originalRecord), dec);
 	};
 	function updateDecoration(){
 		var hasChanges = $scope.decorationDetails.$dirty;
@@ -106,13 +140,13 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
                 decoration: {}
             };
             angular.forEach($scope.dec, function(value, key){
-                if (!angular.equals($scope.shadow[key], value)){
+                if (!angular.equals($scope.shadowDec[key], value)){
                     payload.decoration[key] = value;
                 }
             });
 			flAPI('decoration').patch([$scope.dec.dec_id], payload).then(function(response){
 				$scope.state.successMessage = 'Save successful';
-				$scope.shadow = angular.extend(Object.create($scope.originalRecord), $scope.dec);
+				$scope.shadowDec = angular.copy($scope.dec);
 				
 			}, function(response){
 				$scope.state.errorMessage = "Warning: Couldn't save this record";

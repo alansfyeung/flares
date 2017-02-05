@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresDecoration', ['flaresBase']);
 
-flaresApp.controller('newDecorationController', function($scope, $window, $location, $filter, flAPI, flResource){
+flaresApp.controller('newDecorationController', function($scope, $window, $location, $filter, $q, flAPI, flResource){
 
 
 
@@ -21,7 +21,7 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     // END DATA
     //=======================================
     
-    var state = {
+    $scope.state = {
         stage: 1,       // Leave deactivated but there's only a single stage
         totalStages: 1,
         isSaving: false,
@@ -29,28 +29,30 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     };
 
     // This data should be extracted from reference service
-	var formData = {
+	$scope.formData = {
 		decorationTiers: []             // TODO
 	};
 	
 	//======================
 	// Workflow Screen navigation
     
-    $scope.wf = {};
-    
-    // Nav actions
-    $scope.wf.next = function(){ state.stage++ };
-    
-    // Form actions
-	$scope.wf.submitData = function(){
-        submitData().then(function(){
-            if ($scope.state.submitPreference === 2){
-                $window.location.reload();           
-            }
-            else {
-                $window.location.href = flResource('decoration').addFragment([$scope.dec.id, 'view', 'details']).build();                
-            }
-        });
+    $scope.wf = {
+        // Nav actions
+        next: function(){ $scope.state.stage++ },
+        // Form actions
+        submitData: function(){
+            submitData().then(function(){
+                if ($scope.state.submitPreference === 2){
+                    $window.location.reload();           
+                }
+                else {
+                    $window.location.href = flResource('decoration').addFragment([$scope.dec.id, 'view', 'details']).build();                
+                }
+            }).catch(function(error){
+                console.warn(error);
+                $scope.state.errorMessage = angular.isObject(error) ? JSON.stringify(error) : error;
+            });
+        }
     };
     
 	// End Workflow Screen navigation
@@ -68,25 +70,18 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     
 
 	//==================
-	// Fetch reference data for platoons and ranks
+	// Fetch reference data for decorations
+	//==================
 	
-    flAPI('refData').getAll().then(function(response){
-        // Auto-extract
-        var extract = ['decorationTiers'];
-        angular.forEach(extract, function(key){
-            if (response.data.hasOwnProperty(key)){
-                wf.formData[key] = response.data[key];
-            }
-        });
-        
-        // Then set defaults for all those values
-        // TODO
-        
+    flAPI('refData').get('decorationTiers').then(function(response){
+        // Specifically extract decorations
+        if (response.data.length){
+            $scope.formData.decorationTiers = response.data;
+            $scope.dec.data.tier = $scope.formData.decorationTiers[0];
+        }
 	});
 
-    // End reference data
-	//======================
-    
+	
 	//======================
 	// Save-your-change niceties
     /* // TEMPORARILY COMMENTED
@@ -106,19 +101,20 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     // Functions
     
     function submitData(){
-        
         $scope.state.isSaving = true;
+        
         var dec = $scope.dec;
 
         // Cheapo validation
         // TODO: make better
-		if($scope.decorationData.$invalid){
-			state.errorMessage = 'Resolve validation errors (Are all required fields filled out?)';
-			return false;
-		}
+        if($scope.decorationData.$invalid){
+            state.errorMessage = 'Resolve validation errors (Are all required fields filled out?)';
+            return false;
+        }
 
         var payload = {
-            decoration: dec.data,
+            decoration: angular.copy(dec.data)          // the last part looks silly but hopefully should work
+            // decoration: angular.merge(angular.copy(dec.data), { tier: dec.data.tier.tier })          // the last part looks silly but hopefully should work
             // decoration: angular.extend({}, dec.data, {
                 // date_commence: $filter('date')(dec.data.date_commence, "yyyy-MM-dd"),
                 // date_conclude: $filter('date')(dec.data.date_conclude, "yyyy-MM-dd")
@@ -133,7 +129,7 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
         return flAPI('decoration').post(payload).then(function(response){
             if (response.data.error){
                 console.warn(response.data.error);
-                return;
+                throw response.data.error;
             }
             
             dec.lastPersistTime = (new Date).toTimeString();
@@ -144,9 +140,6 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
             
             return dec.id;
             
-        }).catch(function(response){
-            console.warn('Error: during decoration add – ', response);
-            state.errorMessage = angular.isObject(response) ? JSON.stringify(response) : response;
         }).finally(function(){
             $scope.state.isSaving = false;
         });
