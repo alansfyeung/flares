@@ -417,12 +417,13 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
         if ($scope.member.regtNum){
-            flAPI('member').get([$scope.member.regtNum, 'picture', 'exists']).then(function(response){
+            flAPI('member').get([$scope.member.regtNum, 'picture']).then(function(response){
                 if (response.status === 200){
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();
                         // Todo: replace the below with a more sturdy flResource solution
-                        $scope.memberImage.url = flResource().raw(['media', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        // $scope.memberImage.url = flResource().raw(['media', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
+                        $scope.memberImage.url = response.url;
                         $scope.memberImage.isDefault = false;
                     }
                     else {
