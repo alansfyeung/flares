@@ -32,7 +32,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $uibModal, flAPI, flResource){
+flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $q, $uibModal, flAPI, flResource){
     
     // Add some base 
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -47,23 +47,28 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		return this.path.mode === 'discharge';
 	};
 	$scope.state.isImageUploadable = function(){
-		return this.isMemberLoaded && !$scope.member.deleted_at;
+		return this.isMemberLoaded && !$scope.member.data.deleted_at;
 	};
 	$scope.state.toggleMode = function(){
 		this.path.mode = this.isView() ? 'edit' : 'view';
 	};
     
 	$scope.member = Object.create($scope.record);
-	$scope.originalMember = Object.create($scope.originalRecord);
+	$scope.originalMember = Object.create($scope.record);
 	
 	$scope.dischargeContext = {		// viewmodel for the discharge screen
 		effectiveDate: new Date(),
 		isCustomRank: false,
 		dischargeRank: 'REC'
 	};
+
 	$scope.formData = {
 		sexes: ['M','F']
-	}
+	};
+
+    $scope.nav = {
+        assignAward: null
+    };
 	
 	$scope.edit = function(){
 		var sw = $scope.state;
@@ -81,7 +86,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	};
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
-			$scope.member = angular.extend(Object.create($scope.record), $scope.originalMember);
+			$scope.member.data = angular.copy($scope.originalMember);
 			$scope.state.path.mode = 'view';
 			return;
 		}
@@ -90,7 +95,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 	$scope.activate = function(){
 		var sw = $scope.state;
-		if ($scope.member.regt_num){
+		if ($scope.member.regtNum){
 			var payload = {
 				member: {
 					is_active: 1
@@ -98,7 +103,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			};	
 			sw.isAsync = true;
 			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
+			flAPI('member').patch([$scope.member.regtNum], payload).then(function(response){
 				console.log('Activation successful');
 				retrieveMember();
 				
@@ -130,12 +135,10 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 		}
 		sw.isAsync = true;
 		
-		// $http.post('/api/member/'+$scope.member.regt_num+'/posting', {context: $scope.dischargeContext}).then(function(response){
-		flAPI('member').postingFor($scope.member.regt_num).post({context: $scope.dischargeContext}).then(function(response){
+		flAPI('member').postingFor($scope.member.regtNum).post({context: $scope.dischargeContext}).then(function(response){
 			console.log('Success: Created discharge posting record');
 			
-			// $http.delete('/api/member/'+$scope.member.regt_num).then(function(response){
-			flAPI('member').delete([$scope.member.regt_num]).then(function(response){
+			flAPI('member').delete([$scope.member.regtNum]).then(function(response){
 				retrieveMember();
 				$scope.state.path.mode = 'view';		// Revert
 				$scope.state.path.tab = 'details';
@@ -157,11 +160,10 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	
 	$scope.permanentDelete = function(){
 		var sw = $scope.state;
-		if ($scope.member.regt_num && !$scope.member.is_active){
+		if ($scope.member.regtNum && !$scope.member.data.is_active){
 			sw.isAsync = true;
-			// $http.delete('/api/member/'+$scope.member.regt_num, {params: { remove: 'permanent' }}).then(function(response){
-			flAPI('member').delete([$scope.member.regt_num], {params: { remove: 'permanent' }}).then(function(response){
-				$scope.member = {};  // Clear all traces of the old member
+			flAPI('member').delete([$scope.member.regtNum], {params: { remove: 'permanent' }}).then(function(response){
+				delete $scope.member;  // Clear all traces of the old member
 				sw.isMemberLoaded = false;
 				retrieveMember();		// Then this should result in a "Member not found"
 				
@@ -197,7 +199,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     $scope.removeAward = function(award){
         if (confirm('Are you sure you want to delete this award?')){
             award.isDeleting = true;
-            flAPI('member').nested('decoration', $scope.member.regt_num).delete(award.id).then(function(){
+            flAPI('member').nested('decoration', $scope.member.regtNum).delete(award.id).then(function(){
                 var deletedIndex = $scope.member.awards.indexOf(award);
                 $scope.member.awards.splice(deletedIndex, 1);
             }).catch(function(err){
@@ -211,13 +213,25 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     };
 	
 	
-	// Read the url
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// Read the url and GO
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     if (c.loadWorkflowPath()){
-        retrieveMember();
+        retrieveMember()
+            .then(function(){                
+                $scope.nav.assignAward = flResource('member')
+                    .single('decorations/new')
+                    .setFragment([$scope.member.regtNum])
+                    .getLink();
+            })
+            .catch(function(err){
+                console.log(err);
+            });
     }
 	
 	//==================
 	// Fetch reference data for platoons and ranks
+	//==================
 	
 	// $http.get('/api/refdata').then(function(response){
 	flAPI('refData').getAll().then(function(response){
@@ -228,45 +242,47 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     
     // ====================
     // Function decs
+    // ====================
     
 	function retrieveMember(){
-		if ($scope.state.path.id){
-            var regtNum = $scope.state.path.id;
-			// $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
-			flAPI('member').get([regtNum], {params: {detail: 'high'}}).then(function(response){
-				// Process then store in VM
-                var member = response.data.member;
-				processMemberRecord(member);
-                $scope.member = member;
-                $scope.originalMember = angular.copy(member);
-                
-				
-                flAPI('member').nested('decoration', regtNum).getAll().then(function(response){
-                    console.log(response);
-                    var awards = [];
-                    angular.forEach(response.data.decorations, function(decorationData){
-                        var award = { data: decorationData, id: decorationData.awd_id };
-                        processMemberDecorationRecord(award.data);
-                        award.url = flResource().raw(['media', 'decoration', award.data.dec_id, 'badge'], [+new Date]);
-                        this.push(award);
-                    }, awards);
-                    $scope.member.awards = awards;
-                    $scope.originalMember.awards = awards;
+        var regtNum = $scope.state.path.id;
+		if (regtNum){
+            return $q(function(resolve, reject){
+                // $http.get('/api/member/'+$scope.state.path.id, {params: {detail: 'high'}}).then(function(response){
+                flAPI('member').get([regtNum], {params: {detail: 'high'}}).then(function(response){
+                    // Process then store in VM
+                    var responseData = response.data.member;
+                    processMemberRecord(responseData);        // by ref
+                    $scope.member = {
+                        regtNum: responseData.regt_num,
+                        data: responseData
+                    };
+                    $scope.originalMember = angular.copy($scope.member);
+                    
+                    flAPI('member').nested('decoration', regtNum).getAll().then(function(response){
+                        var awards = [];
+                        angular.forEach(response.data.decorations, function(decorationData){
+                            var award = { data: decorationData, id: decorationData.awd_id };
+                            processMemberDecorationRecord(award.data);
+                            award.url = flResource().raw(['media', 'decoration', award.data.dec_id, 'badge'], [+new Date]);
+                            this.push(award);
+                        }, awards);
+                        $scope.member.awards = awards;
+                        $scope.originalMember.awards = awards;
+                    });
+                    
+                    $scope.state.isMemberLoaded = true;
+                    resolve(responseData);
+                    
+                }, function(response){
+                    $scope.member[response.status == 404 ? 'errorNotFound' : 'errorServerSide'] = true;
+                    reject(response);
                 });
-                
-                $scope.state.isMemberLoaded = true;
-				
-			}, function(response){
-				if (response.status == 404){
-					$scope.member.errorNotFound = true;
-				}
-				else {
-					$scope.member.errorServerSide = true;
-				}
-			});
+            });
 		}
 		else {
 			console.warn('Member ID not specified');
+            return $q.reject('No member ID found in path');
 		}
 	};
     
@@ -292,10 +308,10 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			}
 		});
 		if (hasChanges){
-			// $http.patch('/api/member/'+$scope.member.regt_num, payload).then(function(response){
-			flAPI('member').patch([$scope.member.regt_num], payload).then(function(response){
+            console.log($scope.member);
+			flAPI('member').patch([$scope.member.regtNum], payload).then(function(response){
 				console.log('Save successful');
-				$scope.originalMember = angular.extend(Object.create($scope.originalRecord), $scope.member);
+				$scope.originalMember = angular.copy($scope.member);
 				
 			}, function(response){
 				// Save failed. Why?
@@ -311,8 +327,8 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     
 	var maxImageSize = 1024 * 1024;		// 1MB max file size
 	var maxImageSizeDesc = '1MB';
-	var defaultImage = flResource('asset').setUrl('img/anon.png').getLink();
-	
+	var defaultImage = flResource().raw(['assets', 'img', 'anon.png']);
+	    
 	$scope.memberImage = {
 		url: defaultImage,
 		isDefault: true,
@@ -355,7 +371,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	
 	$scope.deleteLast = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture').then(function(response){
-		flAPI('member').delete([$scope.member.regt_num, 'picture']).then(function(response){
+		flAPI('member').delete([$scope.member.regtNum, 'picture']).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -365,7 +381,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	};
 	$scope.deleteAll = function(){
 		// $http.delete('/api/member/'+$scope.member.regt_num+'/picture', {params: { remove: 'all' }}).then(function(response){
-		flAPI('member').delete([$scope.member.regt_num, 'picture'], {params: { remove: 'all' }}).then(function(response){
+		flAPI('member').delete([$scope.member.regtNum, 'picture'], {params: { remove: 'all' }}).then(function(response){
 			//reloadMemberImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
@@ -383,7 +399,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	});
     
     
-    $scope.$watch('member.regt_num', function(newValue){
+    $scope.$watch('member.regtNum', function(newValue){
         reloadMemberImage();
         updateUploaderDestination();
 	});
@@ -400,8 +416,8 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     function reloadMemberImage(){
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
-        if ($scope.member.regt_num){
-            flAPI('member').get([$scope.member.regt_num, 'picture', 'exists']).then(function(response){
+        if ($scope.member.regtNum){
+            flAPI('member').get([$scope.member.regtNum, 'picture', 'exists']).then(function(response){
                 if (response.status === 200){
                     if (response.data.exists){
                         var cacheDefeater = +Date.now();
@@ -415,14 +431,14 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                     $scope.memberImage.count = response.data.count;
                 }
             }, function(response){
-                console.warn('WARN: Image not found for '+$scope.member.regt_num, response.status);
+                console.warn('WARN: Image not found for '+$scope.member.regtNum, response.status);
                 $scope.memberImage.resetToDefault();
             });
         }
 	};
     function updateUploaderDestination(){
-        if ($scope.$flow && $scope.member.regt_num){
-            $scope.$flow.opts.target = '/api/member/'+$scope.member.regt_num+'/picture/new';
+        if ($scope.$flow && $scope.member.regtNum){
+            $scope.$flow.opts.target = '/api/member/'+$scope.member.regtNum+'/picture/new';
             console.log('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
         }
@@ -446,12 +462,13 @@ flaresApp.controller('pictureModalController', function($scope, $modalInstance){
 flaresApp.directive('memberStatus', function(){
 	return {
 		link: function(scope, element, attr){
-			scope.$watchGroup(['member.is_active', 'member.deleted_at'], function(){
-				if (!scope.member.is_active){
+			scope.$watchGroup(['member.data.is_active', 'member.data.deleted_at'], function(){
+                var smd = scope.member.data;
+				if (!smd.is_active){
 					element.removeClass().addClass('label label-danger');
 					element.text('Inactive');
 				}
-				else if (scope.member.deleted_at){
+				else if (smd.deleted_at){
 					element.removeClass().addClass('label label-warning');
 					element.text('Discharged');
 				}
@@ -459,7 +476,6 @@ flaresApp.directive('memberStatus', function(){
 					element.removeClass().addClass('label label-success');
 					element.text('Active');
 				}
-				// '<span class="label" ng-class="{'label-success': member.is_active, 'label-danger': !member.is_active}">';				
 			});
 		}
 	};
@@ -467,8 +483,9 @@ flaresApp.directive('memberStatus', function(){
 flaresApp.directive('hmpStatus', function(){
 	return {
 		link: function(scope, element, attr){
-			scope.$watch('member.is_med_hmp', function(){
-				if (!!+scope.member.is_med_hmp){		// Expect is_hmp to either be '0' or '1'
+			scope.$watch('member.data.is_med_hmp', function(){
+                var smd = scope.member.data;
+				if (!!+smd.is_med_hmp){		// Expect is_hmp to either be '0' or '1'
 					element.removeClass().addClass('label label-default');
 					element.text('HMP');
 				}
@@ -482,8 +499,9 @@ flaresApp.directive('hmpStatus', function(){
 flaresApp.directive('allergyStatus', function(){
 	return {
 		link: function(scope, element, attr){
-			scope.$watch('member.is_med_lifethreat', function(){
-				if (!!+scope.member.is_med_lifethreat){		// Expect is_hmp to either be '0' or '1'
+			scope.$watch('member.data.is_med_lifethreat', function(){
+                var smd = scope.member.data;
+				if (!!+smd.is_med_lifethreat){		// Expect is_hmp to either be '0' or '1'
 					element.removeClass().addClass('label label-danger');
 					element.text('Life threatening');
 				}

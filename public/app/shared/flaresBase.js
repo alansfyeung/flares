@@ -27,6 +27,7 @@
     // =================
     // Constants
     // 1. flResourceDefinitions - A source of truth for factories/services
+    // =================
 
     flaresBase.constant('flResourceDefinitions', {
         refData: {

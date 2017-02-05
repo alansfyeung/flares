@@ -63,6 +63,7 @@
                     <p class="help-block">Enter the numeric ID of the forums special rank, for sync purposes</p>
                 </div>
             </div>
+            <div class="alert alert-info">Note: Precedence within tier is automatically calculated and can be edited after creation</div>
         </fieldset>
         <hr>
         <fieldset>

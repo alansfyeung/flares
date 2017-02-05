@@ -41,7 +41,7 @@
 				</div>
 			</div>
             <div class="list-group">
-                <a href="/members" class="list-group-item">Search members</a>
+                <a href="/members" class="list-group-item active">View/search members</a>
                 <a href="/members/new" class="list-group-item">Simple member onboarding</a>
                 <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a>
             </div>

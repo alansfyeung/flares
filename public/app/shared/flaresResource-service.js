@@ -29,7 +29,7 @@
         // URL to retrieve a single resource
         FlaresLinkBuilder.prototype.single = function(subpath){
             var pathParts = [this.singular];
-            if (subpath && typeof subpath === 'string'){
+            if (subpath && angular.isString(subpath)){
                 pathParts.push(subpath);
             }
             this.setUrl(pathParts);
@@ -53,10 +53,10 @@
         FlaresLinkBuilder.prototype.setFragment = function(fragParts){     // expect an array or a string
             var fragPrefix = '#!/';
             var fragSep = '/';
-            if (fragParts instanceof Array){
+            if (angular.isArray(fragParts)){
                 this.frag = fragPrefix + fragParts.join(fragSep);
             }
-            else if (typeof fragParts === 'string'){
+            else if (angular.isString(fragParts)){
                 this.frag = fragPrefix + fragParts;
             }
             return this;
@@ -71,13 +71,13 @@
         };
         
         FlaresLinkBuilder.prototype.setUrl = function(urlParts){        // expect an array or a string
-            if (urlParts instanceof Array){
+            if (angular.isArray(urlParts)){
                 this.url = '/' + urlParts.join('/');
             }
             else if (arguments.length > 0){
                 var path = '';
                 angular.forEach(arguments, function(value, key){
-                    if (typeof value === 'string'){
+                    if (angular.isString(value)){
                         this.url += '/' + urlParts;
                     }
                 }, this);
