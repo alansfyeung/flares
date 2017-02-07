@@ -423,7 +423,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
                         var cacheDefeater = +Date.now();
                         // Todo: replace the below with a more sturdy flResource solution
                         // $scope.memberImage.url = flResource().raw(['media', 'member', $scope.member.regt_num, 'picture'], [cacheDefeater]);
-                        $scope.memberImage.url = response.url;
+                        $scope.memberImage.url = response.data.url;
                         $scope.memberImage.isDefault = false;
                     }
                     else {

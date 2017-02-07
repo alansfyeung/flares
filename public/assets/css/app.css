@@ -6068,6 +6068,10 @@ footer {
   text-align: left; }
 
 @media (max-width: 767px) {
+  .table-wrapper {
+    overflow: auto; }
+    .table-wrapper .table {
+      table-layout: auto; }
   /* Right-triangle carets for mobile menu */
   .caret {
     border-top: 4px solid transparent;
@@ -6077,7 +6081,12 @@ footer {
     float: none;
     margin-top: 0; }
   footer {
-    font-size: 0.75em; } }
+    overflow: auto;
+    white-space: nowrap; }
+    footer h6 {
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: auto; } }
 
 .control-label.control-label-required::after {
   content: ' *';

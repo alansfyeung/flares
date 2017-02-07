@@ -94,39 +94,41 @@
 	<hr>
     <section class="search-results">
         <div class="label label-default" ng-show="state.isSearch">@{{results.length}} results for search</div>
-        <table class="table table-hover" ng-show="results.length > 0">
-            <colgroup>
-                <col style="width: 120px;">
-                <col>
-                <col>
-                <col style="width: 180px;">
-                <col style="width: 80px;">
-                <col style="width: 120px;">
-                <col style="width: 80px;">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th>Regt Num</th>
-                    <th>Last Name</th>
-                    <th>Given Names</th>
-                    <th>Rank</th>
-                    <th>Sex</th>
-                    <th>Age</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="result in results" ng-class="{'warning': result.deleted_at}" ng-click="selectMember(result)">
-                    <td>@{{result.regt_num}}</td>
-                    <td>@{{result.last_name}} <span ng-hide="result.is_active" title="This user is inactive. Please complete their details." class="glyphicon glyphicon-exclamation-sign text-danger"></span></td>
-                    <td>@{{result.first_name}}</td>
-                    <td>@{{result.rank}}</td>
-                    <td>@{{result.sex}}</td>
-                    <td>@{{result.ageDetails}}</td>
-                    <td><a class="fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table class="table table-hover" ng-show="results.length > 0">
+                <colgroup>
+                    <col style="width: 120px;">
+                    <col style="min-width: 120px;">
+                    <col style="min-width: 120px;">
+                    <col style="width: 180px;">
+                    <col style="width: 80px;">
+                    <col style="width: 120px;">
+                    <col style="width: 80px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Regt Num</th>
+                        <th>Last Name</th>
+                        <th>Given Names</th>
+                        <th>Rank</th>
+                        <th>Sex</th>
+                        <th>Age</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="result in results" ng-class="{'warning': result.deleted_at}" ng-click="selectMember(result)">
+                        <td>@{{result.regt_num}}</td>
+                        <td>@{{result.last_name}} <span ng-hide="result.is_active" title="This user is inactive. Please complete their details." class="glyphicon glyphicon-exclamation-sign text-danger"></span></td>
+                        <td>@{{result.first_name}}</td>
+                        <td>@{{result.rank}}</td>
+                        <td>@{{result.sex}}</td>
+                        <td>@{{result.ageDetails}}</td>
+                        <td><a class="fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
 @endsection

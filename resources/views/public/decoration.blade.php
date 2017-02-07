@@ -1,7 +1,8 @@
 {{-- Individual decoration view public page --}}
-@extends('layouts.template')
+@extends('layouts.public')
 
 @section('title', 'View Decoration Info')
+@section('ng-app', '')
 
 @section('heading')
 <h4>Decoration info</h4>

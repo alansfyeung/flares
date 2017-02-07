@@ -8,16 +8,18 @@
     <title>@yield('title') | FLARES</title>
 	<link href="/assets/css/app.css" rel="stylesheet">
 </head>
-<body flow-prevent-drop ng-cloak>
+<body flow-prevent-drop>
 	@section('header')
 	<header>
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
-				<div class="navbar-header">
+                <div class="navbar-header">
+                    @section('navbar-mobile-toggle')
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsible">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="glyphicon glyphicon-menu-hamburger"></span>
-					</button>
+                    </button>
+                    @show
 					<a class="navbar-brand" href="/">
 						<img alt="206 FLARES" src="/assets/img/flareslogo.png" style="height: 20px;">
 					</a>
@@ -29,7 +31,7 @@
 	@show
     
     @section('main')
-    <div id="main" class="flares-main" ng-controller="@yield('ng-controller')">
+    <div id="main" class="flares-main" ng-controller="@yield('ng-controller')" ng-cloak>
         <div class="page-header">
             <div class="container">
             @yield('heading')				
@@ -51,15 +53,13 @@
 	@section('footer')
 	<footer>
 		<div class="container">
-			<h6>FLARES Falcon Leave Automated REporting System &copy; 2015–2016 Alan Yeung, 206 Army Cadet Unit</h6>
+			<h6>{{ $copyright or 'FLARES Falcon Leave Administration and Reporting System &copy; A. Yeung' }}</h6>
 		</div>
 	</footer>
 	@show
     
     {{-- Core js --}}
     <script src="/assets/js/jquery-1.11.3.min.js"></script>
-	<script src="/assets/js/angular.min.js"></script>
-	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
 
     {{-- Plugin/add-on/vendor js --}}
@@ -67,10 +67,14 @@
 	@stack('vendor-scripts')
 	
     {{-- Application js --}}
+    @section('angular-scripts')
+    <script src="/assets/js/angular.min.js"></script>
+	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
 	<script src="/app/shared/flaresBase.js"></script>
 	<script src="/app/shared/flaresAPI-service.js"></script>
 	<script src="/app/shared/flaresResource-service.js"></script>
 	<script src="/app/shared/flaresBase-controllers.js"></script>
+    @show
 	@stack('scripts')
     
 </body>
