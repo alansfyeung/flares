@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="@yield('ng-app')">
+<html lang="en" ng-app="@yield('ng-app')" class="env-{{ config('app.env', 'local') }}">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +7,7 @@
     @include('partials.favicons')
     <title>@yield('title') | FLARES</title>
 	<link href="/assets/css/app.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{{ asset('assets/icons/favicon.ico') }}}">
 </head>
 <body flow-prevent-drop>
 	@section('header')
@@ -21,7 +22,7 @@
                     </button>
                     @show
 					<a class="navbar-brand" href="/">
-						<img alt="206 FLARES" src="/assets/img/flareslogo.png" style="height: 20px;">
+						<img alt="206 FLARES" src="{{{ asset('/assets/img/flareslogo.png') }}}" style="height: 20px;">
 					</a>
 				</div>
 				@yield('navbar-sections')

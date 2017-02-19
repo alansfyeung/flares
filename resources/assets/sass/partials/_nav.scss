@@ -1,0 +1,10 @@
+.env-local, .env-dev {
+    .page-header {
+        background: $color-flares-green;
+    }
+}
+.env-test, .env-sit, .env-uat {
+    .page-header {
+        background: $color-flares-orange;
+    }
+}

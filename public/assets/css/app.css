@@ -6098,6 +6098,9 @@ footer {
   margin: 0 auto;
   max-width: 150px; }
 
+.env-local .page-header, .env-dev .page-header {
+  background: #27ae60; }
+
 .dashboard-stat {
   text-align: center; }
 
