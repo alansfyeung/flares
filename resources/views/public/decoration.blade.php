@@ -18,7 +18,7 @@
     </div>
     <div class="col-sm-6">
         <div class="well">
-            <img src="{{ $decBadgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}">        
+            <img src="{{ $decBadgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}">
         </div>
         <table class="table table-striped">
             <tbody>

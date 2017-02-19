@@ -50,7 +50,10 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="dec in decTier.decorations" ng-click="selectDecoration(dec)">
-                            <td><span class="fl-dec-badge smaller"><img ng-src="{{badgeSrc(dec)}}"></span></td>
+                            <td>
+                                <span class="text-muted" ng-show="dec.parent_id">&#8618;</span>
+                                <span class="fl-dec-badge smaller"><img ng-src="{{badgeSrc(dec)}}"></span>
+                            </td>
                             <td>{{dec.tier}}</td>
                             <td>{{dec.shortcode | markBlanks}}</td>
                             <td>{{dec.name}}</td>

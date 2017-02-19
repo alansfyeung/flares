@@ -113,7 +113,8 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function (){
  * Public routes
  */
 Route::group(['as' => 'public::', 'prefix' => 'public'], function () {
-    Route::get('decoration/{shortcode}', 'DecorationPublicController');
+    Route::get('decorations', 'DecorationPublicController@index')->name('decoration-list');
+    Route::get('decorations/{shortcode}', 'DecorationPublicController@show')->name('decoration-details');
 });
 
 /** 

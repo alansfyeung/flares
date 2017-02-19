@@ -115,7 +115,11 @@
                                 <tr>
                                     <td>Decoration parent</td>
                                     <td display-mode="view">{{dec.parentDecoration.name | markBlanks}}</td>
-                                    <td display-mode="edit"><select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations" ng-model="dec.data.parent_id"></select></td>
+                                    <td display-mode="edit">
+                                        <select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations" ng-model="dec.data.parent_id">
+                                            <option value="">-- None --</option>
+                                        </select>
+                                    </td>
                                 </tr>
                             </table>
                             <h3>Decorations in this family</h3>
