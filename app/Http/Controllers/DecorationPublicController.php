@@ -23,6 +23,11 @@ class DecorationPublicController extends Controller
         // Assign the image to each decoration
         foreach ($decorations as &$dec){
             $dec['badgeUrl'] = route('media::decoration-badge', ['decorationId' => $dec->dec_id]);
+            if (count($dec->related)){
+                foreach ($dec->related as &$related){
+                    $related['badgeUrl'] = route('media::decoration-badge', ['decorationId' => $related->dec_id]);
+                }
+            }
         }
         
         // Mash together the decorationsTiers and the decorations

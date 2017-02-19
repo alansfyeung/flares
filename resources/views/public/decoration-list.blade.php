@@ -53,12 +53,12 @@
                     <tr class="info subdec-row" data-dec-parent="{{ $dec->dec_id }}" style="display: none;">
                         <td>
                             <span class="text-muted">&#8618;</span>
-                            <span class="fl-dec-badge smaller"><img src="{{ $dec->badgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}"></span>
+                            <span class="fl-dec-badge smaller"><img src="{{ $related->badgeUrl }}" alt="{{ $related->shortcode }}" title="{{ $related->desc }}"></span>
                         </td>
-                        <td><code>{{ $dec->shortcode }}</code></td>
-                        <td>{{ $dec->name }}</td>
-                        <td>{{ date('M Y', strtotime($dec->date_commence)) }}</td>
-                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decoration-details', [ 'shortcode' => $dec->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decoration-details", [ "shortcode" => $dec->shortcode ]) }}'); return false;">
+                        <td><code>{{ $related->shortcode }}</code></td>
+                        <td>{{ $related->name }}</td>
+                        <td>{{ date('M Y', strtotime($related->date_commence)) }}</td>
+                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decoration-details', [ 'shortcode' => $related->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decoration-details", [ "shortcode" => $related->shortcode ]) }}'); return false;">
                             <span class="glyphicon glyphicon-new-window"></span>
                         </a></td>
                     </tr>
