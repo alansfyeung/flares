@@ -182,6 +182,9 @@ class DecorationController extends Controller
             return $rel->parent_id == $decoration->dec_id;
         })->sortBy('precedence');
         
+        // Remove the "adjusted_precedence"
+        unset($decoration->adjusted_precedence);
+        
         return response()->json([
             'decoration' => $decoration->toArray(),
             'lowerDecoration' => $lowerDecorationInTier,
