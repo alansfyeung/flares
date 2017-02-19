@@ -46,10 +46,12 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
+        return false;
     }
     $scope.finishEdit = function(){
         $scope.state.path.mode = 'view';
         updateDecoration();
+        return false;
     }
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
@@ -78,7 +80,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
         // Specifically extract decorations
         if (response.data.length){
             $scope.formData.decorationTiers = response.data;
-            
             // Hydration chore
             // Hydrate the tier value string ==> object
             // angular.forEach($scope.formData.decorationTiers, function(decorationTier){
@@ -86,14 +87,23 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
                     // $scope.dec.data.tier = decorationTier;
                 // }
             // });
-            
         }
+    });
+    flAPI('decoration').getAll().then(function(response){
+        $scope.formData.existingDecorations = response.data.decorations;
     });
     
     
     $scope.formData = {
         decorationTiers: []
     }
+    
+    $scope.$watch('dec.data.parent_id', function(newValue){
+        retrieveDecorationRelationship(newValue).then(function(parentInfo){
+            angular.extend($scope.dec, parentInfo);
+        });
+    });
+
     
     // ====================
     // Function decs
@@ -105,10 +115,22 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
                     // Process then store in VM
                     var dec = response.data.decoration;
                     processDecoration(dec);         // by reference
-                    $scope.dec = {
+                    if (dec.parent_id){
+                        // Retrieve the relationships
+                        return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
+                            return angular.extend({
+                                id: dec.dec_id,
+                                data: dec
+                            }, parentInfo);
+                        });
+                    }
+                    return {
                         id: dec.dec_id,
-                        data: dec,
+                        data: dec
                     };
+                })
+                .then(function(scopeDec){
+                    $scope.dec = scopeDec;
                     $scope.shadowDec = angular.copy($scope.dec);
                     $scope.state.isDecorationLoaded = true;
                 })
@@ -125,10 +147,21 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 			console.warn('Dec ID not specified');
             return $q.reject('Dec ID not specified');
 		}
-	};
+	}
+    function retrieveDecorationRelationship(parentId){
+        // Get the parent, also the surrounding siblings if any
+        return flAPI('decoration').get([parentId])
+            .then(function(response){
+                var dec = response.data.decoration;
+                processDecoration(dec);
+                return {
+                    parentDecoration: dec
+                }
+            });
+    }
 	function processDecoration(dec){
         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
-	};
+	}
 	function updateDecoration(){
 		var hasChanges = $scope.forms.decorationDetails && $scope.forms.decorationDetails.$dirty;
 		if (hasChanges){
@@ -153,7 +186,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
             console.warn('Nothing was saved');
             console.log('THe form object was %O', $scope.forms.decorationDetails);
         }
-	};
+	}
     
     // End function decs
     //======================
@@ -236,7 +269,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
         reloadMemberImage();
         updateUploaderDestination();
 	});
-    
+        
     // If the modal uploads a new pic, make sure all other pictureControllers update
     $scope.$on('flares::displayPictureChanged', function(){
         if ($scope.dec.id){

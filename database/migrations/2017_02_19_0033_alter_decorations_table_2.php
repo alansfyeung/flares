@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterDecorationsTable extends Migration
+class AlterDecorationsTable2 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AlterDecorationsTable extends Migration
     public function up()
     {
         Schema::table('decorations', function(Blueprint $table){ 
-            $table->string('shortcode', 10)->unique()->nullable();
-            $table->integer('precedence')->nullable();
-            $table->integer('service_period_months')->nullable();
+            $table->unsignedInteger('parent_id')->nullable();
+            $table->integer('parent_order')->default(0);
+            $table->foreign('parent_id')->references('dec_id')->on('decorations')->onDelete('no action');
         });
     }
 
@@ -27,9 +27,9 @@ class AlterDecorationsTable extends Migration
     public function down()
     {
         Schema::table('decorations', function (Blueprint $table) {
-            $table->dropColumn('shortcode');
-            $table->dropColumn('precedence');
-            $table->dropColumn('service_period_months');
+            $table->dropForeign('decorations_parent_id_foreign');
+            $table->dropColumn('parent_id');
+            $table->dropColumn('parent_order');
         });
     }
 }

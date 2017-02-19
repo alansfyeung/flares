@@ -20,7 +20,7 @@
                 Menu <span class="glyphicon glyphicon-chevron-down"></span>
             </a>
             <ul class="dropdown-menu uib-dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu" aria-labelledby="decoration-menu">
-                <li role="menuitem"><a href="#">Assign to a user</a></li>
+                <li role="menuitem"><a ng-click="beginEdit()">Edit</a></li>
                 <li class="divider"></li>
                 <li role="menuitem"><a href="/decorations/new">Add new decoration</a></li>
             </ul>
@@ -57,50 +57,72 @@
                         </button>
                     </h2> 
                 </div>
+                
+                <div class="fl-content col-sm-12">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
+                        <li role="presentation"><a bs-show-tab href="#related" aria-controls="related" role="tab">Related</a></li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="details">
+                            <h3>Decoration details</h3>
+                            <table class="table record-view">
+                                <tr>
+                                    <td>Description</td>
+                                    <td display-mode="view">{{dec.data.desc | markBlanks}}</td>
+                                    <td display-mode="edit"><textarea name="desc" ng-model="dec.data.desc" rows="5"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>Tier</td>
+                                    <td display-mode="view">{{dec.data.tier | markBlanks}}</td>
+                                    <td display-mode="edit">
+                                        <select name="tier" ng-options="tier.tier as tier.tierName for tier in formData.decorationTiers" ng-model="dec.data.tier"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Shortcode </td>
+                                    <td display-mode="view">{{dec.data.shortcode | markBlanks}}</td>
+                                    <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.data.shortcode" placeholder="Shortcode (10 letters)"></td>
+                                </tr>
+                                <tr>
+                                    <td>Date Commenced</td>
+                                    <td display-mode="view">{{dec.data.date_commence | date | markBlanks}}</td>
+                                    <td display-mode="edit"><input type="date" name="date_commence" ng-model="dec.data.date_commence" placeholder="yyyy-MM-dd"></td>
+                                </tr>
+                                <tr>
+                                    <td>Date Concluded</td>
+                                    <td display-mode="view">{{dec.data.date_conclude | date | markBlanks}}</td>
+                                    <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.data.date_conclude" placeholder="yyyy-MM-dd"></td>
+                                </tr>
+                                <tr>
+                                    <td>Service period </td>
+                                    <td display-mode="view">{{dec.data.service_period_months | markBlanks}}</td>
+                                    <td display-mode="edit"><input type="number" name="service_period_months" ng-model="dec.data.service_period_months" placeholder="In months e.g. 6"></td>
+                                </tr>
+                                <tr>
+                                    <td>Authorised by </td>
+                                    <td display-mode="view">{{dec.data.authorized_by | markBlanks}}</td>
+                                    <td display-mode="edit"><input type="text" name="authorized_by" ng-model="dec.data.authorized_by" placeholder="Award authority e.g. OC"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="related">
+                            <h3>Decoration relationship</h3>
+                            <p>If this decoration is part of a family (e.g. varying seniority) then select the parent decoration below.</p>
+                            <table class="table record-view">
+                                <tr>
+                                    <td>Decoration parent</td>
+                                    <td display-mode="view">{{dec.parentDecoration.name | markBlanks}}</td>
+                                    <td display-mode="edit"><select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations" ng-model="dec.data.parent_id"></select></td>
+                                </tr>
+                            </table>
+                        </div>
             
-                <table class="table record-view">
-                    <tr>
-                        <td>Description</td>
-                        <td display-mode="view">{{dec.data.desc | markBlanks}}</td>
-                        <td display-mode="edit"><textarea name="desc" ng-model="dec.data.desc" rows="5"></textarea>
-                    </tr>
-                    <tr>
-                        <td>Tier</td>
-                        <td display-mode="view">{{dec.data.tier | markBlanks}}</td>
-                        <td display-mode="edit">
-                            <select name="tier" ng-options="tier.tier as tier.tierName for tier in formData.decorationTiers" ng-model="dec.data.tier"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Shortcode </td>
-                        <td display-mode="view">{{dec.data.shortcode | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.data.shortcode" placeholder="Shortcode (10 letters)"></td>
-                    </tr>
-                    <tr>
-                        <td>Date Commenced</td>
-                        <td display-mode="view">{{dec.data.date_commence | date | markBlanks}}</td>
-                        <td display-mode="edit"><input type="date" name="date_commence" ng-model="dec.data.date_commence" placeholder="yyyy-MM-dd"></td>
-                    </tr>
-                    <tr>
-                        <td>Date Concluded</td>
-                        <td display-mode="view">{{dec.data.date_conclude | date | markBlanks}}</td>
-                        <td display-mode="edit"><input type="date" name="date_conclude" ng-model="dec.data.date_conclude" placeholder="yyyy-MM-dd"></td>
-                    </tr>
-                    <tr>
-                        <td>Service period </td>
-                        <td display-mode="view">{{dec.data.service_period_months | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="service_period_months" ng-model="dec.data.service_period_months" placeholder="In months"></td>
-                    </tr>
-                    <tr>
-                        <td>Authorised by </td>
-                        <td display-mode="view">{{dec.data.authorized_by | markBlanks}}</td>
-                        <td display-mode="edit"><input type="text" name="authorized_by" ng-model="dec.data.authorized_by" placeholder="Award authority"></td>
-                    </tr>
-                    <tr>
-                        <td>Database ID</td>
-                        <td>{{dec.data.dec_id | markBlanks}}</td>
-                    </tr>
-                </table>
+                    </div>
+                
+                </div>
                 
             </form>
             

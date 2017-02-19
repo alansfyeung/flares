@@ -150,6 +150,13 @@ class DecorationController extends Controller
     public function show($id)
     {
         $dec = Decoration::findOrFail($id);
+        
+        // Todo:
+        // Retrieve decorations of precedence on either side
+        
+        // Todo:
+        // Retrieve decorations of the same parent (siblings) on either side
+        
         return response()->json([
             'decoration' => $dec->toArray()
         ]);
