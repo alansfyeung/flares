@@ -43,8 +43,8 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 
     $scope.state = Object.create(c.state);      // inherit the proto
     $scope.state.isDecorationLoaded = false;
-    $scope.state.prevUrl = undefined;
-    $scope.state.nextUrl = undefined;
+    $scope.state.lowerUrl = undefined;
+    $scope.state.higherUrl = undefined;
     
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
@@ -72,8 +72,8 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
                 $scope.shadowDec = angular.copy($scope.dec);
                 $scope.state.isDecorationLoaded = true;
                 
-                if ($scope.dec.nextId) $scope.state.nextUrl = ['#!', $scope.dec.nextId, 'view', 'details'].join('/');
-                if ($scope.dec.prevId) $scope.state.prevUrl = ['#!', $scope.dec.prevId, 'view', 'details'].join('/');
+                if ($scope.dec.lowerId) $scope.state.lowerUrl = ['#!', $scope.dec.lowerId, 'view', 'details'].join('/');
+                if ($scope.dec.higherId) $scope.state.higherUrl = ['#!', $scope.dec.higherId, 'view', 'details'].join('/');
                                 
             }).catch(function(err){
                 console.warn(err);
@@ -120,15 +120,15 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
         .then(function(response){
             // Process then store in VM
             var dec = response.data.decoration;
-            var nextDec = response.data.nextDecoration;
-            var prevDec = response.data.prevDecoration;
+            var lowerDec = response.data.lowerDecoration;
+            var higherDec = response.data.higherDecoration;
             // var children = response.data.children;
             // var siblings = response.data.siblings;
             processDecoration(dec);         // by reference
             var baseResponse = {
                 id: dec.dec_id,
-                nextId: nextDec && nextDec.dec_id,
-                prevId: prevDec && prevDec.dec_id,
+                lowerId: lowerDec && lowerDec.dec_id,
+                higherId: higherDec && higherDec.dec_id,
                 // children: 
                 // siblings: 
                 data: dec

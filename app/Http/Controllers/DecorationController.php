@@ -156,11 +156,13 @@ class DecorationController extends Controller
             ->firstOrFail();
             
         // Retrieve decorations of precedence on either side
-        $prevDecorationInTier = Decoration::where('tier', $decoration->tier)
+        $lowerDecorationInTier = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '>', $decoration->adjusted_precedence)
+            ->orderBy('precedence', 'asc')
             ->first();
-        $nextDecorationInTier = Decoration::where('tier', $decoration->tier)
+        $higherDecorationInTier = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '<', $decoration->adjusted_precedence)
+            ->orderBy('precedence', 'desc')
             ->first();
         
         // Todo:
@@ -182,8 +184,8 @@ class DecorationController extends Controller
         
         return response()->json([
             'decoration' => $decoration->toArray(),
-            'prevDecoration' => $prevDecorationInTier,
-            'nextDecoration' => $nextDecorationInTier,
+            'lowerDecoration' => $lowerDecorationInTier,
+            'higherDecoration' => $higherDecorationInTier,
             'children' => $decorationChildren,
             'siblings' => $decorationSiblings,
         ]);

@@ -185,10 +185,10 @@
     <hr>
     
     <div display-mode="view">
-        <a class="btn btn-default" ng-href="{{state.nextUrl}}" ng-disabled="!state.nextUrl">
+        <a class="btn btn-default" ng-href="{{state.higherUrl}}" ng-disabled="!state.higherUrl">
             <span class="glyphicon glyphicon-menu-left"></span> Higher
         </a>
-        <a class="btn btn-default" ng-href="{{state.prevUrl}}" ng-disabled="!state.prevUrl">
+        <a class="btn btn-default" ng-href="{{state.lowerUrl}}" ng-disabled="!state.lowerUrl">
             Lower <span class="glyphicon glyphicon-menu-right"></span>
         </a>
     </div>
