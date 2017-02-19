@@ -10,7 +10,11 @@
 @endpush
 
 @section('heading')
-<h1>Add a new decoration</h1>
+<h1>
+    <a href="./decorations">All Decorations</a>
+    &rsaquo;
+    Add a new decoration
+</h1>
 @endsection
 
 @section('content')

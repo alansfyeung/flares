@@ -59,7 +59,7 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     //======================
     
     $scope.cancel = function(){
-        $location.path('/');
+        $window.history.back();
     };
     
     $scope.setCommencementToday = function(){

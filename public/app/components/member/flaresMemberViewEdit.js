@@ -297,18 +297,25 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     
 	function updateMemberRecord(){
 		var hasChanges = false;
-		var payload = {
-			member: {}
-		};	
-		angular.forEach($scope.member, function(value, key){
-			if ($scope.originalMember[key] !== value){
+		var payload = { member: {} };
+		angular.forEach($scope.member.data, function(value, key){
+            if (angular.isObject(value)){
+                // Todo: Figure out deep object change detection
+                return;
+            }
+            // if (~[].indexOf(key)){
+                // // No timestamps
+                // return;
+            // }
+			if ($scope.originalMember.data[key] !== value){
 				// Value has changed
 				hasChanges = true;
 				payload.member[key] = value;
 			}
 		});
+        // console.log(payload);
+        // return;
 		if (hasChanges){
-            console.log($scope.member);
 			flAPI('member').patch([$scope.member.regtNum], payload).then(function(response){
 				console.log('Save successful');
 				$scope.originalMember = angular.copy($scope.member);

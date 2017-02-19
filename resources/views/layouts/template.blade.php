@@ -61,11 +61,7 @@
     {{-- Core js --}}
     <script src="/assets/js/jquery-1.11.3.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
-
-    {{-- Plugin/add-on/vendor js --}}
-	<script src="/assets/js/notification-popups.js"></script>
-	@stack('vendor-scripts')
-	
+    
     {{-- Application js --}}
     @section('angular-scripts')
     <script src="/assets/js/angular.min.js"></script>
@@ -76,6 +72,10 @@
 	<script src="/app/shared/flaresBase-controllers.js"></script>
     @show
 	@stack('scripts')
+    
+    {{-- Plugin/add-on/vendor js --}}
+	<script src="/assets/js/notification-popups.js"></script>
+	@stack('vendor-scripts')
     
 </body>
 </html>
