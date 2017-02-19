@@ -18,7 +18,7 @@ class DecorationPublicController extends Controller
     public function index()
     {
         $decorationTiers = $this->getDecorationTiers();
-        $decorations = Decoration::all();
+        $decorations = Decoration::with('related')->whereNull('parent_id')->get();
         
         // Assign the image to each decoration
         foreach ($decorations as &$dec){
@@ -32,7 +32,9 @@ class DecorationPublicController extends Controller
             });
             $tier->decorations = $tierDecorations;
         }
-                
+        
+        // dd($decorationTiers);
+        
         return view('public.decoration-list', [
             'decorationTiers' => $decorationTiers,
         ]);
@@ -51,7 +53,7 @@ class DecorationPublicController extends Controller
         $nextDecoration = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '<', $decoration->adjusted_precedence)
             ->first();
-
+            
         return view('public.decoration', [
             'dec' => $decoration,
             'decBadgeUrl' => route('media::decoration-badge', ['decorationId' => $decoration->dec_id]),

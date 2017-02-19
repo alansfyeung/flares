@@ -29,4 +29,10 @@ class Decoration extends Model
         'badge_mime_type', 
     ];
     
+    public function related()
+    {
+        return $this->hasMany('App\Decoration', 'parent_id');
+    }
+    
+    
 }
