@@ -10,19 +10,23 @@
 
 @section('content')
 @foreach ($decorationTiers as $decorationTier)
-<h2>Tier {{ $decorationTier->tier }} &ndash; {{ $decorationTier->name }}</h2>
+<h3>Tier {{ $decorationTier->tier }} &ndash; {{ $decorationTier->name }}</h3>
 <div class="table-wrapper">
     <table class="table table-hover">
         <colgroup>
             <col style="width: 120px;">
             <col style="width: 120px;">
             <col>
+            <col style="width: 120px;">
+            <col style="width: 120px;">
         </colgroup>
         <thead>
             <tr>
                 <th>Badge</th>
                 <th>Shortcode</th>
                 <th>Name</th>
+                <th>Date from</th>
+                <th>Min service</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +38,8 @@
                 </td>
                 <td>{{$dec->shortcode}}</td>
                 <td>{{$dec->name}}</td>
+                <td>{{ date('d/m/Y', strtotime($dec->date_commence)) }}</td>
+                <td>{{$dec->service_period_months}}</td>
             </tr>
         @endforeach
         </tbody>

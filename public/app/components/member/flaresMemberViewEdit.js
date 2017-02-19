@@ -86,7 +86,7 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 	};
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
-			$scope.member.data = angular.copy($scope.originalMember);
+			$scope.member.data = angular.copy($scope.originalMember.data);
 			$scope.state.path.mode = 'view';
 			return;
 		}
