@@ -77,17 +77,7 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     //==================
     
     flAPI('refData').get('decorationTiers').then(function(response){
-        // Specifically extract decorations
-        if (response.data.length){
-            $scope.formData.decorationTiers = response.data;
-            // Hydration chore
-            // Hydrate the tier value string ==> object
-            // angular.forEach($scope.formData.decorationTiers, function(decorationTier){
-                // if (decorationTier.tier === $scope.dec.data.tier){
-                    // $scope.dec.data.tier = decorationTier;
-                // }
-            // });
-        }
+        $scope.formData.decorationTiers = response.data || [];
     });
     flAPI('decoration').getAll().then(function(response){
         $scope.formData.existingDecorations = response.data.decorations;

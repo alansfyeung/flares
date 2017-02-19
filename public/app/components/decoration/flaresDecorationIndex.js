@@ -4,9 +4,16 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     $http.get('/app/components/decoration/decorationContextMenuTemplate.html').then(function(response){
         $templateCache.put('decorationContextMenuTemplate.html', response.data);
     });
+    $http.get('/app/components/decoration/decorationAccordionGroupTemplate.html').then(function(response){
+        $templateCache.put('decorationAccordionGroupTemplate.html', response.data);
+    });
 }]);
 
 flaresApp.controller('indexController', function($scope, $window, $location, $controller, $uibModal, flAPI, flResource){
+    
+    $scope.state = {
+        loading: true
+    };
     
     $scope.gotoCreateNew = flResource('decoration').new().getLink();
 
@@ -33,10 +40,31 @@ flaresApp.controller('indexController', function($scope, $window, $location, $co
         return flResource().raw(['media', 'decoration', decId, 'badge']);
     }
     
+    
     flAPI('decoration').getAll().then(function(resp){
-        
         if (resp.data && angular.isArray(resp.data.decorations)){
-            $scope.decorations = resp.data.decorations;
+            // $scope.decorations = resp.data.decorations;
+            var decorations = resp.data.decorations;
+            // Chunk up according to tier
+            flAPI('refData').get('decorationTiers').then(function(response){
+                var decorationTiers = response.data || [];
+                var decorationTierMap = {};
+                angular.forEach(decorationTiers, function(decorationTier, index){
+                    // new array ready to fill with decorations
+                    decorationTier.decorations = [];
+                    this[decorationTier.tier] = index;
+                }, decorationTierMap);
+                angular.forEach(decorations, function(decoration){
+                    // Map decorations into their tiers
+                    if (decorationTierMap[decoration.tier] !== undefined){
+                        var decorationTierIndex = decorationTierMap[decoration.tier];
+                        decorationTiers[decorationTierIndex].decorations.push(decoration);
+                    }
+                });
+                $scope.decorations = decorationTiers;
+                $scope.state.loading = false;
+                console.log(decorationTiers);
+            });
         }
     }).catch(function(error){
         console.warn(error);

@@ -109,7 +109,7 @@
                             </table>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="related">
-                            <h3>Decoration relationship</h3>
+                            <h3>Decoration parent</h3>
                             <p>If this decoration is part of a family (e.g. varying seniority) then select the parent decoration below.</p>
                             <table class="table record-view">
                                 <tr>
@@ -118,6 +118,8 @@
                                     <td display-mode="edit"><select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations" ng-model="dec.data.parent_id"></select></td>
                                 </tr>
                             </table>
+                            <h3>Decorations in this family</h3>
+                            <p>TBA</p>
                         </div>
             
                     </div>
