@@ -37,9 +37,9 @@
                         <td>
                             <span class="fl-dec-badge smaller"><img src="{{ $dec->badgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}"></span>
                         </td>
-                        <td>{{ $dec->shortcode }}</td>
+                        <td><code>{{ $dec->shortcode }}</code></td>
                         <td>{{ $dec->name }}</td>
-                        <td>{{ date('d/m/Y', strtotime($dec->date_commence)) }}</td>
+                        <td>{{ date('M Y', strtotime($dec->date_commence)) }}</td>
                     </tr>
                     @foreach ($dec->related as $related)
                     <tr onclick="openDecorationDetails('{{ route("public::decoration-details", [ "shortcode" => $dec->shortcode ]) }}')">
@@ -47,9 +47,9 @@
                             <span class="text-muted">&#8618;</span>
                             <span class="fl-dec-badge smaller"><img src="{{ $dec->badgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}"></span>
                         </td>
-                        <td>{{$dec->shortcode}}</td>
-                        <td>{{$dec->name}}</td>
-                        <td>{{ date('d/m/Y', strtotime($dec->date_commence)) }}</td>
+                        <td><code>{{ $dec->shortcode }}</code></td>
+                        <td>{{ $dec->name }}</td>
+                        <td>{{ date('M Y', strtotime($dec->date_commence)) }}</td>
                     </tr>
                     @endforeach
                 @endforeach

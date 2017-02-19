@@ -18,7 +18,7 @@ class DecorationPublicController extends Controller
     public function index()
     {
         $decorationTiers = $this->getDecorationTiers();
-        $decorations = Decoration::with('related')->whereNull('parent_id')->get();
+        $decorations = Decoration::ordered()->with('related')->whereNull('parent_id')->get();
         
         // Assign the image to each decoration
         foreach ($decorations as &$dec){

@@ -116,7 +116,7 @@
                                     <td>Decoration parent</td>
                                     <td display-mode="view">{{dec.parentDecoration.name | markBlanks}}</td>
                                     <td display-mode="edit">
-                                        <select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations" ng-model="dec.data.parent_id">
+                                        <select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations | filter:{tier: dec.data.tier}" ng-model="dec.data.parent_id">
                                             <option value="">-- None --</option>
                                         </select>
                                     </td>
@@ -125,9 +125,7 @@
                             <h3>Decorations in this family</h3>
                             <p>TBA</p>
                         </div>
-            
                     </div>
-                
                 </div>
                 
             </form>
@@ -186,6 +184,14 @@
     
     <hr>
     
+    <div display-mode="view">
+        <a class="btn btn-default" ng-href="{{state.nextUrl}}" ng-disabled="!state.nextUrl">
+            <span class="glyphicon glyphicon-menu-left"></span> Higher
+        </a>
+        <a class="btn btn-default" ng-href="{{state.prevUrl}}" ng-disabled="!state.prevUrl">
+            Lower <span class="glyphicon glyphicon-menu-right"></span>
+        </a>
+    </div>
     <div class="text-right" display-mode="edit">
         <button class="btn btn-primary" ng-click="finishEdit()">
             <span class="glyphicon glyphicon-floppy-disk"></span> Save

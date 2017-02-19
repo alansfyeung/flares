@@ -138,7 +138,7 @@ class DecorationController extends Controller
 	 */
     public function index()
     {
-        $dec = Decoration::all();
+        $dec = Decoration::ordered()->get();
         return response()->json([
             'decorations' => $dec->toArray()
         ]);
@@ -149,16 +149,43 @@ class DecorationController extends Controller
 	 */
     public function show($id)
     {
-        $dec = Decoration::findOrFail($id);
-        
-        // Todo:
+        // $decoration = Decoration::findOrFail($id);
+        $decoration = Decoration::where('dec_id', $id)
+            ->select('*')
+            ->addSelect(DB::raw('COALESCE(precedence, 0) as adjusted_precedence'))
+            ->firstOrFail();
+            
         // Retrieve decorations of precedence on either side
+        $prevDecorationInTier = Decoration::where('tier', $decoration->tier)
+            ->where('precedence', '>', $decoration->adjusted_precedence)
+            ->first();
+        $nextDecorationInTier = Decoration::where('tier', $decoration->tier)
+            ->where('precedence', '<', $decoration->adjusted_precedence)
+            ->first();
         
         // Todo:
         // Retrieve decorations of the same parent (siblings) on either side
         
+        // Check if this itself has a parent. If so, grab all siblings with the same parent
+        // Then check if any decorations are registered as children of this decoration
+        $relativesQuery = Decoration::where('parent_id', $decoration->dec_id);
+        if (!empty($decoration->parent_id)){
+            $relativesQuery->orWhere('parent_id', $decoration->parent_id);
+        }
+        $decorationRelatives = $relativesQuery->get();
+        $decorationSiblings = $decorationRelatives->filter(function ($rel) use ($decoration) {
+            return $rel->parent_id == $decoration->parent_id;
+        })->sortBy('parent_order');
+        $decorationChildren = $decorationRelatives->filter(function ($rel) use ($decoration) {
+            return $rel->parent_id == $decoration->dec_id;
+        })->sortBy('precedence');
+        
         return response()->json([
-            'decoration' => $dec->toArray()
+            'decoration' => $decoration->toArray(),
+            'prevDecoration' => $prevDecorationInTier,
+            'nextDecoration' => $nextDecorationInTier,
+            'children' => $decorationChildren,
+            'siblings' => $decorationSiblings,
         ]);
     }
 

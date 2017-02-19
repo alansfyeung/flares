@@ -34,5 +34,13 @@ class Decoration extends Model
         return $this->hasMany('App\Decoration', 'parent_id');
     }
     
+    public function scopeOrdered($query)
+    {
+        return $query
+            ->orderBy('tier', 'asc')
+            ->orderBy('precedence', 'asc')
+            ->orderBy('parent_order', 'asc');
+    }
+    
     
 }

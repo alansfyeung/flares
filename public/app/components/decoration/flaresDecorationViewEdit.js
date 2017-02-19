@@ -36,13 +36,15 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
         unloadWarning: 'You are editing this decoration record, and will lose any unsaved changes.'
     });
     
-    
-    $scope.state = Object.create(c.state);        // inherit the proto
     $scope.forms = {};
+    
 	$scope.dec = Object.create($scope.record);
-	$scope.shadowDec = Object.create($scope.record);
+	$scope.shadowDec = angular.copy($scope.dec);
 
+    $scope.state = Object.create(c.state);      // inherit the proto
     $scope.state.isDecorationLoaded = false;
+    $scope.state.prevUrl = undefined;
+    $scope.state.nextUrl = undefined;
     
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
@@ -64,10 +66,22 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
 	// Read the url
     if (c.loadWorkflowPath()){
-        retrieveDecoration()
-            .then(function(){
-                // Nothing so far
+        if ($scope.state.path.id){
+            retrieveDecoration($scope.state.path.id).then(function(scopeDec){
+                $scope.dec = scopeDec;
+                $scope.shadowDec = angular.copy($scope.dec);
+                $scope.state.isDecorationLoaded = true;
+                
+                if ($scope.dec.nextId) $scope.state.nextUrl = ['#!', $scope.dec.nextId, 'view', 'details'].join('/');
+                if ($scope.dec.prevId) $scope.state.prevUrl = ['#!', $scope.dec.prevId, 'view', 'details'].join('/');
+                                
+            }).catch(function(err){
+                console.warn(err);
             });
+        }
+		else {
+			console.warn('Decoration ID not specified');
+		}
     }
 
     //==================
@@ -78,9 +92,11 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     
     flAPI('refData').get('decorationTiers').then(function(response){
         $scope.formData.decorationTiers = response.data || [];
-    });
-    flAPI('decoration').getAll().then(function(response){
-        $scope.formData.existingDecorations = response.data.decorations;
+        
+        flAPI('decoration').getAll().then(function(response){
+            $scope.formData.existingDecorations = response.data.decorations;
+        });
+        
     });
     
     
@@ -98,45 +114,43 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     // ====================
     // Function decs
     
-	function retrieveDecoration(){
-		if ($scope.state.path.id){
-			return flAPI('decoration').get([$scope.state.path.id])
-                .then(function(response){
-                    // Process then store in VM
-                    var dec = response.data.decoration;
-                    processDecoration(dec);         // by reference
-                    if (dec.parent_id){
-                        // Retrieve the relationships
-                        return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
-                            return angular.extend({
-                                id: dec.dec_id,
-                                data: dec
-                            }, parentInfo);
-                        });
-                    }
-                    return {
-                        id: dec.dec_id,
-                        data: dec
-                    };
-                })
-                .then(function(scopeDec){
-                    $scope.dec = scopeDec;
-                    $scope.shadowDec = angular.copy($scope.dec);
-                    $scope.state.isDecorationLoaded = true;
-                })
-                .catch(function(response){
-                    if (response.status == 404){
-                        $scope.dec.errorNotFound = true;
-                    }
-                    else {
-                        $scope.dec.errorServerSide = true;
-                    }
+	function retrieveDecoration(decorationId){
+    return flAPI('decoration')
+        .get([decorationId])
+        .then(function(response){
+            // Process then store in VM
+            var dec = response.data.decoration;
+            var nextDec = response.data.nextDecoration;
+            var prevDec = response.data.prevDecoration;
+            // var children = response.data.children;
+            // var siblings = response.data.siblings;
+            processDecoration(dec);         // by reference
+            var baseResponse = {
+                id: dec.dec_id,
+                nextId: nextDec && nextDec.dec_id,
+                prevId: prevDec && prevDec.dec_id,
+                // children: 
+                // siblings: 
+                data: dec
+            };
+            if (dec.parent_id){
+                // Retrieve the relationships
+                return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
+                    return angular.extend(baseResponse, parentInfo);
                 });
-		}
-		else {
-			console.warn('Dec ID not specified');
-            return $q.reject('Dec ID not specified');
-		}
+            }
+            else {
+                return baseResponse;                
+            }
+        })
+        .catch(function(response){
+            if (response.status == 404){
+                $scope.dec.errorNotFound = true;
+            }
+            else {
+                $scope.dec.errorServerSide = true;
+            }
+        });
 	}
     function retrieveDecorationRelationship(parentId){
         // Get the parent, also the surrounding siblings if any
