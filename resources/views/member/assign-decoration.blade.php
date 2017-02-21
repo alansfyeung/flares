@@ -27,6 +27,12 @@
 
 @section('content')
 @verbatim
+<style>
+[uib-typeahead-popup].dropdown-menu {
+  display: block;
+}
+</style>
+
 <div ng-show="member.regt_num">
 
     <h2>
@@ -39,7 +45,8 @@
     <div class="row" ng-show="award.saved">
         <div class="col-sm-12 col-md-6">
             <div class="alert alert-success">
-                <h2>Saved</h2>
+                <h3><strong>Saved</strong>: The decoration was applied</h3>
+                <hr>
                 <div>
                     <button type="button" class="btn btn-success" ng-click="assignAnother()">Assign another</button>
                     <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
@@ -53,16 +60,28 @@
             <form class="form-horizontal" ng-submit="submit()">
                 <fieldset>
                     <div class="form-group">
+                        <label class="control-label col-sm-3">Decoration Tier</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" ng-options="tier.tierName for tier in formData.decorationTiers" ng-model="selectedTier"></select>
+                            <pre class="hidden">{{selectedTier}}</pre>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="selectedTier">
                         <label class="control-label col-sm-3">Decoration to assign</label>
                         <div class="col-sm-9">
-                            <select class="form-control" ng-options="dec.name for dec in decorations track by dec.dec_id" ng-model="award.selectedDecoration">
+                            <input ng-hide="showDecorationDropdownList" id="selectedDecorationField" type="text" class="form-control" ng-model="award.selectedDecoration" placeholder="Search for a decoration" uib-typeahead="dec as dec.name for dec in decorations | filter:{ tier: selectedTier.tier } | filter:{ name:$viewValue }" typeahead-template-url="decorationTypeaheadTemplate.html" typeahead-popup-template-url="/app/components/decoration/decorationTypeaheadPopupTemplate.html" typeahead-show-hint="true" typeahead-min-length="0">
+                            <select ng-show="showDecorationDropdownList" class="form-control" ng-options="dec as dec.name for dec in decorations | filter:{ tier: selectedTier.tier } track by dec.dec_id" ng-model="award.selectedDecoration">
                                 <option value="">Choose a decoration</option>
                             </select>
+                            <p class="help-block"> 
+                                <a ng-show="showDecorationDropdownList" ng-click="showDecorationDropdownList = false">Show lookup field</a>
+                                <a ng-hide="showDecorationDropdownList" ng-click="showDecorationDropdownList = true">Show dropdown list</a>
+                            </p>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset ng-show="award.selectedDecoration">
+                <fieldset ng-show="award.selectedDecoration.dec_id">
                     <hr>
                     <div class="form-group">
                         <label class="control-label col-sm-3">Citation</label>
@@ -72,8 +91,16 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-3">Date awarded</label>
-                        <div class="col-sm-3">
-                            <input type="date" class="form-control" ng-model="award.data.date">
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <select class="form-control" ng-model="formData.awardDate.month" ng-options="month.value as month.name for month in formData.months"></select> 
+                                </div>
+                                <div class="col-sm-6">
+                                    <input class="form-control" ng-model="formData.awardDate.year" type="number">
+                                </div>
+                            </div>
+                            <input type="date" class="form-control hidden" ng-model="award.data.date" readonly>
                         </div>
                     </div>
                 </fieldset>
@@ -83,7 +110,7 @@
                     <div class="col-sm-12">
                         <div class="text-right">
                             <button class="btn btn-default pull-left" type="button" ng-click="cancel()">Cancel</button>
-                            <button ng-show="award.selectedDecoration" class="btn btn-primary" type="submit">Award this decoration</button>
+                            <button ng-show="award.selectedDecoration.dec_id" class="btn btn-primary" type="submit">Award this decoration</button>
                         </div>
                     </div>
                 </div>
@@ -94,7 +121,7 @@
         </div>
         <div class="col-sm-4">
     
-        <div class="panel panel-default" ng-show="award.selectedDecoration">
+        <div class="panel panel-default" ng-show="award.selectedDecoration.dec_id">
             <div class="panel-heading">
                 <h4 class="panel-title">{{award.selectedDecoration.name}}</h4>
             </div>
@@ -102,10 +129,13 @@
                 <div class="thumbnail fl-record-thumbnail">
                     <img ng-src="{{award.selectedDecorationBadgeUrl}}" alt="{{award.name}}" class="image-rounded memberview-thumb">
                 </div>
+                <br>
                 <div class="caption">
                     <p>{{award.selectedDecoration.desc}}</p>
-                    <p>Tier {{award.selectedDecoration.tier}} award</p>
                 </div>
+            </div>
+            <div class="panel-footer">
+                Tier <span class="label label-info" style="vertical-align: 2px;">{{award.selectedDecoration.tier}}</span>
             </div>
         </div>
     

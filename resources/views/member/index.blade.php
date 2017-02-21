@@ -124,7 +124,7 @@
                         <td>@{{result.rank}}</td>
                         <td>@{{result.sex}}</td>
                         <td>@{{result.ageDetails}}</td>
-                        <td><a class="fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
+                        <td><a class="btn btn-primary btn-xs fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
                     </tr>
                 </tbody>
             </table>

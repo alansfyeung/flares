@@ -378,39 +378,41 @@
                     <div role="tabpanel" class="tab-pane" id="decorations">
                         <section>
                             <h3>Decorations</h3>
-                            <table class="table table-striped">
-                                <colgroup>
-                                    <col style="width: 120px;">
-                                    <col style="width: 200px;">
-                                    <col>
-                                    <col style="width: 140px;">
-                                    <col style="width: 100px;">
-                                    <col style="width: 100px;">
-                                    <col style="width: 40px;">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>Image</th>
-                                        <th>Decoration</th>
-                                        <th>Citation</th>
-                                        <th>Date awarded</th>
-                                        <th>Score</th>
-                                        <th>Grade</th>
-                                        <th>&times;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="award in member.awards" ng-class="{ warning: award.isDeleting }">
-                                        <td><img ng-src="@{{award.url}}" alt="@{{award.data.decoration.shortcode}}"></td>
-                                        <td><span class="label label-info">@{{award.data.decoration.tier}}</span> @{{award.data.decoration.shortcode || award.data.decoration.name}} </td>
-                                        <td>@{{award.data.citation}}</td>
-                                        <td>@{{award.data.date | date:'dd MMM yyyy'}}</td>
-                                        <td>@{{award.data.awd_score}}</td>
-                                        <td>@{{award.data.awd_grade}}</td>
-                                        <td><a class="fl-context-modal-button" ng-click="removeAward(award)">&times;</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <div class="table-wrapper">
+                                    <table class="table table-striped">
+                                    <colgroup>
+                                        <col style="width: 120px;">
+                                        <col style="width: 200px;">
+                                        <col>
+                                        <col style="width: 140px;">
+                                        <col style="width: 100px;">
+                                        <col style="width: 100px;">
+                                        <col style="width: 40px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Decoration</th>
+                                            <th>Citation</th>
+                                            <th>Date awarded</th>
+                                            <th>Score</th>
+                                            <th>Grade</th>
+                                            <th>&times;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="award in member.awards" ng-class="{ warning: award.isDeleting }">
+                                            <td><img ng-src="@{{award.url}}" alt="@{{award.data.decoration.shortcode}}"></td>
+                                            <td><span class="label label-info">@{{award.data.decoration.tier}}</span> @{{award.data.decoration.shortcode || award.data.decoration.name}} </td>
+                                            <td>@{{award.data.citation}}</td>
+                                            <td>@{{award.data.date | date:'dd MMM yyyy'}}</td>
+                                            <td>@{{award.data.awd_score}}</td>
+                                            <td>@{{award.data.awd_grade}}</td>
+                                            <td><a class="fl-context-modal-button" ng-click="removeAward(award)">&times;</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </section>
                     </div>
                     
