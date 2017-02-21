@@ -26,7 +26,7 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 	
 }]);
 
-flaresApp.controller('decorationViewEditController', function($scope, $location, $controller, $q, $uibModal, flAPI, flResource){
+flaresApp.controller('decorationViewEditController', function($scope, $window, $controller, $q, $uibModal, flAPI, flResource){
 
     // Add some base - unzip base controller's stuff into this controller
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -46,6 +46,10 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
     $scope.state.lowerUrl = undefined;
     $scope.state.higherUrl = undefined;
     
+    $scope.formData = {
+        decorationTiers: []
+    };
+
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
         return false;
@@ -64,6 +68,8 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
 		console.warn('Cannot cancel - dec record was never loaded');
 	};
     
+    $scope.delete = deleteDecoration;
+
 	// Read the url
     if (c.loadWorkflowPath()){
         if ($scope.state.path.id){
@@ -98,11 +104,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
         });
         
     });
-    
-    
-    $scope.formData = {
-        decorationTiers: []
-    }
     
     $scope.$watch('dec.data.parent_id', function(newValue){
         retrieveDecorationRelationship(newValue).then(function(parentInfo){
@@ -191,6 +192,20 @@ flaresApp.controller('decorationViewEditController', function($scope, $location,
             console.log('THe form object was %O', $scope.forms.decorationDetails);
         }
 	}
+    function deleteDecoration(){
+        if (!confirm('Are you sure you want to delete this decoration? This action cannot be undone.')){
+            return false;
+        }
+        $scope.state.deletionFailed = false;
+        flAPI('decoration').delete([$scope.dec.id]).then(function(){
+            // Gotta bail back to the index screen
+            // delete window.onbeforeunload;
+			$scope.state.path.mode = 'view';
+            $window.location.href = flResource('decoration').many().getLink();
+        }).catch(function(){
+            $scope.state.deletionFailed = true;
+        });
+    }
     
     // End function decs
     //======================

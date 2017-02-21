@@ -193,6 +193,7 @@
         </a>
     </div>
     <div class="text-right" display-mode="edit">
+        <button class="btn btn-danger pull-left" ng-click="delete()">Delete</button>
         <button class="btn btn-primary" ng-click="finishEdit()">
             <span class="glyphicon glyphicon-floppy-disk"></span> Save
         </button>

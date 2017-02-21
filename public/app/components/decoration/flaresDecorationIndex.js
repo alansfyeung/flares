@@ -63,7 +63,6 @@ flaresApp.controller('indexController', function($scope, $window, $location, $co
                 });
                 $scope.decorations = decorationTiers;
                 $scope.state.loading = false;
-                console.log(decorationTiers);
             });
         }
     }).catch(function(error){
@@ -97,7 +96,7 @@ flaresApp.controller('indexController', function($scope, $window, $location, $co
 });
 
 
-flaresApp.controller('decorationContextMenuController', function ($scope, $parse, $window, $modalInstance, flResource, context){
+flaresApp.controller('decorationContextMenuController', function ($scope, $parse, $window, $modalInstance, flAPI, flResource, context){
     
     $scope.dec = context;
     
@@ -106,8 +105,12 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
         classNames: ['btn-primary'],
         action: decorationDeepLink.bind(null, 'edit', 'details')
     }, {
+        label: 'Assign to member',
+        classNames: ['btn-default'],
+        action: decorationDeepLink.bind(null, 'edit', 'assign')
+    }, {
         label: 'View public page',
-        classNames: ['btn-success'],
+        classNames: ['btn-default'],
         action: function(){
             if ($scope.dec.shortcode){
                 $window.open(flResource().raw(['public', 'decoration', $scope.dec.shortcode]), 'Preview Award', 'width=800, height=600');
@@ -116,9 +119,25 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
             // $window.location.href = flResource('decoration').retrieve().addFragment(frag).getLink();
         }
     }, {
-        label: 'Assign to member',
-        classNames: ['btn-default'],
-        action: decorationDeepLink.bind(null, 'edit', 'assign')
+        label: 'Delete',
+        classNames: ['btn-danger'],
+        action: function(){
+            if (!confirm("Are you sure you want to delete '"+$scope.dec.name+"'? This cannot be undone.")) return false;
+            flAPI('decoration').delete([$scope.dec.dec_id]).then(function(){
+                // Todo: splice
+                angular.forEach($scope.$parent.decorations, function(tier){
+                    var found = tier.decorations.indexOf($scope.dec);
+                    if (~found){
+                        tier.decorations.splice(found, 1);
+                    }
+                });
+                $modalInstance.close();
+            }).catch(function(err){
+                alert('The decoration could not be deleted. This is possibly because members have been awarded this decoration, and those awards need to be deleted first. See the console for more details.');
+                console.warn(err);
+                $modalInstance.close();
+            });
+        }
     }];
     $scope.footerButtons = [{
         label: 'Cancel',
