@@ -50,7 +50,7 @@
                     </tr>
                     <tr>
                         <td>Shortcode</td>
-                        <td>{{ $dec->shortcode or 'N/A' }}</td>
+                        <td><code>{{ $dec->shortcode or 'N/A' }}</code></td>
                     </tr>
                     <tr>
                         <td>Minimum service period</td>

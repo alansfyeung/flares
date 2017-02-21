@@ -6069,7 +6069,7 @@ footer {
 
 @media (max-width: 767px) {
   .table-wrapper {
-    overflow: auto; }
+    overflow-x: auto; }
     .table-wrapper .table {
       table-layout: auto; }
   /* Right-triangle carets for mobile menu */
@@ -6081,12 +6081,12 @@ footer {
     float: none;
     margin-top: 0; }
   footer {
-    overflow: auto;
+    overflow-x: auto;
     white-space: nowrap; }
     footer h6 {
       font-size: 10px;
       white-space: nowrap;
-      overflow: auto; } }
+      overflow-x: auto; } }
 
 .control-label.control-label-required::after {
   content: ' *';
@@ -6100,6 +6100,9 @@ footer {
 
 .env-local .page-header, .env-dev .page-header {
   background: #27ae60; }
+
+.env-test .page-header, .env-sit .page-header, .env-uat .page-header {
+  background: #e67e22; }
 
 .dashboard-stat {
   text-align: center; }

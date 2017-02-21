@@ -126,7 +126,7 @@ footer {
 @media (max-width: 767px){
 
     .table-wrapper {
-        overflow: auto;
+        overflow-x: auto;
         .table {
             table-layout: auto;
         }
@@ -148,9 +148,9 @@ footer {
         h6 {
             font-size: 10px;
             white-space: nowrap;
-            overflow: auto;
+            overflow-x: auto;
         }
-        overflow: auto;
+        overflow-x: auto;
         white-space: nowrap;
     }
 

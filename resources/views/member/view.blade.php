@@ -408,7 +408,7 @@
                                             <td>@{{award.data.date | date:'dd MMM yyyy'}}</td>
                                             <td>@{{award.data.awd_score}}</td>
                                             <td>@{{award.data.awd_grade}}</td>
-                                            <td><a class="fl-context-modal-button" ng-click="removeAward(award)">&times;</a></td>
+                                            <td><a class="btn btn-danger btn-xs fl-context-modal-button" ng-click="removeAward(award)">&times;</a></td>
                                         </tr>
                                     </tbody>
                                 </table>

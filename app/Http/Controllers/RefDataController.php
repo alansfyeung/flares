@@ -38,15 +38,7 @@ class RefDataController extends Controller
 		return response()->json($refData);
 	}
     
-    public function get($key)
-    {
-        if (method_exists($this, $key)) {
-            return $this->$key();
-        }
-        return response('', 404);
-    }
-	
-    private function misc(Request $request)
+    public function misc(Request $request)
     {
 		$query = DB::table('ref_misc');
 		if ($request->has('name')) {
@@ -56,6 +48,14 @@ class RefDataController extends Controller
 			'misc' => $query->get()
 		]);
 	}
+    
+    public function get($key)
+    {
+        if (method_exists($this, $key)) {
+            return $this->$key();
+        }
+        return response('', 404);
+    }
     
     private function decorationTiers()
     {

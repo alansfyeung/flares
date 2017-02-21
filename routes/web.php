@@ -97,14 +97,14 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function (){
     
     Route::get('decorations', function (){
         return view('decoration.index');
-    });
+    })->name('index');
     Route::get('decorations/new', function (){
         return view('decoration.new');
-    });
+    })->name('new');
     
     Route::get('decoration', function (){
         return view('decoration.view');
-    });
+    })->name('view');
     
 });
 

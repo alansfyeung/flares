@@ -83,7 +83,7 @@
                                 </tr>
                                 <tr>
                                     <td>Shortcode </td>
-                                    <td display-mode="view">{{dec.data.shortcode | markBlanks}}</td>
+                                    <td display-mode="view"><code>{{dec.data.shortcode | markBlanks}}</code></td>
                                     <td display-mode="edit"><input type="text" name="shortcode" ng-model="dec.data.shortcode" placeholder="Shortcode (10 letters)"></td>
                                 </tr>
                                 <tr>
