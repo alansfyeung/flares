@@ -5,7 +5,7 @@
 
 var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
-flaresApp.controller('newSimpleController', function($scope, $location, flAPI, flResource){
+flaresApp.controller('newSimpleController', function($scope, $window, $location, flAPI, flResource){
 
     //=======================================
     // DATA
@@ -15,17 +15,7 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
 		hasOverrides: false
 	};
     
-	// New member DTO
-	$scope.member = {
-        // Dummy data
-        // data: {
-            // first_name: 'ALan',
-            // last_name: 'Yeung',
-            // sex: 'M'            
-        // }
-        
-    };
-    
+	$scope.member = new Member();
     $scope.formData = {};
     
     // END DATA
@@ -58,7 +48,8 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
     
     $scope.reset = function(){
         console.log('resetting');
-        $location.url('/');
+        $scope.member = new Member();
+        wf.state.stage = 1;
     };
     
     $scope.cancel = function(){
@@ -67,8 +58,7 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
     
     $scope.viewMember = function(){
         // $location.url(['member', '#!', member.regtNum, 'view', 'details'].join('/'));
-        var where = flResource('member').addFragment([member.regtNum, 'view', 'details']).build();
-        $location.url(where);
+        $window.location.href = flResource('member').setFragment([$scope.member.regtNum, 'view', 'details']).build();
     };
     
 	
@@ -183,13 +173,20 @@ flaresApp.controller('newSimpleController', function($scope, $location, flAPI, f
     function skipDetailedRecord(){
         
         // Simply mark as active, then continue
-        flAPI('member').patch([member.regtNum], {
+        flAPI('member').patch([$scope.member.regtNum], {
             member: { is_active: '1' }
         }).then(function(){
             wf.next();
         });
         
         
+    }
+    
+    //==================
+    // CLASSES
+    //==================
+    function Member(){
+        this.data = {};
     }
 	
 });

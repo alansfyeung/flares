@@ -76,8 +76,12 @@ flaresApp.controller('newDecorationController', function($scope, $window, $locat
     flAPI('refData').get('decorationTiers').then(function(response){
         // Specifically extract decorations
         if (response.data.length){
-            $scope.formData.decorationTiers = response.data;
-            $scope.dec.data.tier = $scope.formData.decorationTiers[0];
+            var tiers = response.data;
+            angular.forEach(tiers, function(tier, index, tiers){
+                tiers[index].tierName = tier.tier + ': ' + tier.tierName;
+            });
+            $scope.formData.decorationTiers = tiers;
+            $scope.dec.data.tier = $scope.formData.decorationTiers[0].tier;
         }
 	});
 

@@ -283,7 +283,7 @@
 <section ng-show="wf.state.stage === 3">
     <div class="alert alert-info">
         <strong><span class="glyphicon glyphicon-info-sign"></span> Member was successfully updated:</strong> 
-        @{{member.last_name}}, @{{member.first_name}} &diam;@{{member.data.regt_num}} 
+        &diam;@{{member.regtNum}} <strong>@{{member.data.last_name}}, @{{member.data.first_name}}  </strong>
     </div>
     <hr>
     <div class="col-sm-12">

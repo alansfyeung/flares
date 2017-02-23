@@ -11,7 +11,7 @@
 
 @section('heading')
 <h1>
-    <a href="./decorations">All Decorations</a>
+    <a href="{{ route('decoration::index') }}">All Decorations</a>
     &rsaquo;
     Add a new decoration
 </h1>
@@ -49,9 +49,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3">Shortcode</label>
+                <label class="control-label col-sm-3 control-label-required">Shortcode</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" ng-model="dec.data.shortcode" maxlength="10" placeholder="10 letter max">
+                    <input class="form-control" type="text" ng-model="dec.data.shortcode" maxlength="10" placeholder="10 letter max" required>
                 </div>
             </div>
             <div class="form-group" ng-if="dec.data.tier === 'E'">

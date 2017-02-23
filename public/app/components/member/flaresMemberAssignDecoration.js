@@ -37,9 +37,10 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
             { name: 'Dec', value: 11 }
         ],
         awardDate: {
-            month: (new Date).getMonth(),
-            year: (new Date).getFullYear(),
-        }
+            month: 0,
+            year: 1975,
+        },
+        resetAwardDate: resetAwardDate
     };
         
     $scope.decorations = [];
@@ -55,6 +56,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
     if (c.loadWorkflowPath()){
         retrieveMember();
         retrieveDecorations();
+        resetAwardDate();
     }
 
 	flAPI('refData').getAll().then(function(response){
@@ -75,17 +77,18 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
     
     $scope.assignAnother = function(){
         $scope.award = new Award();
+        resetAwardDate();
     };
     
     $scope.cancel = function(){
         if ($scope.member.regt_num){
-            $window.location.href = flResource('member').setFragment($scope.member.regt_num).getLink();
+            $window.location.href = flResource('member').setFragment([$scope.member.regt_num, 'view', 'decorations']).getLink();
         }
         else {
             $window.location.href = flResource('member').getLink();
         }
     };
-    
+
     $scope.$watch('award.selectedDecoration', function(newVal){
         // Check out if the badge image exists
         if (newVal && newVal.dec_id){
@@ -133,8 +136,12 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
 	
     flAPI('refData').get('decorationTiers').then(function(response){
         if (response.data.length){
-            $scope.formData.decorationTiers = response.data;
-            $scope.selectedTier = $scope.formData.decorationTiers[0];
+            var tiers = response.data;
+            angular.forEach(tiers, function(tier, index, tiers){
+                tiers[index].tierName = tier.tier + ': ' + tier.tierName;
+            });
+            $scope.formData.decorationTiers = tiers;
+            // $scope.selectedTier = $scope.formData.decorationTiers[0];
         }
 	});
 
@@ -219,6 +226,17 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
             console.warn('No decoration assigned yet');
         }
     }
+    
+    function resetAwardDate(){
+        var awardDate = $scope.formData.awardDate;
+        awardDate.month = (new Date).getMonth();
+        awardDate.year = (new Date).getFullYear();
+        var award = $scope.award;
+        if (award){
+            award.setDateMonth(awardDate.month);
+            award.setDateYear(awardDate.year);
+        }
+    }
 
     //======================
     // Classes
@@ -226,7 +244,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
     function Award(){
         this.saved = false;
         this.saveError = false;
-        this.selectedDecoration = 0;
+        this.selectedDecoration = '';
         this.selectedDecorationBadgeUrl = '';
         this.data = {
             dec_id: 0,

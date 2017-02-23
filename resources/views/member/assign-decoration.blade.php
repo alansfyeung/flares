@@ -49,7 +49,7 @@
                 <hr>
                 <div>
                     <button type="button" class="btn btn-success" ng-click="assignAnother()">Assign another</button>
-                    <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+                    <button type="button" class="btn btn-default" ng-click="cancel()">View member profile</button>
                 </div>
             </div>
         </div>
@@ -62,15 +62,17 @@
                     <div class="form-group">
                         <label class="control-label col-sm-3">Decoration Tier</label>
                         <div class="col-sm-9">
-                            <select class="form-control" ng-options="tier.tierName for tier in formData.decorationTiers" ng-model="selectedTier"></select>
+                            <select class="form-control" ng-options="tier.tierName for tier in formData.decorationTiers" ng-model="selectedTier">
+                                <option value="">All</option>
+                            </select>
                             <pre class="hidden">{{selectedTier}}</pre>
                         </div>
                     </div>
-                    <div class="form-group" ng-show="selectedTier">
+                    <div class="form-group">
                         <label class="control-label col-sm-3">Decoration to assign</label>
                         <div class="col-sm-9">
-                            <input ng-hide="showDecorationDropdownList" id="selectedDecorationField" type="text" class="form-control" ng-model="award.selectedDecoration" placeholder="Search for a decoration" uib-typeahead="dec as dec.name for dec in decorations | filter:{ tier: selectedTier.tier } | filter:{ name:$viewValue }" typeahead-template-url="decorationTypeaheadTemplate.html" typeahead-popup-template-url="/app/components/decoration/decorationTypeaheadPopupTemplate.html" typeahead-show-hint="true" typeahead-min-length="0">
-                            <select ng-show="showDecorationDropdownList" class="form-control" ng-options="dec as dec.name for dec in decorations | filter:{ tier: selectedTier.tier } track by dec.dec_id" ng-model="award.selectedDecoration">
+                            <input ng-hide="showDecorationDropdownList" id="selectedDecorationField" type="text" class="form-control" ng-model="award.selectedDecoration" placeholder="Search for a decoration" uib-typeahead="dec as dec.name for dec in decorations | filter: (selectedTier ? { tier: selectedTier.tier } : undefined) | filter:{ name:$viewValue }" typeahead-template-url="decorationTypeaheadTemplate.html" typeahead-popup-template-url="/app/components/decoration/decorationTypeaheadPopupTemplate.html" typeahead-show-hint="true" typeahead-min-length="0">
+                            <select ng-show="showDecorationDropdownList" class="form-control" ng-options="dec as dec.name for dec in decorations | filter:(selectedTier ? { tier: selectedTier.tier } : undefined) track by dec.dec_id" ng-model="award.selectedDecoration">
                                 <option value="">Choose a decoration</option>
                             </select>
                             <p class="help-block"> 
