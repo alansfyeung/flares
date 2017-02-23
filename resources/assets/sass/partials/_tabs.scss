@@ -1,0 +1,21 @@
+.nav-tabs {
+    overflow-x: scroll;
+    white-space: nowrap;   
+}
+.nav-tabs > li {
+    float: none;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+@media (min-width: $grid-float-breakpoint){
+    .nav-tabs {
+        overflow: initial;
+        white-space: initial;
+    }
+    .nav-tabs > li {
+        float: left;
+        margin-bottom: -1px;
+        display: block;
+    }
+}

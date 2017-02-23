@@ -126,7 +126,12 @@ footer {
 @media (max-width: 767px){
 
     .table-wrapper {
-        overflow-x: auto;
+        // overflow: hidden;
+        // * > * {
+            // -webkit-overflow-scrolling: touch;
+        // }
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
         .table {
             table-layout: auto;
         }

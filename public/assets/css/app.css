@@ -6069,7 +6069,8 @@ footer {
 
 @media (max-width: 767px) {
   .table-wrapper {
-    overflow-x: auto; }
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch; }
     .table-wrapper .table {
       table-layout: auto; }
   /* Right-triangle carets for mobile menu */
@@ -6359,5 +6360,23 @@ table tr .fl-context-modal-button {
 
 table tr:hover .fl-context-modal-button {
   display: inline-block; }
+
+.nav-tabs {
+  overflow-x: scroll;
+  white-space: nowrap; }
+
+.nav-tabs > li {
+  float: none;
+  margin-bottom: 0;
+  display: inline-block; }
+
+@media (min-width: 768px) {
+  .nav-tabs {
+    overflow: initial;
+    white-space: initial; }
+  .nav-tabs > li {
+    float: left;
+    margin-bottom: -1px;
+    display: block; } }
 
 /*# sourceMappingURL=app.css.map */
