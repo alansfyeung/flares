@@ -9,7 +9,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberAssignDecorationController', function($scope, $window, $location, $filter, $controller, $uibModal, flAPI, flResource){
+flaresApp.controller('memberAssignDecorationController', function($scope, $location, $filter, $controller, $uibModal, flAPI, flResource){
     
     // Extend this controller with resourceController
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -80,12 +80,12 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
         resetAwardDate();
     };
     
-    $scope.cancel = function(){
+    $scope.cancelHref = function(){
         if ($scope.member.regt_num){
-            $window.location.href = flResource('member').setFragment([$scope.member.regt_num, 'view', 'decorations']).getLink();
+            return flResource('member').setFragment([$scope.member.regt_num, 'view', 'decorations']).getLink();
         }
         else {
-            $window.location.href = flResource('member').getLink();
+            return flResource('member').getLink();
         }
     };
 
@@ -218,14 +218,27 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
             
             flAPI('member').nested('decoration', regtNum).post(payload).then(function(response){
                 $scope.award.saved = true;
-            }).catch(function(){
-                $scope.award.saveError = true;
+            }).catch(function(errorResponse){
+                console.log(errorResponse);
+                if (errorResponse.data.error){
+                    if (errorResponse.data.error.code === 5030 || errorResponse.data.error.code === '5030'){
+                        $scope.award.saveDuplicateError = true;
+                    }
+                }
+                else {
+                    $scope.award.saveError = true;                    
+                }
             });
         }
         else {
             console.warn('No decoration assigned yet');
         }
     }
+    
+    // Attempt to find the decoration currently like this one 
+    // function deduplicateExistingDecoration(){
+        
+    // }
     
     function resetAwardDate(){
         var awardDate = $scope.formData.awardDate;
@@ -244,6 +257,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $windo
     function Award(){
         this.saved = false;
         this.saveError = false;
+        this.saveDuplicateError = false;
         this.selectedDecoration = '';
         this.selectedDecorationBadgeUrl = '';
         this.data = {

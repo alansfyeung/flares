@@ -11,7 +11,7 @@
 
 @section('heading')
 <!-- page main header -->
-<div ng-cloak ng-show="member.regt_num">
+<div ng-show="member.regt_num">
     <h1>Award a decoration</h1>
 </div>
 @endsection
@@ -19,14 +19,24 @@
 @section('alerts')
 <div ng-show="award.saveError">
     <div class="alert alert-danger">
-        <h2>Saving failed</h2>
+        <h3>Saving failed</h3>
+        <hr>
         <p>We couldn't save this decoration.</p>
+    </div>
+</div>
+<div ng-show="award.saveDuplicateError">
+    <div class="alert alert-warning">
+        <h3>Saving failed</h3>
+        <p>The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
+        <hr>
+        <div>
+            <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" target="_blank">View member profile <span class="glyphicon glyphicon-share"></span></a>
+        </div>
     </div>
 </div>
 @endsection
 
 @section('content')
-@verbatim
 <style>
 [uib-typeahead-popup].dropdown-menu {
   display: block;
@@ -36,9 +46,9 @@
 <div ng-show="member.regt_num">
 
     <h2>
-        {{member.last_name}}, {{member.first_name}} &nbsp;
+        @{{member.last_name}}, @{{member.first_name}} &nbsp;
         <br>
-        <small style="display: inline-block">&diams; {{member.regt_num}}</small>
+        <small style="display: inline-block">&diams; @{{member.regt_num}}</small>
     </h2>
     <hr>
     
@@ -49,7 +59,7 @@
                 <hr>
                 <div>
                     <button type="button" class="btn btn-success" ng-click="assignAnother()">Assign another</button>
-                    <button type="button" class="btn btn-default" ng-click="cancel()">View member profile</button>
+                    <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}">View member profile</a>
                 </div>
             </div>
         </div>
@@ -65,7 +75,7 @@
                             <select class="form-control" ng-options="tier.tierName for tier in formData.decorationTiers" ng-model="selectedTier">
                                 <option value="">All</option>
                             </select>
-                            <pre class="hidden">{{selectedTier}}</pre>
+                            <pre class="hidden">@{{selectedTier}}</pre>
                         </div>
                     </div>
                     <div class="form-group">
@@ -111,7 +121,7 @@
                 <div class="form-group">
                     <div class="col-sm-12">
                         <div class="text-right">
-                            <button class="btn btn-default pull-left" type="button" ng-click="cancel()">Cancel</button>
+                            <a class="btn btn-default pull-left" ng-href="{{ url('/') }}@{{cancelHref()}}">Back to Member</a>
                             <button ng-show="award.selectedDecoration.dec_id" class="btn btn-primary" type="submit">Award this decoration</button>
                         </div>
                     </div>
@@ -125,19 +135,19 @@
     
         <div class="panel panel-default" ng-show="award.selectedDecoration.dec_id">
             <div class="panel-heading">
-                <h4 class="panel-title">{{award.selectedDecoration.name}}</h4>
+                <h4 class="panel-title">@{{award.selectedDecoration.name}}</h4>
             </div>
             <div class="panel-body">
                 <div class="thumbnail fl-record-thumbnail">
-                    <img ng-src="{{award.selectedDecorationBadgeUrl}}" alt="{{award.name}}" class="image-rounded memberview-thumb">
+                    <img ng-src="@{{award.selectedDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
                 </div>
                 <br>
                 <div class="caption">
-                    <p>{{award.selectedDecoration.desc}}</p>
+                    <p>@{{award.selectedDecoration.desc}}</p>
                 </div>
             </div>
             <div class="panel-footer">
-                Tier <span class="label label-info" style="vertical-align: 2px;">{{award.selectedDecoration.tier}}</span>
+                Tier <span class="label label-info" style="vertical-align: 2px;">@{{award.selectedDecoration.tier}}</span>
             </div>
         </div>
     
@@ -145,5 +155,4 @@
     </div>
     
 </div>
-@endverbatim
 @endsection

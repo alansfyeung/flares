@@ -65,6 +65,8 @@
             defaultMode = defaultMode || 'view';
             defaultTab = defaultTab || 'details';
             
+            
+            
             // load parsed $location into state.path
             var pathParts = this.parseUrl();
             if (pathParts.id){
@@ -73,6 +75,8 @@
                 this.state.path.mode = pathParts.mode ? pathParts.mode : defaultMode;
                 
                 var expectedTab = $("[bs-show-tab][aria-controls='" + pathParts.tab + "']");
+                console.log(expectedTab);
+                console.log(expectedTab.length);
                 if (expectedTab.length > 0){
                     expectedTab.tab('show');
                     this.state.path.tab = pathParts.tab;

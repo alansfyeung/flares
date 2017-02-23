@@ -81,9 +81,9 @@
     {{-- Drop-in screen which displays if member is discharged --}}
 	@include('member.partials.discharged')
     
-    <div ng-if="state.isMemberLoaded" ng-hide="state.isDischarge()">
+    <div ng-hide="state.isDischarge()">
 
-        <div class="row">
+        <div class="row" ng-if="state.isMemberLoaded">
             <div class="col-xs-9 col-sm-9">
                 <h2>
                     @{{member.data.last_name}}, @{{member.data.first_name}} &nbsp;
@@ -126,8 +126,7 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="details">
-                        <section>
-                        
+                        <section ng-if="state.isMemberLoaded">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h3>Member Details</h3>
@@ -229,9 +228,8 @@
                                 </div>
                             </div>
                         </section>
-                    
-                        <section>
-                            <hr>
+                        <hr>
+                        <section ng-if="state.isMemberLoaded">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h3>Member Details</h3>
@@ -288,7 +286,7 @@
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="healthmed">
-                        <section>
+                        <section ng-if="state.isMemberLoaded">
                             <h3>Health and Medical</h3>
                             <p>
                                 <span class="label label-default" ng-class="{'label-warning': !!+member.data.is_med_hmp }">Requires HMP: @{{member.is_med_hmp | yesNo}}</span>
@@ -329,7 +327,7 @@
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="iddocs">
-                        <section>
+                        <section ng-if="state.isMemberLoaded">
                             <div display-mode="edit" class="pull-right">
                                 <label class="checkbox-inline"><input type="checkbox" ng-model="member.data.is_fully_enrolled" ng-true-value="1" ng-false-value="0"> All enrolment documents uploaded?</label>
                             </div>
@@ -337,7 +335,7 @@
                             <p>Work in progress</p>
                         </section>
                         
-                        <section>
+                        <section ng-if="state.isMemberLoaded">
                             <h3>ID Card</h3>
                             <table class="table record-view">
                                 <tr>
@@ -376,7 +374,7 @@
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="decorations">
-                        <section>
+                        <section ng-if="state.isMemberLoaded">
                             <h3>Decorations</h3>
                                 <div class="table-wrapper">
                                     <table class="table table-striped">
@@ -417,7 +415,7 @@
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="postings">
-                        <section>
+                        <section ng-if="state.isMemberLoaded">
                             <h3>Promotions and Postings</h3>
                             <table class="table table-striped">
                                 <thead>

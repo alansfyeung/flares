@@ -18,5 +18,6 @@ class ResponseCodes
 	const ERR_PERM_NOT_ADMIN = 7001;
     
     const ERR_DECORATION_SHORTCODES_EXHAUSTED = 5020;
+    const ERR_DECORATION_ALREADY_ASSIGNED = 5030;
     
 }

@@ -37,7 +37,7 @@ class MemberDecorationController extends Controller
 		try {
             // Get the input payload
             $data = $request->input('memberDecoration');
-            
+
             // Create MemberDecoration object
             $award = new MemberDecoration();
             $award->regt_num = $memberId;
@@ -53,6 +53,12 @@ class MemberDecorationController extends Controller
 				'id' => $award->awd_id
 			], 201);
 		} catch (\Exception $ex) {
+            if ($ex->getCode() == '23000'){
+                // SQLSTATE[23000]: Integrity constraint violation
+                return response()->json([
+                    'error' => ['code' => ResponseCodes::ERR_DECORATION_ALREADY_ASSIGNED, 'reason' => 'Decoration was already assigned to the member']
+                ], 403);
+            }
 			return response()->json([
 				'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
 			], 500);
