@@ -20,6 +20,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
     });
     
     $scope.state = Object.create(c.state);        // inherit the proto
+    $scope.state.showDecorationDropdownList = false;
     $scope.formData = { 
         decorationTiers: [],
         months: [ 
@@ -78,6 +79,10 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
     $scope.assignAnother = function(){
         $scope.award = new Award();
         resetAwardDate();
+        $scope.state.showDecorationDropdownList = false;
+        setTimeout(function(){
+            angular.element('#selectedDecorationField').focus();            
+        }, 300);
     };
     
     $scope.cancelHref = function(){
@@ -193,6 +198,9 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
         flAPI('decoration').getAll().then(function(response){
             if (response.data && response.data.decorations){
                 $scope.decorations = response.data.decorations;
+                setTimeout(function(){
+                    angular.element('#selectedDecorationField').focus();            
+                }, 300);
             }
             else {
                 throw 'Failed to get list of decorations';
@@ -213,11 +221,12 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
                 dec_id: $scope.award.selectedDecoration.dec_id
             });
             
-            // console.log(JSON.stringify(payload));
-            // return;
-            
             flAPI('member').nested('decoration', regtNum).post(payload).then(function(response){
+                // Focus on the "Assign another" button
                 $scope.award.saved = true;
+                setTimeout(function(){
+                    angular.element('#assignAnotherDecorationButton').focus();            
+                }, 300);
             }).catch(function(errorResponse){
                 console.log(errorResponse);
                 if (errorResponse.data.error){

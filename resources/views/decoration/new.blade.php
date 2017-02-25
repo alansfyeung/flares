@@ -43,9 +43,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3">Description</label>
+                <label class="control-label col-sm-3">Purpose</label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" type="text" rows="3" ng-model="dec.data.desc" placeholder="e.g. Awarded to the most outstanding NCO effort during the year"></textarea>
+                    <textarea class="form-control" type="text" rows="2" ng-model="dec.data.desc" placeholder="e.g. Awarded to the most outstanding NCO effort during the year"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Visual description</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" type="text" rows="2" ng-model="dec.data.visual" placeholder="e.g. Blue and gold background represent the colours of the AAC."></textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -54,7 +60,7 @@
                     <input class="form-control" type="text" ng-model="dec.data.shortcode" maxlength="10" placeholder="10 letter max" required>
                 </div>
             </div>
-            <div class="form-group" ng-if="dec.data.tier === 'E'">
+            <div class="form-group" ng-if="dec.data.tier === 'F'">
                 <label class="control-label col-sm-3">Forums special rank ID</label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" ng-model="dec.data.forums_special_rank_id" placeholder="ID">

@@ -52,12 +52,15 @@ class DecorationPublicController extends Controller
             ->select('*')
             ->addSelect(DB::raw('COALESCE(precedence, 0) as adjusted_precedence'))
             ->firstOrFail();
+            
         $prevDecoration = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '>', $decoration->adjusted_precedence)
             ->first();
         $nextDecoration = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '<', $decoration->adjusted_precedence)
             ->first();
+            
+        // dd($prevDecoration);
             
         return view('public.decoration', [
             'dec' => $decoration,

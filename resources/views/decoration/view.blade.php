@@ -70,9 +70,14 @@
                             <h3>Decoration details</h3>
                             <table class="table record-view">
                                 <tr>
-                                    <td>Description</td>
+                                    <td>Purpose</td>
                                     <td display-mode="view">{{dec.data.desc | markBlanks}}</td>
-                                    <td display-mode="edit"><textarea name="desc" ng-model="dec.data.desc" rows="5"></textarea></td>
+                                    <td display-mode="edit"><textarea name="desc" ng-model="dec.data.desc" rows="4"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>Visual description</td>
+                                    <td display-mode="view">{{dec.data.visual | markBlanks}}</td>
+                                    <td display-mode="edit"><textarea name="visual" ng-model="dec.data.visual" rows="4"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td>Tier</td>

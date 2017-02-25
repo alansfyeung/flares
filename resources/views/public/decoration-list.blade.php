@@ -37,7 +37,7 @@
                 @foreach ($decorationTier->decorations as $dec)
                     <tr>
                         <td>
-                            <span class="fl-dec-badge smaller"><img src="{{ $dec->badgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->desc }}"></span>
+                            <span class="fl-dec-badge smaller"><img src="{{ $dec->badgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->name }}"></span>
                         </td>
                         <td><code>{{ $dec->shortcode }}</code></td>
                         <td>
