@@ -55,9 +55,11 @@ class DecorationPublicController extends Controller
             
         $prevDecoration = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '>', $decoration->adjusted_precedence)
+            ->orderBy('precedence', 'asc')
             ->first();
         $nextDecoration = Decoration::where('tier', $decoration->tier)
             ->where('precedence', '<', $decoration->adjusted_precedence)
+            ->orderBy('precedence', 'desc')
             ->first();
             
         // dd($prevDecoration);
