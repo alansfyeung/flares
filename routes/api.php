@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 // Dashboard API
 Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 
+
 // Member API -- note that Search alias route MUST go before the resourceful route
 Route::get('member/search', 'MemberController@search');
 Route::get('member/{memberId}/status', 'MemberController@status');
@@ -50,9 +51,8 @@ Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@dest
 Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
 // Admin API
-Route::resource('admin', 'AdminController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+Route::resource('user', 'UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
  
 // Ref data routes
 Route::get('refdata', 'RefDataController@all');
 Route::get('refdata/{key}', 'RefDataController@get');
-
