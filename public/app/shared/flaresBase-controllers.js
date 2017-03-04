@@ -31,7 +31,6 @@
             this.path = {
                 id: 0,
                 mode: 'view',		// by default
-                tab: 'details'
             };
             this.isView = function(){ 
                 return this.path.mode === 'view';
@@ -58,15 +57,14 @@
             return {
                 id: pathFrags[0] ? pathFrags[0] : null,
                 mode: pathFrags[1] ? pathFrags[1] : null,
-                tab: pathFrags[2] ? pathFrags[2] : null,
+                tab: (pathFrags[2] && !isFinite(parseInt(pathFrags[2]))) ? pathFrags[2] : null,
+                subId: (pathFrags[2] && isFinite(parseInt(pathFrags[2]))) ? parseInt(pathFrags[2]) : null,
             };
         };
-        this.loadWorkflowPath = function(defaultMode, defaultTab){
+        this.loadWorkflowPath = function(defaultMode, defaultTab, defaultSubId){
             defaultMode = defaultMode || 'view';
             defaultTab = defaultTab || 'details';
-            
-            
-            
+            defaultSubId = defaultSubId || 0;
             // load parsed $location into state.path
             var pathParts = this.parseUrl();
             if (pathParts.id){
@@ -74,15 +72,19 @@
                 this.state.path.id = pathParts.id;
                 this.state.path.mode = pathParts.mode ? pathParts.mode : defaultMode;
                 
-                var expectedTab = $("[bs-show-tab][aria-controls='" + pathParts.tab + "']");
-                console.log(expectedTab);
-                console.log(expectedTab.length);
-                if (expectedTab.length > 0){
-                    expectedTab.tab('show');
-                    this.state.path.tab = pathParts.tab;
+                // Check tab exists, and do not show a non-existent tab
+                if (pathParts.tab){
+                    if (hasTab(pathParts.tab)){
+                        getTabElement(pathParts.tab).tab('show');
+                        this.state.path.tab = pathParts.tab;                        
+                    }
+                    else {
+                        this.state.path.tab = defaultTab;
+                    }
                 }
-                else {
-                    this.state.path.tab = defaultTab;
+                
+                if (pathParts.subId){
+                    this.state.path.subId = pathParts.subId;
                 }
                 
                 // Change the state.path if $location is updated
@@ -98,32 +100,41 @@
         };
         
         this.updateWorkflowPath = function(){           // called after $location change
-            var wp = this.state.path;
+            var path = this.state.path;
             var pathParts = this.parseUrl();
-            if (wp.id !== pathParts.id){
+            if (path.id !== pathParts.id){
                 // If the ID changed, gotta reload the page.. bye
                 $window.location.reload();
             }
             // ensure the mode and tab matches the currently display
-            if (pathParts.mode && wp.mode !== pathParts.mode){
+            if (pathParts.mode && path.mode !== pathParts.mode){
                 this.state.path.mode = pathParts.mode;     // note: circular triggers updateLocation
             }
-            if (pathParts.tab && wp.tab !== pathParts.tab){
-                // try to activate the correct tab
-                var expectedTab = $("[bs-show-tab][aria-controls='" + pathParts.tab + "']");
-                if (expectedTab.length > 0){
-                    expectedTab.tab('show');
-                    wp.tab = pathParts.tab;
+            // try to activate the correct tab
+            if (pathParts.tab && path.tab !== pathParts.tab){
+                if (hasTab(pathParts.tab)){
+                    getTabElement(pathParts.tab).tab('show');
+                    path.tab = pathParts.tab;
                 }
             }
         };
         this.updateLocation = function(){               // called after state.path change
-            var wp = this.state.path;
-            if (wp.id){
-                // try to activate the correct tab
-                $("[bs-show-tab][aria-controls='" + wp.tab + "']").tab('show');
-                // Ensure the URL matches the path
-                $location.path([wp.id, wp.mode, wp.tab].join('/'));            
+            var path = this.state.path;
+            if (path.id){
+                if (path.tab){
+                    // try to activate the correct tab
+                    if (hasTab(path.tab)){
+                        getTabElement(path.tab).tab('show');                        
+                    }
+                    $location.path([path.id, path.mode, path.tab].join('/'));
+                }
+                else if (path.subId){
+                    $location.path([path.id, path.mode, path.subId].join('/'));
+                }
+                else {
+                    throw 'Unexpected: Neither tab or subId conditions were met';
+                    // $location.path([path.id, path.mode, 0].join('/'));
+                }
             }
         };
         
@@ -176,6 +187,13 @@
         $scope.$on('$destroy', function() {
             delete window.onbeforeunload;
         });
+        
+        function getTabElement(tabName){
+            return angular.element("[bs-show-tab][aria-controls='" + tabName + "']");
+        }
+        function hasTab(tabName){
+            return getTabElement(tabName).length > 0;
+        }
         
         
     }); 

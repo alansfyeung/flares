@@ -51,6 +51,22 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
         
     };
     
+    $scope.submitDefaultSearch = function(howMany){
+        howMany = howMany || 10;
+        flAPI('member').get(['search'], {
+			params: { 
+                'orderBy': 'CREATED',
+                'orderByDir': 'desc',
+                'limit': howMany
+            }
+		}).then(function(response){
+			$scope.results = response.data.members;
+			angular.forEach($scope.results, parseMemberSearchResult);
+		}, function(response){
+			console.warn('Error - default member search', response);
+		});
+    };
+    
 	$scope.submitAdvancedSearch = function(){
 
 		$location.search($scope.searchParams);
@@ -90,21 +106,6 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
             $scope.submitAdvancedSearch();
         }
 	}
-    else {
-        // TODO: Add result limit to the search function
-        flAPI('member').get(['search'], {
-			params: { 
-                'orderBy': 'CREATED',
-                'orderByDir': 'desc',
-                'limit': 10
-            }
-		}).then(function(response){
-			$scope.results = response.data.members;
-			angular.forEach($scope.results, parseMemberSearchResult);
-		}, function(response){
-			console.warn('Error - default member search', response);
-		});
-    }
     
 	
 	// angular.element('[name=search-surname]').focus();
@@ -112,6 +113,7 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
     
 	//==================
 	// Fetch reference data for platoons and ranks
+	//==================
 	
 	flAPI('refData').getAll().then(function(response){
 		if (response.data.ranks){
@@ -123,6 +125,7 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
     
     // ==============
     // Function decs
+    // ==============
     
     var MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.2425;
     function parseMemberSearchResult(result){

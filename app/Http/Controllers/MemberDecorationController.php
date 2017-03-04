@@ -64,6 +64,26 @@ class MemberDecorationController extends Controller
 			], 500);
 		}
     }
+    
+    public function update(Request $request, $memberId, $awardId)
+    {
+        $data = $request->input('memberDecoration');
+        $award = MemberDecoration::findOrFail($awardId);
+            
+        try {
+            // Only certain fields may be updated
+            $award->citation = $data['citation'];
+            $award->date = $data['date'];
+            $award->save();
+            return response()->json([
+				'id' => $award->awd_id
+			], 201);
+        } catch (\Exception $ex) {
+            return response()->json([
+				'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+			], 500);
+        }
+    }
 
     public function destroy($memberId, $awardId)
     {

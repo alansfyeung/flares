@@ -61,28 +61,31 @@ Route::group(['as' => 'member::', 'middleware' => 'auth'], function () {
         return view('member.view');
     });
     
-    Route::get('member/decorations', function(){
-        return view('member.viewDecorations');
-    });
+    // Route::get('member/decorations', function(){
+        // return view('member.view-decorations');
+    // })->name('view-decorations');
+    Route::get('member/decoration/edit', function(){
+        return view('member.edit-decoration');
+    })->name('edit-decoration');
     Route::get('member/decorations/new', function(){
         return view('member.assign-decoration');
-    });
+    })->name('assign-decoration');
     
 });
 
 Route::group(['as' => 'activity::', 'middleware' => 'auth'], function () {
     
     Route::get('activities', function () {		// dashboard-like overview for all activities
-        return view('activities.activityOverview');
+        return view('activity.activityOverview');
     });
     Route::get('activities/new', function () {		// Create new activity
-        return view('activities.newActivity');
+        return view('activity.newActivity');
     });
     Route::get('activities/search', function () {		// dedicated search screen with omni bar
-        return view('activities.activitySearch');
+        return view('activity.activitySearch');
     });
     Route::get('activities/awol', function () {		// All activities AWOL dashboard
-        return view('activities.awol');
+        return view('activity.awol');
     });
     
     Route::get('activity', function () {

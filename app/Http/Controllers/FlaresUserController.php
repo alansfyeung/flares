@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 // use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Hash;
-use App\FlaresUser;
+use App\User;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
 
-class FlaresUserController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class FlaresUserController extends Controller
      */
     public function index()
     {
-        $users = FlaresUser::all();
+        $users = User::all();
         return response()->json([
             'users' => $users->toArray()
         ]);

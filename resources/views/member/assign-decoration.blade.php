@@ -12,7 +12,11 @@
 @section('heading')
 <!-- page main header -->
 <div ng-show="member.regt_num">
-    <h1>Award a decoration</h1>
+    <h1>
+        <a ng-href="{{ url('/') }}@{{cancelHref()}}">Member</a>
+        &rsaquo;
+        Award a decoration
+    </h1>
 </div>
 @endsection
 
@@ -148,24 +152,24 @@
         </div>
         <div class="col-sm-4">
     
-        <div class="panel panel-default" ng-show="award.selectedDecoration.dec_id">
-            <div class="panel-heading">
-                <h4 class="panel-title">@{{award.selectedDecoration.name}}</h4>
-            </div>
-            <div class="panel-body">
-                <div class="thumbnail fl-record-thumbnail">
-                    <img ng-src="@{{award.selectedDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
+            <div class="panel panel-default" ng-show="award.selectedDecoration.dec_id">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@{{award.selectedDecoration.name}}</h4>
                 </div>
-                <br>
-                <div class="caption">
-                    <p>@{{award.selectedDecoration.desc}}</p>
+                <div class="panel-body">
+                    <div class="thumbnail fl-record-thumbnail">
+                        <img ng-src="@{{award.selectedDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
+                    </div>
+                    <br>
+                    <div class="caption">
+                        <p>@{{award.selectedDecoration.desc}}</p>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    Tier <span class="label label-info" style="vertical-align: 2px;">@{{award.selectedDecoration.tier}}</span>
                 </div>
             </div>
-            <div class="panel-footer">
-                Tier <span class="label label-info" style="vertical-align: 2px;">@{{award.selectedDecoration.tier}}</span>
-            </div>
-        </div>
-    
+        
         </div>
     </div>
     

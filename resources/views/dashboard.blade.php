@@ -15,14 +15,13 @@
 @endpush
 
 @section('content')
-@verbatim
 <div class="row">
 
+    @verbatim
 	<div class="col-sm-4">
-	
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Member management</h3>
+				<h3 class="panel-title">Member management <span class="label label-success">beta</span></h3>
 			</div>
 			<div class="panel-body">
 				<div class="row">
@@ -46,13 +45,14 @@
                 <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a>
             </div>
 		</div>
-			
 	</div>
+    @endverbatim
     
+    @verbatim
 	<div class="col-sm-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Decorations admin</h3>
+                <h3 class="panel-title">Decorations <span class="label label-success">beta</span></h3>
             </div>
             <div class="panel-body">
                 <figure class="dashboard-stat" ng-cloak>
@@ -66,7 +66,27 @@
             </div>
         </div>
 	</div>
+    @endverbatim
+    
+    @if (env('APP_ENV') == 'dev')
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Activities <span class="label label-warning">alpha</span></h3>
+            </div>
+            <div class="panel-body">
+                <figure class="dashboard-stat" ng-cloak>
+                    <figcaption class="stat-caption">Total ??</figcaption>
+                    <div class="stat-figure">TBA</div>
+                </figure>
+            </div>
+            <div class="list-group">
+                <a href="/activities" class="list-group-item">All activities</a>
+                <a href="/activities/new" class="list-group-item">Add new activity</a>
+            </div>
+        </div>
+	</div>
+    @endif
 
 </div>
-@endverbatim
 @endsection

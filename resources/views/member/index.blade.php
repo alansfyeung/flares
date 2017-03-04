@@ -73,29 +73,36 @@
 @endsection
 
 @section('content')
-    <form class="form" ng-submit="submitSimpleSearch()">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="input-group input-group-lg">
-                    <input type="text" class="form-control" ng-model="searchKeywords" placeholder="Search members...">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">Go!</button>
-                    </span>
-                </div><!-- /input-group -->
+    <section class="search-area">
+        <form class="form" ng-submit="submitSimpleSearch()">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" ng-model="searchKeywords" placeholder="Search members...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Go!</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div>
             </div>
-        </div>
-        <p>
-            <small><a class="btn btn-link" ng-click="state.isAdvancedSearch = !state.isAdvancedSearch;">Advanced search</a></small>
-        </p>
-    </form>
+            <p>
+                <small><a class="btn btn-link" ng-click="state.isAdvancedSearch = !state.isAdvancedSearch;">Advanced search</a></small>
+            </p>
+        </form>
+        
+        @yield('advancedSearchForm')
     
-	@yield('advancedSearchForm')
+        <hr>
+    </section>
     
-	<hr>
+    <div ng-hide="results.length">
+        <button class="btn btn-default" ng-click="submitDefaultSearch(20)">Retrieve 20 most recent</button>
+    </div>
+    
     <section class="search-results">
-        <div class="label label-default" ng-show="state.isSearch">@{{results.length}} results for search</div>
+        <div class="label label-info" ng-show="results.length">@{{results.length}} results for search</div>
         <div class="table-wrapper">
-            <table class="table table-hover" ng-show="results.length > 0">
+            <table class="table table-hover" ng-show="results.length">
                 <colgroup>
                     <col style="width: 120px;">
                     <col style="min-width: 120px;">

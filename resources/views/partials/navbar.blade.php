@@ -49,4 +49,18 @@
           </ul>
         </li> --}}
     </ul>
+    @if (Auth::check())
+    <ul class="nav navbar-nav navbar-right">
+        <li title="{{Auth::user()->email}}">
+            <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{Auth::user()->username}} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li>
+                    {{-- https://github.com/laravel/framework/blob/7d116dc5a008e69c97f864af79ac46ab6a8d5895/src/Illuminate/Auth/Console/stubs/make/views/layouts/app.stub#L62 --}}
+                    <a href="{{ url('/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    @endif
 </div>

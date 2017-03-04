@@ -18,7 +18,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
     c.extendConfig({
         'unloadWarning': 'You are editing this decoration record, and will lose any unsaved changes.'
     });
-    
+
     $scope.state = Object.create(c.state);        // inherit the proto
     $scope.state.showDecorationDropdownList = false;
     $scope.formData = { 
@@ -157,8 +157,6 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
 	function retrieveMember(){
 		if ($scope.state.path.id){
 			flAPI('member').get([$scope.state.path.id]).then(function(response){
-				// c.util.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
-                
                 
                 if (response.data && response.data.member){
                     
@@ -262,6 +260,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
 
     //======================
     // Classes
+    //======================
 	
     function Award(){
         this.saved = false;
@@ -284,6 +283,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
         };
     }
     
+    //======================
     // End Classes
     //======================
     

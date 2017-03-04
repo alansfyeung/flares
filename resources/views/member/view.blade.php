@@ -82,31 +82,74 @@
 	@include('member.partials.discharged')
     
     <div ng-hide="state.isDischarge()">
-
+    
+        @verbatim
         <div class="row" ng-if="state.isMemberLoaded">
-            <div class="col-xs-9 col-sm-9">
+            <div class="col-sm-6 col-sm-push-6">
+                <div class="row">
+                    <div class="col-md-8 hidden-sm hidden-xs">
+                        <div class="table-wrapper text-muted">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>Regimental Number</td>
+                                    <td>{{member.data.regt_num | markBlanks}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Years of Service</td>
+                                    <td>{{member.data.role_class | markBlanks}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Current Rank / Posting</td>
+                                    <td>-- TBA -- TBA</td>
+                                </tr>
+                                <tr>
+                                    <td>Forums ID / Username</td>
+                                    <td>{{member.data.forums_username | markBlanks}}</td>
+                                </tr>
+                                <tr>
+                                    <td>COMS ID / Username</td>
+                                    <td>{{member.data.coms_username | markBlanks}} {{member.coms_id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Training awards</td>
+                                    <td>
+                                        <span class="label" ng-class="{'label-success': member.data.is_qual_mb, 'label-danger': !member.data.is_qual_mb}">MB: {{member.data.is_qual_mb | yesNo}}</span>
+                                        <span class="label" ng-class="{'label-success': member.data.is_qual_s303, 'label-danger': !member.data.is_qual_s303}">S303: {{member.data.is_qual_s303 | yesNo}}</span>
+                                        <span class="label" ng-class="{'label-success': member.data.is_qual_gf, 'label-danger': !member.data.is_qual_gf}">GF: {{member.data.is_qual_gf | yesNo}}</span>    
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- Header thumbnail Display Picture -->
+                        <section ng-controller="pictureController" ng-click="displayPictureModal()">
+                            <div class="thumbnail fl-record-thumbnail">
+                                <img ng-src="{{memberImage.url}}" alt="{{member.data.last_name}}" class="image-rounded memberview-thumb">
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-sm-pull-6">
                 <h2>
-                    @{{member.data.last_name}}, @{{member.data.first_name}} &nbsp;
-                    <br>
-                    <small style="display: inline-block">&diams; @{{member.data.regt_num}}</small>
+                    <span class="text-upper">{{member.data.last_name}}</span>, {{member.data.first_name}} &nbsp;<br>
+                    <small style="display: inline-block">&diams; {{member.data.regt_num}}</small>
                 </h2>
                 <div class="member-status-labels">
                     <span member-status></span>
                     <span hmp-status></span>
                     <span allergy-status></span>
                 </div>
-            </div>
-            <div class="col-xs-3 col-sm-3">
-                <!-- Header thumbnail Display Picture -->
-                <section ng-controller="pictureController" ng-click="displayPictureModal()">
-                    <div class="thumbnail fl-record-thumbnail">
-                        <img ng-src="@{{memberImage.url}}" alt="@{{member.data.last_name}}" class="image-rounded memberview-thumb">
-                    </div>
-                </section>
-
+                <hr>
+                <div>
+                    <span class="label label-danger">TBA</span> <em>Member details can be edited through the Actions menu</em><br>
+                    <span class="label label-danger">TBA</span> <em>Use Mass Actions to update Forums and COMS usernames</em>
+                </div>
             </div>
         </div>
-        
+        @endverbatim
+
         <hr>
         
         <!-- Member info tabs & panel -->
@@ -228,61 +271,6 @@
                                 </div>
                             </div>
                         </section>
-                        <hr>
-                        <section ng-if="state.isMemberLoaded">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h3>Member Details</h3>
-                                    <p><em>Member details can be edited through the Actions menu</em></p>
-                                    <table class="table record-view">
-                                        <tr>
-                                            <td>Regimental Number</td>
-                                            <td>@{{member.data.regt_num | markBlanks}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Years of Service</td>
-                                            <td>@{{member.data.role_class | markBlanks}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Current Rank</td>
-                                            <td>-- TBA</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Current Posting</td>
-                                            <td>-- TBA</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Forums Username</td>
-                                            <td>@{{member.data.forums_username | markBlanks}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>COMS Username</td>
-                                            <td>@{{member.data.coms_username | markBlanks}} @{{member.coms_id}}</td>
-                                        </tr>
-                                    </table>	
-                                    <p><em>Use Mass Actions to update Forums and COMS usernames</em></p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <h3>Unit Qualifications</h3>
-                                    <p><em>To update qualifications, go to Assign Awards.</em></p>
-                                    <table class="table record-view">
-                                        <tr>
-                                            <td>Maroon Beret Award</td>
-                                            <td>@{{member.data.is_qual_mb | yesNo}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Silver 303 Award</td>
-                                            <td>@{{member.data.is_qual_s303 | yesNo}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Gold Falcon Award</td>
-                                            <td>@{{member.data.is_qual_gf | yesNo}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </section>
-                        
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="healthmed">
@@ -332,7 +320,7 @@
                                 <label class="checkbox-inline"><input type="checkbox" ng-model="member.data.is_fully_enrolled" ng-true-value="1" ng-false-value="0"> All enrolment documents uploaded?</label>
                             </div>
                             <h3>Documents</h3>
-                            <p>Work in progress</p>
+                            <p><span class="label label-warning">Work in progress</span></p>
                         </section>
                         
                         <section ng-if="state.isMemberLoaded">
@@ -376,16 +364,15 @@
                     <div role="tabpanel" class="tab-pane" id="decorations">
                         <section ng-if="state.isMemberLoaded">
                             <h3>Decorations</h3>
-                                <div class="table-wrapper">
-                                    <table class="table table-striped">
+                            <p>Hold <kbd>SHIFT</kbd> to remove awards</p>
+                            <div class="table-wrapper">
+                                <table class="table table-striped">
                                     <colgroup>
                                         <col style="width: 120px;">
                                         <col style="width: 200px;">
                                         <col>
                                         <col style="width: 140px;">
-                                        <col style="width: 100px;">
-                                        <col style="width: 100px;">
-                                        <col style="width: 40px;">
+                                        <col style="width: 80px;">
                                     </colgroup>
                                     <thead>
                                         <tr>
@@ -393,20 +380,19 @@
                                             <th>Decoration</th>
                                             <th>Citation</th>
                                             <th>Date awarded</th>
-                                            <th>Score</th>
-                                            <th>Grade</th>
-                                            <th>&times;</th>
+                                            <th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="award in member.awards" ng-class="{ warning: award.isDeleting }">
                                             <td><img ng-src="@{{award.url}}" alt="@{{award.data.decoration.shortcode}}"></td>
                                             <td><span class="label label-info">@{{award.data.decoration.tier}}</span> @{{award.data.decoration.shortcode || award.data.decoration.name}} </td>
-                                            <td>@{{award.data.citation}}</td>
-                                            <td>@{{award.data.date | date:'dd MMM yyyy'}}</td>
-                                            <td>@{{award.data.awd_score}}</td>
-                                            <td>@{{award.data.awd_grade}}</td>
-                                            <td><a class="btn btn-danger btn-xs fl-context-modal-button" ng-click="removeAward(award)">&times;</a></td>
+                                            <td>@{{award.data.citation}} @{{award.data.awd_score}} @{{award.data.awd_grade}}</td>
+                                            <td>@{{award.data.date | date:'MMM yyyy'}}</td>
+                                            <td>
+                                                <a ng-hide="shiftKeyPressed" class="btn btn-primary btn-xs fl-context-modal-button" ng-href="{{ route('member::edit-decoration') }}#!/@{{member.regtNum}}/edit/@{{award.data.awd_id}}">Edit</a>
+                                                <a ng-show="shiftKeyPressed" class="btn btn-danger btn-xs fl-context-modal-button" ng-click="removeAward(award)">Remove</a>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

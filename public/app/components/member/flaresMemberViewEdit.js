@@ -32,7 +32,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberViewEditController', function($scope, $location, $controller, $q, $uibModal, flAPI, flResource){
+flaresApp.controller('memberViewEditController', function($scope, $rootScope, $window, $controller, $q, $uibModal, flAPI, flResource){
     
     // Add some base 
     angular.extend(this, $controller('resourceController', {$scope: $scope})); 
@@ -69,6 +69,8 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
     $scope.nav = {
         assignAward: null
     };
+    
+    $scope.shiftKeyPressed = false;
 	
 	$scope.edit = function(){
 		var sw = $scope.state;
@@ -211,7 +213,9 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
             return false;
         }
     };
-	
+    
+    // Catch keyup/down for shift event
+    registerShiftKeyListener();
 	
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// Read the url and GO
@@ -284,16 +288,16 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 			console.warn('Member ID not specified');
             return $q.reject('No member ID found in path');
 		}
-	};
+	}
     
 	function processMemberRecord(member){
         c.util.convertToDateObjects(['dob', 'idcard_expiry', 'created_at', 'updated_at', 'deleted_at'], member);
-	};
+	}
     
     function processMemberDecorationRecord(memberDecoration){
         c.util.convertToDateObjects(['date', 'updated_at', 'deleted_at'], memberDecoration);
         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'updated_at'], memberDecoration.decoration);
-	};
+	}
     
 	function updateMemberRecord(){
 		var hasChanges = false;
@@ -326,7 +330,27 @@ flaresApp.controller('memberViewEditController', function($scope, $location, $co
 				console.warn('Error: member update', response);
 			});
 		}
-	};
+	}
+    
+    function registerShiftKeyListener(){
+        var doc = angular.element(document);
+        doc.on('keydown', listenShiftKey);
+        doc.on('keyup', listenShiftKey);
+    }
+    function deregisterShiftKeyListener(){
+        var doc = angular.element(document);
+        doc.off('keydown', listenShiftKey);
+        doc.off('keyup', listenShiftKey);
+    }
+    
+    function listenShiftKey(event){
+        if ($scope.shiftKeyPressed !== event.shiftKey){
+            $scope.$apply(function(){
+                $scope.shiftKeyPressed = event.shiftKey;
+                // console.log(event.shiftKey);
+            });
+        }
+    }
 	
 });
 

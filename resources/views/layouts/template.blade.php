@@ -59,6 +59,9 @@
 	</footer>
 	@show
     
+    {{-- Print API token into the page --}}
+    {{-- Todo: With OAuth2 --}}
+    
     {{-- Core js --}}
     <script src="/assets/js/jquery-1.11.3.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
