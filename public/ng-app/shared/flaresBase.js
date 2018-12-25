@@ -10,19 +10,22 @@
 
     // ==========================
     // Pre-run config
-    flaresBase.run(['$http', '$templateCache', function ($http, $templateCache) {
-        $http.get('/ng-app/shared/uibModalBackdrop.html').then(function (response) {
-            $templateCache.put('template/modal/backdrop.html', response.data);
-        });
-        $http.get('/ng-app/shared/uibModalWindow.html').then(function (response) {
-            $templateCache.put('template/modal/window.html', response.data);
-        });
+    // 1a. Our app uses ! mode rather than html5 history (which would muck with Laravel routing too much)
+    // 1b. Create a $httpProvider interceptor, and whack the crsf token to the top of everything. This enables API auth. 
+    // 2a. Cache some templates.
+    
+    flaresBase.config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
+        // ! mode
+        $locationProvider.html5Mode(false).hashPrefix('!');
+        // CRSF Token 
+        registerApiTokenInterceptor($httpProvider);
     }]);
 
-
-    flaresBase.config(function ($locationProvider) {
-        $locationProvider.html5Mode(false).hashPrefix('!');
-    });
+    flaresBase.run(['$http', '$templateCache', function ($http, $templateCache) {
+        // Preload/precache some templates
+        registerTemplate($http, $templateCache, 'template/modal/backdrop.html', '/ng-app/shared/uibModalBackdrop.html');
+        registerTemplate($http, $templateCache, 'template/modal/window.html', '/ng-app/shared/uibModalWindow.html');
+    }]);
 
     // =================
     // Register Constants
@@ -179,5 +182,38 @@
             return result;
         };
     });
+
+    // ==============
+    // Run phase logic
+
+    function registerTemplate($http, $templateCache, templateCacheName, url) {
+        $http.get(url).then(function (response) {
+            $templateCache.put(templateCacheName, response.data);
+        });
+    }
+
+    function registerApiTokenInterceptor($httpProvider) {
+
+        // 1a. Use httpProvider config to set the xrsf header info
+        // Note: This assumes that Laravel already set the XSRF cookie for us.
+        /*
+        // PS. We can't use the cookie, because it's encrypted and \Laravel\Passport doesn't expect that.
+        // Taylor Otwell makes it clear in comments that he wants X-CSRF because "it needs to be explicitly set" and therefore improves security or something.
+        $httpProvider.defaults.xsrfCookieName = 'XSRF-TOKEN';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';         // for Laravel Passport
+        */
+
+        // 1b. Register an interceptor to manually create the XRSF headers
+        $httpProvider.interceptors.push(function() {
+            return {
+                'request': function(config) {
+                    let csrfToken = window.csrfToken || angular.element('meta[name="csrf-token"]').attr('content');
+                    config.headers['X-CSRF-TOKEN'] = csrfToken;
+                    return config;
+                },
+            }
+        });
+
+    }
 
 }());

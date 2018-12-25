@@ -28,7 +28,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="passwd">
-                <form class="form" method="POST" action="{{ url('/login') }}">
+                <form class="form auth-login-form" method="POST" action="{{ url('/login') }}">
                     <fieldset>
                         <div class="form-group">
                             <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="FLARES username">
@@ -60,7 +60,10 @@
 
             {{-- Explainer about Forum SSO --}}
             <div role="tabpanel" class="tab-pane" id="forumsso">
-                <div class="alert alert-info">Instead of using a password, you can log into FLARES via the <a href="{{ env('FL_HELP_FORUM_SSO_LINK') }}">forums (single-sign on)</a>. </div>
+                <div class="alert alert-info">
+                    <p>Instead of using a password, you can log into FLARES via the forums (single-sign on). </p>
+                    <p><a href="{{ env('FL_HELP_FORUM_SSO_LINK') }}">Click here to access the forums</a></p>
+                </div>
             </div>
         </div>
 	</div>

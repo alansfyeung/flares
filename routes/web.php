@@ -12,6 +12,9 @@
 */
 
 Auth::routes();
+Route::get('auth/api-oauth', function () {				// Member search page
+    return view('auth.authorize-api');
+});
 
 /* Dashboard */
 Route::group(['middleware' => 'auth'], function () {
