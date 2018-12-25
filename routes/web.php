@@ -11,16 +11,7 @@
 |
 */
 
-// Route::get('/', function () {
-    // return view('welcome');
-// });
-
-// Route::get('login', 'Auth\LoginController@getLogin');
-// Route::post('login', 'Auth\LoginController@postLogin');
-// Route::get('logout', 'Auth\LoginController@getLogout');
 Auth::routes();
-
-
 
 /* Dashboard */
 Route::group(['middleware' => 'auth'], function () {

@@ -2,7 +2,7 @@
 Statistics for members
 --}}
 
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresApp')
 @section('ng-controller', 'memberController')
@@ -13,7 +13,7 @@ Statistics for members
 @endsection
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberStats.js"></script>
+<script src="/ng-app/components/member/flaresMemberStats.js"></script>
 @endpush
 
 @section('content')

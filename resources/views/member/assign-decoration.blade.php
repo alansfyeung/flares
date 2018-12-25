@@ -1,12 +1,12 @@
 {{-- Display a single member --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberAssignDecoration')
 @section('ng-controller', 'memberAssignDecorationController')
 @section('title', 'Decoration Management')
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberAssignDecoration.js"></script>
+<script src="/ng-app/components/member/flaresMemberAssignDecoration.js"></script>
 @endpush
 
 @section('heading')

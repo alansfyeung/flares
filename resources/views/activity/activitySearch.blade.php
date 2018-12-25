@@ -1,5 +1,5 @@
 {{-- Activity Search --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresActivitySearch')
 @section('ng-controller', 'activitySearchController')
@@ -37,5 +37,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/activity/flaresActivitySearch.js"></script>
+<script src="/ng-app/components/activity/flaresActivitySearch.js"></script>
 @endsection

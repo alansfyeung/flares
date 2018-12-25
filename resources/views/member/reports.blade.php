@@ -1,5 +1,5 @@
 {{-- Display a single member --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberReports')
 @section('ng-controller', 'memberController')
@@ -16,5 +16,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/member/flaresMemberReports.js"></script>
+<script src="/ng-app/components/member/flaresMemberReports.js"></script>
 @endsection

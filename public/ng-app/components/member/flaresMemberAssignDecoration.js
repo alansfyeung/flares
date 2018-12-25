@@ -11,8 +11,8 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
 
 flaresApp.controller('memberAssignDecorationController', function($scope, $location, $filter, $controller, $uibModal, flAPI, flResource){
     
-    // Extend this controller with resourceController
-    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
+    // Extend this controller with viewEditController
+    angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
     
     var c = this;
     c.extendConfig({

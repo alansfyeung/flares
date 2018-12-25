@@ -1,6 +1,6 @@
-(function(){
+(function () {
     'use strict';
-    
+
     // ==================================
     //   The base module for Flares
     //   All page apps should extend off this module
@@ -10,23 +10,23 @@
 
     // ==========================
     // Pre-run config
-    flaresBase.run(['$http', '$templateCache', function($http, $templateCache){
-        $http.get('/app/shared/uibModalBackdrop.html').then(function(response){
+    flaresBase.run(['$http', '$templateCache', function ($http, $templateCache) {
+        $http.get('/ng-app/shared/uibModalBackdrop.html').then(function (response) {
             $templateCache.put('template/modal/backdrop.html', response.data);
         });
-        $http.get('/app/shared/uibModalWindow.html').then(function(response){
+        $http.get('/ng-app/shared/uibModalWindow.html').then(function (response) {
             $templateCache.put('template/modal/window.html', response.data);
         });
     }]);
 
 
-    flaresBase.config(function($locationProvider) {
+    flaresBase.config(function ($locationProvider) {
         $locationProvider.html5Mode(false).hashPrefix('!');
     });
 
     // =================
-    // Constants
-    // 1. flResourceDefinitions - A source of truth for factories/services
+    // Register Constants
+    // 1. Flares Resource Definitions - A source of truth for factories/services
     // =================
 
     flaresBase.constant('flResourceDefinitions', {
@@ -72,26 +72,26 @@
     // 4. bsShowTab - for BS3 tabs
     // 5. spreadsheetNav - WIP - for member onboarding editing
 
-    flaresBase.directive('contextMenu', function(){
-        return { 
+    flaresBase.directive('contextMenu', function () {
+        return {
             restrict: 'E',
-            link: function (scope, element, attr){
+            link: function (scope, element, attr) {
                 // WIP
             }
         };
     });
-    flaresBase.directive('displayMode', function(){
-        return { 
+    flaresBase.directive('displayMode', function () {
+        return {
             restrict: 'A',
             link: function (scope, element, attr) {
                 var pathModeExpr = 'state.path.mode';
                 // console.log('directiving', scope.$eval(pathModeExpr));
-                if (scope.$eval(pathModeExpr) !== attr.displayMode){
+                if (scope.$eval(pathModeExpr) !== attr.displayMode) {
                     element.hide();
                 }
-                
-                scope.$watch(pathModeExpr, function(newValue){
-                    if (newValue !== attr.displayMode){
+
+                scope.$watch(pathModeExpr, function (newValue) {
+                    if (newValue !== attr.displayMode) {
                         element.hide();
                         return;
                     }
@@ -100,22 +100,22 @@
             }
         };
     });
-    flaresBase.directive('sidebarToggle', function(){
+    flaresBase.directive('sidebarToggle', function () {
         // Warning: Deprecated
         console.warn('Directive SidebarToggle is deprecated; use ui.bootstrap.dropdown instead');
         return {
             restrict: 'A',
-            link: function(scope, element, attr){
-                element.click(function(e){
-                    if (scope.state && !scope.state.hasOwnProperty('showSidebar')){
+            link: function (scope, element, attr) {
+                element.click(function (e) {
+                    if (scope.state && !scope.state.hasOwnProperty('showSidebar')) {
                         scope.state.showSidebar = false;
                     }
 
                     // Toggle it
-                    scope.state.showSidebar = ! scope.state.showSidebar;
-                    
+                    scope.state.showSidebar = !scope.state.showSidebar;
+
                     // Look for fl-content and fl-sidebar
-                    if (scope.state.showSidebar){
+                    if (scope.state.showSidebar) {
                         angular.element('.fl-content').removeClass('col-sm-12').addClass('col-sm-9').addClass('col-sm-pull-3');
                         angular.element('.fl-sidebar').removeClass('hidden');
                     }
@@ -127,27 +127,27 @@
             }
         };
     });
-    flaresBase.directive('bsShowTab', function($location){
-        return { 
+    flaresBase.directive('bsShowTab', function ($location) {
+        return {
             link: function (scope, element, attr) {
-                element.click(function(e) {
+                element.click(function (e) {
                     e.preventDefault();
                     $(element).tab('show');		// Show the BS3 tab
-                    
-                    if (scope.state){
-                        scope.$apply(function(){
+
+                    if (scope.state) {
+                        scope.$apply(function () {
                             scope.state.path.tab = attr.ariaControls;
                         });
                     }
                 });
             }
         };
-        
+
     });
-    flaresBase.directive('spreadsheetNav', function(){
+    flaresBase.directive('spreadsheetNav', function () {
         return {
-            link: function(scope, element, attr){
-                element.keydown(function(e){
+            link: function (scope, element, attr) {
+                element.keydown(function (e) {
                     // console.log(e.keyCode);
                 });
             }
@@ -158,20 +158,20 @@
     // =================
     // Base filters
 
-    flaresBase.filter('yesNo', function(){
-        return function(input){
+    flaresBase.filter('yesNo', function () {
+        return function (input) {
             return input && input !== '0' ? 'Yes' : 'No';
         }
     });
-    flaresBase.filter('markBlanks', function(){
-        return function(input){
+    flaresBase.filter('markBlanks', function () {
+        return function (input) {
             return input ? input : '--';
         }
     });
-    flaresBase.filter('is', function() {
-        return function(items, field) {
+    flaresBase.filter('is', function () {
+        return function (items, field) {
             var result = {};
-            angular.forEach(items, function(value, key) {
+            angular.forEach(items, function (value, key) {
                 if (!value.hasOwnProperty(field)) {
                     result[key] = value;
                 }
@@ -179,5 +179,5 @@
             return result;
         };
     });
-    
+
 }());

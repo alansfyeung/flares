@@ -2,8 +2,8 @@ var flaresApp = angular.module('flaresMemberDecorationViewEdit', ['flaresBase'])
 
 flaresApp.controller('memberEditDecorationController', function($scope, $rootScope, $controller, $http, $timeout, flAPI, flResource){
     
-    // Extend this controller with resourceController
-    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
+    // Extend this controller with viewEditController
+    angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
     
     var c = this;
     c.extendConfig({

@@ -1,12 +1,12 @@
 {{-- Display a single member --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberViewEdit')
 @section('ng-controller', 'memberViewEditController')
 @section('title', 'Member View')
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberViewEdit.js"></script>
+<script src="/ng-app/components/member/flaresMemberViewEdit.js"></script>
 @endpush
 @push('vendor-scripts')
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>

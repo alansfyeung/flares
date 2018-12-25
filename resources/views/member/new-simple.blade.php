@@ -1,12 +1,12 @@
 {{-- Add a single member using the simple form --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberNew')
 @section('ng-controller', 'newSimpleController')
 @section('title', 'Simple Member form')
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberNewSimple.js"></script>
+<script src="/ng-app/components/member/flaresMemberNewSimple.js"></script>
 @endpush
 
 @section('heading')

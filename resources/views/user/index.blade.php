@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresUser')
 @section('ng-controller', 'indexController')
@@ -10,7 +10,7 @@
 @endsection
 
 @push('scripts')
-<script src="/app/components/decoration/flaresDecorationIndex.js"></script>
+<script src="/ng-app/components/decoration/flaresDecorationIndex.js"></script>
 @endpush
 @push('vendor-scripts')
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>

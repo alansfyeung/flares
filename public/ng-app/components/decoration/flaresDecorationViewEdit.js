@@ -29,7 +29,7 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 flaresApp.controller('decorationViewEditController', function($scope, $window, $controller, $q, $uibModal, flAPI, flResource){
 
     // Add some base - unzip base controller's stuff into this controller
-    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
+    angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
     
     var c = this;
     c.extendConfig({

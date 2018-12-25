@@ -1,5 +1,5 @@
 {{-- Activities NEW --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresActivityNew')
 @section('ng-controller', 'activityAddController')
@@ -82,5 +82,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/activity/flaresActivityNew.js"></script>
+<script src="/ng-app/components/activity/flaresActivityNew.js"></script>
 @endsection

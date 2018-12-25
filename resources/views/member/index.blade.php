@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberIndex')
 @section('ng-controller', 'memberIndexController')
@@ -10,7 +10,7 @@
 @endsection
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberIndex.js"></script>
+<script src="/ng-app/components/member/flaresMemberIndex.js"></script>
 @endpush
 
 @section('advancedSearchForm')

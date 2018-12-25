@@ -1,5 +1,5 @@
 {{-- Activities View existing --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresActivityView')
 @section('ng-controller', 'activityViewEditController')
@@ -332,5 +332,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/activity/flaresActivityViewEdit.js"></script>
+<script src="/ng-app/components/activity/flaresActivityViewEdit.js"></script>
 @endsection

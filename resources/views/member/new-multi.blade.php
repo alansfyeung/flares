@@ -1,12 +1,12 @@
 {{-- Add multiple members --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresMemberNew')
 @section('ng-controller', 'newMultiController')
 @section('title', 'Member Onboarding')
 
 @push('scripts')
-<script src="/app/components/member/flaresMemberNewMulti.js"></script>
+<script src="/ng-app/components/member/flaresMemberNewMulti.js"></script>
 @endpush
 
 @section('heading')

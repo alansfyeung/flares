@@ -1,12 +1,12 @@
 {{-- Add a single member using the simple form --}}
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'newDecorationController')
 @section('title', 'New Decoration')
 
 @push('scripts')
-<script src="/app/components/decoration/flaresDecorationNew.js"></script>
+<script src="/ng-app/components/decoration/flaresDecorationNew.js"></script>
 @endpush
 
 @section('heading')

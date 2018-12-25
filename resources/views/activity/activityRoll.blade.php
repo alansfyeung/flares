@@ -1,5 +1,5 @@
 {{-- Roll for an activity --}} 
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresActivityMarkRoll')
 @section('ng-controller', 'activityRollController')
@@ -218,5 +218,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/app/components/activity/flaresActivityMarkRoll.js"></script>
+<script src="/ng-app/components/activity/flaresActivityMarkRoll.js"></script>
 @endsection

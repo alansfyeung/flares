@@ -1,6 +1,6 @@
 {{-- Home page for Flares users. Shows links for quick access --}}
 
-@extends('layouts.primary')
+@extends('layouts.base')
 
 @section('ng-app', 'flaresDashboard')
 @section('ng-controller', 'dashboardController')
@@ -11,7 +11,7 @@
 @endsection
 
 @push('scripts')
-<script src="/app/components/dashboard/flaresDashboard.js"></script>
+<script src="/ng-app/components/dashboard/flaresDashboard.js"></script>
 @endpush
 
 @section('content')

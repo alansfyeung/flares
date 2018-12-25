@@ -35,7 +35,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
 flaresApp.controller('memberViewEditController', function($scope, $rootScope, $window, $controller, $q, $uibModal, flAPI, flResource){
     
     // Add some base 
-    angular.extend(this, $controller('resourceController', {$scope: $scope})); 
+    angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
     
     var c = this;
     c.extendConfig({
