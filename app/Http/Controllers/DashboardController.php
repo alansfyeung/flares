@@ -22,23 +22,25 @@ class DashboardController extends Controller
 		]);
     }
 
+    public function activity()
+    {
+        // To be continued
+        return response()->json([]);
+    }
+
     /** 
-     * Return only a specific dashboard stat, by categoryName
+     * Return only a specific dashboard stat, by name
      *
      * @return Response
      */
     public function show($categoryName)
     {
-        $blender = [];
+        $stats = [];
 		switch ($categoryName){
 			case 'member':
 			case 'members':
-				$blender['member'] = $this->numMembers();
-				return response()->json($blender);
-            case '':
-			case 'members':
-				$blender['member'] = $this->numMembers();
-				return response()->json($blender);
+				$stats['member'] = $this->numMembers();
+				return response()->json($stats);
 		}
     }
     
@@ -51,8 +53,8 @@ class DashboardController extends Controller
 	
 	private function numMembers()
     {
-		$numActive = Member::all()->where('is_active', 1)->count();
-		$numInactive = Member::all()->where('is_active', 0)->count();
+		$numActive = Member::all()->where('is_enrolled', 1)->count();
+		$numInactive = Member::all()->where('is_enrolled', 0)->count();
 		$numDischarged = Member::onlyTrashed()->count();
 		$numTotal = Member::withTrashed()->count();
 		return [

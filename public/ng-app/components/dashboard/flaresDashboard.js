@@ -27,29 +27,29 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
 
     function retrieveApprovalList() {
         flAPI('approval').get(['pending']).then(function (resp) {
+            $scope.state.approvalsLoaded = true;
             if (response.data && angular.isArray(response.data.approvals)) {
                 // Use approvals object as-is, and invent a status name for it as well. 
                 $scope.approvals = response.data.approvals;
                 angular.forEach($scope.approvals, function(approval) {
                     approval.statusName = 'Pending';        // Hardcode to 'pending'.
                 });
-                $scope.state.approvalsLoaded = true;
                 $scope.state.approvalsRemaining = $scope.approvals.length > 0;
             }
             else {
-                $scope.state.approvalsLoaded = false;
+                $scope.state.approvalsRemaining = false;
             }
         });
     }
 
     function retrieveDashboardData() {
-        flApi('dashboard').getAll().then(function (resp) {
+        flAPI('dashboard').getAll().then(function (resp) {
             $scope.stats = resp.data;
         });
         flAPI('dashboard').get(['activity']).then(function (resp) {
             $scope.activity = resp.data;
             // Data is not going to be homogenous though. 
-            // TBA 
+            // TBC
         });
     }
 

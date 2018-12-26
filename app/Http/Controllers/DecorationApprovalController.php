@@ -42,7 +42,7 @@ class DecorationApprovalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function pending()
+    public function pending(Request $request)
     {
         $query = DecorationApproval::with('requester', 'approver', 'requestedDecoration');
         

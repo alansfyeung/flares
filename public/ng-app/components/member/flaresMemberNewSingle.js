@@ -154,7 +154,7 @@ flaresApp.controller('newSingleController', function($scope, $window, $location,
                 
                 // Detailed save succeeded, so let's activate them
                 flAPI('member').patch([$scope.member.regtNum], {
-                    member: { is_active: '1' }
+                    member: { is_enrolled: '1' }
                 });
                 
                 $scope.member.lastPersistTime = (new Date()).toTimeString();
@@ -174,7 +174,7 @@ flaresApp.controller('newSingleController', function($scope, $window, $location,
         
         // Simply mark as active, then continue
         flAPI('member').patch([$scope.member.regtNum], {
-            member: { is_active: '1' }
+            member: { is_enrolled: '1' }
         }).then(function(){
             wf.next();
         });

@@ -60,7 +60,7 @@
     </div>
 
     <!-- Inactive and discharged warnings -->
-    <div class="alert alert-warning" ng-show="!member.data.is_active">
+    <div class="alert alert-warning" ng-show="!member.data.is_enrolled">
         <h4>Incomplete Member Record</h4>
         <p>This record wasn't completely filled during the enrolment process. Perhaps it was cancelled or no longer required. </p>
         <p>
@@ -90,7 +90,7 @@
                     </div>
                     <div class="col-md-4">
                         <!-- Header thumbnail Display Picture -->
-                        <section ng-controller="pictureController" ng-click="displayPictureModal()">
+                        <section class="text-right" ng-controller="pictureController" ng-click="displayPictureModal()">
                             <div class="thumbnail fl-record-thumbnail">
                                 <img ng-src="@{{memberImage.url}}" alt="@{{member.data.last_name}}" class="image-rounded memberview-thumb">
                             </div>

@@ -97,7 +97,7 @@ flaresApp.controller('memberViewEditController', function ($scope, $rootScope, $
         if ($scope.member.regtNum) {
             var payload = {
                 member: {
-                    is_active: 1
+                    is_enrolled: 1
                 }
             };
             sw.isAsync = true;
@@ -159,7 +159,7 @@ flaresApp.controller('memberViewEditController', function ($scope, $rootScope, $
 
     $scope.permanentDelete = function () {
         var sw = $scope.state;
-        if ($scope.member.regtNum && !$scope.member.data.is_active) {
+        if ($scope.member.regtNum && !$scope.member.data.is_enrolled) {
             sw.isAsync = true;
             flAPI('member').delete([$scope.member.regtNum], { params: { remove: 'permanent' } }).then(function (response) {
                 delete $scope.member;  // Clear all traces of the old member
@@ -491,9 +491,9 @@ flaresApp.controller('pictureModalController', function ($scope, $modalInstance)
 flaresApp.directive('memberStatus', function () {
     return {
         link: function (scope, element, attr) {
-            scope.$watchGroup(['member.data.is_active', 'member.data.deleted_at'], function () {
+            scope.$watchGroup(['member.data.is_enrolled', 'member.data.deleted_at'], function () {
                 var smd = scope.member.data;
-                if (!smd.is_active) {
+                if (!smd.is_enrolled) {
                     element.removeClass().addClass('label label-danger');
                     element.text('Inactive');
                 }

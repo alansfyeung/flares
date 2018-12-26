@@ -132,7 +132,7 @@ class MemberController extends Controller
 					$query->orderBy($name, 'asc');
 				}
 			}
-			foreach($request->only('sex') as $name => $input){			// ('sex', 'is_active')
+			foreach($request->only('sex') as $name => $input){			// ('sex', 'is_enrolled')
 				$input = trim($input);
 				if (!empty($input)){
 					$query->where($name, $input);
@@ -324,7 +324,7 @@ class MemberController extends Controller
 				
 				// Todo: future permissions check
 				$permissionsCheck = true;
-				if ($permissionsCheck || $deletionMember->is_active == '0'){		// Allow anybody to delete inactive records
+				if ($permissionsCheck || $deletionMember->is_enrolled == '0'){		// Allow anybody to delete inactive records
 					$deletionMember->postings()->forceDelete();
 					$deletionMember->forceDelete();			// this returns void
 					$deleted = true;		// we just presume it worked, since we deleted the postings already

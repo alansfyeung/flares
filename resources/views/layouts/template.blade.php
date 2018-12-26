@@ -72,9 +72,10 @@
     <script src="/assets/js/angular.min.js"></script>
 	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
 	<script src="/ng-app/shared/flaresBase.js"></script>
-	<script src="/ng-app/shared/flaresAPI-service.js"></script>
-	<script src="/ng-app/shared/flaresResource-service.js"></script>
+	<script src="/ng-app/shared/flaresBase-constants.js"></script>
 	<script src="/ng-app/shared/flaresBase-controllers.js"></script>
+	<script src="/ng-app/shared/flaresBase-service-resource.js"></script>
+	<script src="/ng-app/shared/flaresBase-service-api.js"></script>
     @show
 	@stack('scripts')
     

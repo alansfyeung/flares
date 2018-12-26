@@ -26,10 +26,10 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="approval">
-                @include('partials.approval')
+                @include('dashboard.partials.approval')
             </div>
             <div role="tabpanel" class="tab-pane" id="activity">
-                @include('partials.activity')
+                @include('dashboard.partials.activity')
             </div>
         </div>
 

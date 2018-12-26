@@ -32,7 +32,7 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
 		// last_name: '',
 		// sex: '',
 		// regt_num: '',
-		// is_active: '',
+		// is_enrolled: '',
 		// discharged: ''
 	// }, $location.search() || {});
     $scope.searchParams = $location.search() || {
@@ -186,7 +186,7 @@ flaresApp.controller('memberContextMenuController', function ($scope, $parse, $w
         $scope.memberStatus.labelClassNames.push('label-warning');
         $scope.memberStatus.label = 'Discharged';
     }
-    else if (!$scope.activeMember.is_active || $scope.activeMember.is_active === '0'){
+    else if (!$scope.activeMember.is_enrolled || $scope.activeMember.is_enrolled === '0'){
         $scope.memberStatus.labelClassNames.push('label-danger');
         $scope.memberStatus.label = 'Inactive';
     }

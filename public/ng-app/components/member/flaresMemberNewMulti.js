@@ -214,11 +214,11 @@ flaresApp.controller('newMultiController', function($scope, flAPI){
 	};
 	
 	$scope.workflow.confirmNewRecords = function(){
-		// sets the is_active flag on all saved records
+		// sets the is_enrolled flag on all saved records
 		// angular.forEach($scope.newMembers, function(newMember, newMemberIndex){
 			// if (newMember.isSaved){
 				// flAPI('member').patch([newMember.regtNum], {
-					// member: { is_active: '1' }
+					// member: { is_enrolled: '1' }
 				// });
 			// }
 		// });
@@ -260,7 +260,7 @@ flaresApp.controller('newMultiController', function($scope, flAPI){
                     
                     // Detailed save succeeded, so let's activate them
                     flAPI('member').patch([detailedMember.regtNum], {
-                        member: { is_active: '1' }
+                        member: { is_enrolled: '1' }
                     });
                     
 					detailedMember.lastPersistTime = (new Date()).toTimeString();
