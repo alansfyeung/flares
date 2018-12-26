@@ -44,7 +44,7 @@ class DecorationApprovalController extends Controller
      */
     public function pending(Request $request)
     {
-        $query = DecorationApproval::with('requester', 'approver', 'requestedDecoration');
+        $query = DecorationApproval::with('requester', 'requestedDecoration');
         
         // Return only non-decided records.
         $query->whereNull('is_approved');
@@ -130,9 +130,9 @@ class DecorationApprovalController extends Controller
         $approval = DecorationApproval::findOrFail($id);
         return response()->json([
             'approval' => $approval,
-            'requestedDecoration' => $approval->requestedDecoration(),
-            'requester' => $approval->requester(),
-            'approver' => $approval->approver(),
+            'requestedDecoration' => $approval->requestedDecoration,
+            'requester' => $approval->requester,
+            'approver' => $approval->approver,
 		]);
     }
 
@@ -155,7 +155,7 @@ class DecorationApprovalController extends Controller
                 }
                 // Make sure that the approval has got a decision, and a justification if required. 
                 if (array_key_exists('is_approved', $postData)) {
-                    if (String($postData['is_approved']) == '0' && (!array_key_exists('justification', $postData) || empty($postData['justification']))) {
+                    if ((string) $postData['is_approved'] == '0' && (!array_key_exists('justification', $postData) || empty($postData['justification']))) {
                         throw new \Exception('Missing a justification for an declined decision', ResponseCodes::ERR_POSTDATA_MISSING);        
                     }
                 } else {
@@ -163,8 +163,8 @@ class DecorationApprovalController extends Controller
                 }
                 // Resolve the admin user who is making the request. 
                 $adminUser = Auth::user();
-                $postData->user_id = $adminUser->user_id;
-                $postData->decision_date = date('Y-m-d');
+                $postData['user_id'] = $adminUser->user_id;
+                $postData['decision_date'] = date('Y-m-d');
                 $updatedApproval = DecorationApproval::updateOrCreate(['dec_appr_id' => $id], $postData);
                 $updatedApprovalId = $updatedApproval->dec_appr_id;
 

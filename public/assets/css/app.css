@@ -7895,6 +7895,10 @@ a[sidebar-toggle] {
   cursor: pointer;
 }
 
+h1, h2, h3 {
+  margin-bottom: 20px;
+}
+
 /* ==============*/
 /* Header, Footer, Nav, Headings */
 .navbar {
@@ -8009,7 +8013,7 @@ footer {
 }
 
 .tab-pane {
-  padding-top: .5em;
+  padding-top: 1em;
 }
 
 @media (max-width: 767px) {
@@ -8076,6 +8080,10 @@ textarea {
 .auth-login-form {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+#dashboardApprovals table {
+  font-size: .9em;
 }
 
 .dashboard-stat {

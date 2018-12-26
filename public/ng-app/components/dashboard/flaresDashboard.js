@@ -18,7 +18,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
 
     $scope.selectApproval = function(approval){
         $window.location.href = flResource('approval')
-            .setFragment([$scope.activeMember.regt_num, 'view', 'details'])
+            .setFragment([approval.dec_appr_id, 'edit', 'details'])
             .getLink();
     };    
 
@@ -26,13 +26,15 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     // Functions 
 
     function retrieveApprovalList() {
-        flAPI('approval').get(['pending']).then(function (resp) {
+        flAPI('approval').get(['pending']).then(function (response) {
             $scope.state.approvalsLoaded = true;
             if (response.data && angular.isArray(response.data.approvals)) {
                 // Use approvals object as-is, and invent a status name for it as well. 
                 $scope.approvals = response.data.approvals;
                 angular.forEach($scope.approvals, function(approval) {
                     approval.statusName = 'Pending';        // Hardcode to 'pending'.
+                    approval.created_at = new Date(approval.created_at);
+                    approval.updated_at = new Date(approval.updated_at);
                 });
                 $scope.state.approvalsRemaining = $scope.approvals.length > 0;
             }

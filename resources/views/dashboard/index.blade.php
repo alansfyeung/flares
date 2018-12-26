@@ -19,7 +19,7 @@
 
     <div class="col-sm-6 col-md-8">
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a bs-show-tab href="#approval" aria-controls="approval" role="tab">Approval</a></li>
+            <li role="presentation" class="active"><a bs-show-tab href="#approval" aria-controls="approval" role="tab">Approval Queue</a></li>
             <li role="presentation"><a bs-show-tab href="#activity" aria-controls="activity" role="tab">Activity Log</a></li>
         </ul>
 

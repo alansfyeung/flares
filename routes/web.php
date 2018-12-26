@@ -63,12 +63,17 @@ Route::group(['as' => 'member::', 'middleware' => 'auth'], function () {
     Route::get('member/decorations/new', function () {
         return view('member.assign-decoration');
     })->name('assign-decoration');
+    
+});
+
+Route::group(['as' => 'approval::', 'middleware' => 'auth'], function () {
 
     Route::get('approval', function () {
         return view('member.approve-decoration');
     })->name('approve-decoration');
-    
+
 });
+
 
 Route::group(['as' => 'activity::', 'middleware' => 'auth'], function () {
     

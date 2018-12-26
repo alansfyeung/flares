@@ -12,14 +12,14 @@ class DecorationApproval extends Model
 	// Relationships
 	public function requester()
 	{
-		return $this->hasOne('App\Member', 'regt_num');
+		return $this->belongsTo('App\Member', 'regt_num');
     }
     public function requestedDecoration() 
     {
-        return $this->hasOne('App\Decoration', 'dec_id');
+        return $this->belongsTo('App\Decoration', 'dec_id');
     }
     public function approver()
 	{
-		return $this->hasOne('App\User', 'user_id');
+		return $this->belongsTo('App\User', 'user_id');
     }
 }

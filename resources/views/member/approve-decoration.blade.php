@@ -22,15 +22,12 @@
 @section('alerts')
 <div ng-show="appr.saveError">
     <div class="alert alert-danger">
-        <h3>Saving failed</h3>
-        <hr>
-        <p>We couldn't save this decoration approval.</p>
+        <p><strong>Saving failed.</strong> We couldn't save this decoration approval.</p>
     </div>
 </div>
 <div ng-show="appr.saveDuplicateError">
     <div class="alert alert-warning">
-        <h3>Saving failed</h3>
-        <p>The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
+        <p><strong>Saving failed.</strong> The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
         <hr>
         <div>
             <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
@@ -60,12 +57,11 @@
         <div class="col-sm-8">
 
             <div class="alert alert-success" ng-show="appr.saved">
-                <h3><strong>Saved.</strong> The decision was recorded.</h3>
-                <hr>
-                <div class="text-right">
-                    <button id="approveAnotherDecorationRequest" type="button" class="btn btn-success" ng-click="approveAnother()" tabindex="103">Back to approvals</button>
-                    <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="104">View member profile</a>
+                <div class="pull-right">
+                    <a class="btn btn-default btn-xs" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="103">Back to approvals</a>
+                    <button id="viewApprovalDecision" type="button" class="btn btn-success btn-xs" ng-click="appr.saved = null" tabindex="104">View decision</button>
                 </div>
+                <p><strong>Saved.</strong> The decision was recorded</p>
             </div>
             
             <div class="text-muted">&hellip; has requested approval for</div>
@@ -73,26 +69,32 @@
             <hr>
 
             <div ng-if="appr.isDecided">
-                <div class="form-group">
+                <div class="row form-group">
                     <div class="col-sm-3">Decision</div>
                     <div class="col-sm-9">
                         <p ng-show="appr.isApproved"><span class="glyphicon glyphicon-ok-sign text-success"></span> Approved</p>
                         <p ng-hide="appr.isApproved"><span class="glyphicon glyphicon-minus-sign text-danger"></span> Declined</p>
-                        <p>Decision submitted on @{{appr.decisionDate}} by @{{appr.decisionedBy.username}}</p>
+                        <p class="text-muted">Decision submitted on @{{appr.decisionDate | date:'shortDate'}} by @{{appr.decisionedBy.username}}</p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-3">Date submitted</div>
-                    <div class="col-sm-9">@{{appr.submittedDate}}</div>
+                <div class="row form-group">
+                    <div class="col-sm-3">Date of award</div>
+                    <div class="col-sm-9">@{{appr.submittedDate | date:'shortDate'}}</div>
                 </div>
-                <div class="form-group">
+                <div class="row form-group">
                     <div class="col-sm-3">Justification</div>
                     <div class="col-sm-9">
-                        <p class="text-muted">@{{appr.justification}}</p>
+                        <p class="text-muted">@{{appr.justification | markBlanks}}</p>
                     </div>
                 </div>
 
                 <hr>
+
+                <div class="row" display-mode="view">
+                    <div class="col-sm-12">
+                        <a class="btn btn-default " ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101">Back to approvals</a>
+                    </div>
+                </div>
 
                 <div class="alert alert-warning" display-mode="edit">
                     Sorry, you cannot change an approval decision after it has been submitted. 
@@ -104,7 +106,7 @@
                 <form class="form-horizontal" ng-submit="submit()" autocomplete="off" display-mode="edit">
                     <fieldset>
                         <div class="form-group">
-                            <label class="control-label col-sm-3">Date for award</label>
+                            <label class="control-label col-sm-3">Date of award</label>
                             <div class="col-sm-9">
                                 <div class="row">
                                     <div class="col-sm-4">
@@ -115,14 +117,14 @@
                                     </div>
                                 </div>
                                 <span class="help-block">You can override the date that was provided by the requester.</span>
-                                <input type="date" class="form-control hidden" ng-model="award.data.date" readonly>
+                                <input type="date" class="form-control hidden" ng-model="appr.data.date" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Citation for award</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control" ng-model="award.data.citation" placeholder="Why did the recipient receive this award? (optional)" rows="4" tabindex="12"></textarea>
-                                <span class="help-text">This citation will appear on the awarded decoration. </span>
+                                <textarea class="form-control" ng-model="appr.data.citation" placeholder="Why did the recipient receive this award? (optional)" rows="4" tabindex="12"></textarea>
+                                <span class="help-block">This citation will appear on the awarded decoration. </span>
                             </div>
                         </div>
                     </fieldset>
@@ -138,13 +140,16 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3">Justification</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control" ng-model="award.data.justification" placeholder="Reason for decision (optional for approved)" rows="4" tabindex="12"></textarea>
+                                <textarea class="form-control" ng-model="appr.data.justification" placeholder="Reason for decision (optional for approved)" rows="4" tabindex="12"></textarea>
                                 <span class="help-block">It is mandatory to provide a justification if rejecting a decoration request.</span>
                             </div>
                         </div>
                     </fieldset>
                     <hr>
                     <div class="form-group">
+                        <div class="col-sm-12" ng-show="appr.validationError">
+                            <p class="text-right text-danger">@{{appr.validationError}}</p>
+                        </div>
                         <div class="col-sm-12">
                             <div class="text-left">
                                 <a class="btn btn-default " ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101">Cancel</a>
@@ -162,7 +167,7 @@
                 <div class="panel-heading">@{{appr.requestedDecoration.name}}</div>
                 <div class="panel-body">
                     <div class="thumbnail fl-record-thumbnail">
-                        <img ng-src="@{{award.requestedDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
+                        <img ng-src="@{{appr.requestedDecorationBadgeUrl}}" alt="@{{appr.requestedDecoration.name}}" class="image-rounded memberview-thumb">
                     </div>
                     <div class="fl-record-caption">
                         <p>@{{appr.requestedDecoration.desc}}</p>

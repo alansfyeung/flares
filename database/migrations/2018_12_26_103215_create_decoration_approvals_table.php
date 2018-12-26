@@ -17,12 +17,12 @@ class CreateDecorationApprovalsTable extends Migration
             $table->increments('dec_appr_id');
             $table->string('regt_num', 10);
             $table->unsignedInteger('dec_id');
-            $table->string('request_comment')->nullable();
+            $table->text('request_comment')->nullable();
             $table->dateTime('date')->nullable();
             $table->tinyInteger('is_approved')->nullable();
-            $table->string('justification')->nullable();
+            $table->text('justification')->nullable();
             $table->unsignedInteger('user_id')->nullable();
-            $table->dateTime('decisionDate')->nullable();
+            $table->dateTime('decision_date')->nullable();
             $table->timestamps();
 
             $table->foreign('regt_num')->references('regt_num')->on('members');

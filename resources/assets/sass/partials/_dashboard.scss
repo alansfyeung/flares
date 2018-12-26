@@ -1,5 +1,9 @@
 // Dashboard screen
 
+#dashboardApprovals table {
+    font-size: .9em;
+}
+
 .dashboard-stat {
 	text-align: center;
 }
@@ -15,4 +19,3 @@
 .dashboard-approval-row td {
     cursor: pointer;
 }
- 

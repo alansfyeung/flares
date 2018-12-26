@@ -13,7 +13,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     $scope.state = Object.create(c.state);        // inherit the proto
     $scope.state.showDecorationDropdownList = false;
     $scope.formData = {
-        approvalDecision: 'no',
+        approvalDecision: null,     // Start with neither
         months: [
             { name: 'Jan', value: 0 },
             { name: 'Feb', value: 1 },
@@ -32,7 +32,6 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
             month: 0,
             year: 1975,
         },
-        resetAwardDate: resetAwardDate,
     };
 
 	$scope.appr = new Approval();
@@ -118,15 +117,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     };
 
     $scope.cancelHref = function () {
-
-        // Todo: Take them to approval list screen
-
-        // if ($scope.member.regt_num) {
-        //     return flResource('member').setFragment([$scope.member.regt_num, 'view', 'decorations']).getLink();
-        // }
-        // else {
-        //     return flResource('member').getLink();
-        // }
+        return flResource().getLink();      // This should take back to the dashboard
     };
 
     $scope.$watch('formData.approvalDecision', function (newVal) {
@@ -177,25 +168,44 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     // ====================
 
     function retrieveApproval(approvalId) {
-        return flAPI('decoration')
+        return flAPI('approval')
             .get([approvalId])
             .then(function (response) {
                 // Process then store in VM
-                var appr = response.data.approval;
-                c.util.convertToDateObjects(['date', 'decision_date', 'created_at', 'updated_at'], appr);
-                $scope.appr.id = appr.dec_appr_id;
-                $scope.appr.isDecided = (appr.is_approved != null);
-                $scope.appr.isApproved = Boolean(appr.is_approved);     // Convert from 0 and 1
-                $scope.appr.decisionDate = appr.decision_date;
-                $scope.appr.justification = appr.justification;
-                $scope.appr.submittedDate = appr.created_at;
-                $scope.formData.awardDate.month = appr.date.getMonth();
-                $scope.formData.awardDate.year = appr.date.getFullYear();
+                if (response.data) {
+                    if (response.data.approval) {
+                        var appr = response.data.approval;
+                        c.util.convertToDateObjects(['date', 'decision_date', 'created_at', 'updated_at'], appr);
+                        $scope.appr.id = appr.dec_appr_id;
+                        $scope.appr.isDecided = (appr.is_approved != null);
+                        $scope.appr.isApproved = Boolean(appr.is_approved);     // Convert from 0 and 1
+                        $scope.appr.decisionDate = appr.decision_date;
+                        $scope.appr.justification = appr.justification;
+                        $scope.appr.submittedDate = appr.created_at;
+                        $scope.formData.awardDate.month = appr.date.getMonth();
+                        $scope.formData.awardDate.year = appr.date.getFullYear();
+                    }
+                    if (response.data.approver) {
+                        var appv = response.data.approver;
+                        $scope.appr.decisionedBy = appv;
+                    }
+                    if (response.data.requestedDecoration) {
+                        var dec = response.data.requestedDecoration;
+                        c.util.convertToDateObjects(['date_commence', 'date_conclude', 'updated_at'], dec);
+                        $scope.appr.requestedDecoration = dec;
+                        $scope.appr.requestedDecorationBadgeUrl = flResource().raw(['/media', 'decoration', dec.dec_id, 'badge']);
+                    }
+                    if (response.data.requester) {
+                        var requester = response.data.requester;
+                        $scope.member = requester;
+                    }
+                }
+
                 return {
                     dec_appr_id: appr.dec_appr_id,
-                    dec_id: appr.dec_id,
-                    regt_num: appr.regt_num,
-                    user_id: appr.user_id,
+                    dec_id: dec ? undefined : appr.dec_id,
+                    regt_num: requester ? undefined : appr.regt_num,
+                    user_id: appv ? undefined : appr.user_id,           // Don't include if approver data already processed.
                 };
             })
             .catch(function (response) {
@@ -209,24 +219,14 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     }
 
     function retrieveMember(memberId) {
-        flAPI('member').get([memberId]).then(function (response) {
+        return flAPI('member').get([memberId]).then(function (response) {
 
             if (response.data && response.data.member) {
                 $scope.member = response.data.member;
-
-                // Check if the member image exists, and if it does then load it
-                // Otherwise attempt to find default member image from refdata
-                flAPI('member').nested('picture', [memberId]).get('exists').then(function (response) {
-                    if (response.data.exists) {
-                        $scope.memberPictureUrl = flAPI('member').nested('picture', [memberId]).url();
-                    }
-                    else {
-                        $scope.memberPictureUrl = memberPictureDefaultUrl;
-                    }
-                });
+                return response.data.member;
             }
             else {
-                throw 'BadRequest.jpg';
+                throw new Error('BadRequest.jpg');
             }
 
         }, function (response) {
@@ -304,11 +304,13 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
 
         flAPI('approval').patch(apprId, payload).then(function (response) {
             $scope.appr.saved = true;
+            $scope.appr.isDecided = true;
+            retrieveApproval(apprId);       // reload it anyway
             setTimeout(function () {
                 $scope.$apply(function () {
                     $scope.state.isSaving = false;
                     $scope.state.path.mode = 'view';
-                    angular.element('#approveAnotherDecorationRequest').focus();
+                    angular.element('#viewApprovalDecision').focus();
                 });
             }, 300);
         }).catch(function (errorResponse) {
@@ -336,7 +338,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
         this.justification = null;      // "
         this.decisionedBy = null;       // "
         this.decisionDate = null;       // " 
-        this.submittedDate = null;
+        this.submittedDate = null;      // " 
         this.data = {
             justification: '',
             is_approved: null,   // 1, 0 or null  // This value can be dirty, as opposed to the other isApproved which represents the persisted result.

@@ -31,6 +31,8 @@ class AlterMemberDecorationsTable2 extends Migration
         Schema::table('member_decorations', function ($table) {
             $table->dropForeign('member_decorations_user_id_foreign');
             $table->dropForeign('member_decorations_dec_appr_id_foreign');
+            $table->dropColumn('user_id');
+            $table->dropColumn('dec_appr_id');
         });
     }
 }

@@ -259,7 +259,7 @@
                                 <h3>Decorations</h3>
                             </header>
                             <div class="table-wrapper">
-                                <table class="table table-striped">
+                                <table class="table table-hover">
                                     <colgroup>
                                         <col style="width: 120px;">
                                         <col style="width: 200px;">
