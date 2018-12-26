@@ -66,9 +66,12 @@
             }]
         },
         approval: {
-            apiBase: '/api/approvals',
+            apiBase: '/api/approval',
             singular: 'approval',
             plural: 'approvals',
+            aliases: [{
+                pending: ['approval', 'pending']
+            }]
         },
         user: {
             apiBase: '/api/users',

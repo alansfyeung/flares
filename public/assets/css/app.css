@@ -8092,6 +8092,10 @@ textarea {
   font-weight: bold;
 }
 
+.dashboard-approval-row td {
+  cursor: pointer;
+}
+
 .activity-fullname {
   margin: 0 0 0.5em;
 }
@@ -8128,6 +8132,10 @@ textarea {
 
 .activity-colorcode .activity-fullname {
   font-size: 1.25em;
+}
+
+.search-result-row td {
+  cursor: pointer;
 }
 
 .member-status-labels {

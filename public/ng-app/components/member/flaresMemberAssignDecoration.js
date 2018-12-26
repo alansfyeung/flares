@@ -1,4 +1,4 @@
-var flaresApp = angular.module('flaresMemberAssignDecoration', ['flaresBase']);
+var flaresApp = angular.module('flaresMemberDecoration', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     $http.get('/ng-app/components/decoration/decorationTypeaheadTemplate.html').then(function(response){
@@ -9,7 +9,7 @@ flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     });
 }]);
 
-flaresApp.controller('memberAssignDecorationController', function($scope, $location, $filter, $controller, $uibModal, flAPI, flResource){
+flaresApp.controller('memberAssignDecorationController', function($scope, $filter, $controller, flAPI, flResource){
     
     // Extend this controller with viewEditController
     angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
@@ -52,14 +52,14 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
     
     
     var memberPictureDefaultUrl, decorationDefaultBadgeUrl;
-	
-	// Read the url
+
     if (c.loadWorkflowPath()){
         retrieveMember();
         retrieveDecorations();
         resetAwardDate();
     }
 
+    // Load refdata - misc
 	flAPI('refData').getAll().then(function(response){
         if (response.data.misc){
             var found1 = response.data.misc.find(function(misc){ return misc.name === 'PROFILE_UNKNOWN_IMAGE_PATH' });
@@ -69,8 +69,20 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
             var found2 = response.data.misc.find(function(misc){ return misc.name === 'BADGE_UNKNOWN_IMAGE_PATH' });
             if (found2){
                 decorationDefaultBadgeUrl = found2.value;
-                console.log(decorationDefaultBadgeUrl);
+                // console.log(decorationDefaultBadgeUrl);
             }
+        }
+	});
+
+    // Load refdata - decoration tiers
+    flAPI('refData').get('decorationTiers').then(function(response){
+        if (response.data.length){
+            var tiers = response.data;
+            angular.forEach(tiers, function(tier, index, tiers){
+                tiers[index].tierName = tier.tier + ': ' + tier.tierName;
+            });
+            $scope.formData.decorationTiers = tiers;
+            // $scope.selectedTier = $scope.formData.decorationTiers[0];
         }
 	});
     
@@ -130,21 +142,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
             }
         }
     });
-    
-    //==================
-	// Fetch reference data for decorations
-	//==================
-	
-    flAPI('refData').get('decorationTiers').then(function(response){
-        if (response.data.length){
-            var tiers = response.data;
-            angular.forEach(tiers, function(tier, index, tiers){
-                tiers[index].tierName = tier.tier + ': ' + tier.tierName;
-            });
-            $scope.formData.decorationTiers = tiers;
-            // $scope.selectedTier = $scope.formData.decorationTiers[0];
-        }
-	});
+
 
     // ====================
     // Function decs
@@ -166,6 +164,9 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
                     flAPI('member').nested('picture', [memberId]).get('exists').then(function(response){
                         if (response.data.exists){
                             $scope.memberPictureUrl = flAPI('member').nested('picture', [memberId]).url();
+                        }
+                        else {
+                            $scope.memberPictureUrl = memberPictureDefaultUrl;
                         }
                     
                     });

@@ -1,15 +1,6 @@
-var flaresApp = angular.module('flaresMemberApproveDecoration', ['flaresBase']);
+var flaresApp = angular.module('flaresDecorationApproval', ['flaresBase']);
 
-flaresApp.run(['$http', '$templateCache', function ($http, $templateCache) {
-    $http.get('/ng-app/components/decoration/decorationTypeaheadTemplate.html').then(function (response) {
-        $templateCache.put('decorationTypeaheadTemplate.html', response.data);
-    });
-    $http.get('/ng-app/components/decoration/decorationTypeaheadPopupTemplate.html').then(function (response) {
-        $templateCache.put('template/typeahead/typeahead-popup.html', response.data);
-    });
-}]);
-
-flaresApp.controller('memberApproveDecorationController', function ($scope, $location, $filter, $controller, $uibModal, flAPI, flResource) {
+flaresApp.controller('memberApproveDecorationController', function ($scope, $filter, $controller, flAPI, flResource) {
 
     // Extend this controller with viewEditController
     angular.extend(this, $controller('viewEditController', { $scope: $scope }));
@@ -71,18 +62,19 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $loc
         if (c.loadWorkflowPath()) {
             if ($scope.state.path.id) {
                 retrieveApproval($scope.state.path.id).then(function (approvalIds) {
-                    var decorationId = approvalIds.dec_id;
-                    var regtNum = approvalIds.regt_num;
-                    var userId = approvalIds.user_id;
                     $scope.shadowAppr = angular.copy($scope.appr);
                     $scope.state.isApprovalLoaded = true;
-                    retrieveApprovalDecoration(decorationId);
-                    retrieveMember(regtNum).then(function () {
-                        $scope.state.isMemberLoaded = true;
-                    });
-                    if (userId) {
-                        // Indicates that it has already been decisioned...
-                        retrieveApproverUser(userId);
+
+                    if (approvalIds.dec_id) {
+                        retrieveApprovalDecoration(approvalIds.dec_id);
+                    }
+                    if (approvalIds.regt_num) {
+                        retrieveMember(approvalIds.regt_num).then(function () {
+                            $scope.state.isMemberLoaded = true;
+                        });
+                    }
+                    if (approvalIds.user_id) {
+                        retrieveApproverUser(approvalIds.user_id);   // Indicates that it has already been decisioned...
                     }
                 }).catch(function (err) {
                     console.warn(err);
@@ -141,10 +133,10 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $loc
         if ($scope.appr) {
             switch (newVal) {
                 case 'yes':
-                    $scope.appr.data.is_approved = true;    
+                    $scope.appr.data.is_approved = 1;    
                     break;
                 case 'no':
-                    $scope.appr.data.is_approved = false;
+                    $scope.appr.data.is_approved = 0;
                     break;
             }
         }
@@ -193,7 +185,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $loc
                 c.util.convertToDateObjects(['date', 'decision_date', 'created_at', 'updated_at'], appr);
                 $scope.appr.id = appr.dec_appr_id;
                 $scope.appr.isDecided = (appr.is_approved != null);
-                $scope.appr.isApproved = appr.is_approved;
+                $scope.appr.isApproved = Boolean(appr.is_approved);     // Convert from 0 and 1
                 $scope.appr.decisionDate = appr.decision_date;
                 $scope.appr.justification = appr.justification;
                 $scope.appr.submittedDate = appr.created_at;
@@ -293,7 +285,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $loc
             $scope.appr.validationError = 'You have not selected an approval decision';
             return;
         }
-        if ($scope.appr.data.is_approved == false) {
+        if ($scope.appr.data.is_approved == 0) {
             var justification = $scope.appr.data.justification;
             if (!angular.isString(justification) || justification.replace(/\s+/g, '') === '') {
                 console.warn('Validation: Justification was empty for a declined decision');
@@ -347,7 +339,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $loc
         this.submittedDate = null;
         this.data = {
             justification: '',
-            is_approved: undefined,           // This value can be dirty, as opposed to the other isApproved which represents the persisted result.
+            is_approved: null,   // 1, 0 or null  // This value can be dirty, as opposed to the other isApproved which represents the persisted result.
             date: new Date(),       // Requested award date post-approval
         };
         this.setDateMonth = function (month) {

@@ -273,7 +273,7 @@
                                             <th>Decoration</th>
                                             <th>Citation</th>
                                             <th>Date awarded</th>
-                                            <th>Actions</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>

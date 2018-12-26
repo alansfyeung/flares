@@ -15,12 +15,6 @@ class MemberController extends Controller
 {
     use ProcessesMemberRecordsTrait;
     
-    //const ResponseCodes::ERR_POSTDATA_MISSING = 4001;
-	//const ResponsesCodes::ERR_POSTDATA_FORMAT = 4002;
-	// const ResponseCodes::ERR_EX = 5000;
-	// const ResponseCodes::ERR_DB_PERSIST = 5001;
-	// const ResponseCodes::ERR_REGT_NUM = 5002;
-    
     protected $orderByAliases;
     
     public function __construct(){
@@ -221,7 +215,7 @@ class MemberController extends Controller
 					
 				}
 				else {
-					throw new Exception('Could not generate a regt num', ResponseCodes::ERR_REGT_NUM);
+					throw new \Exception('Could not generate a regt num', ResponseCodes::ERR_REGT_NUM);
 				}
                 
                 DB::commit();
@@ -336,7 +330,7 @@ class MemberController extends Controller
 					$deleted = true;		// we just presume it worked, since we deleted the postings already
 				}
 				else {
-					throw new \Exception('You don\'t have permission to permanently delete this record', ResponseCodes::ERR_PERM_NOPE);
+					throw new \Exception('You don\'t have permission to permanently delete this record', ResponseCodes::ERR_P_NOPE);
 				}
 			}
 			else {

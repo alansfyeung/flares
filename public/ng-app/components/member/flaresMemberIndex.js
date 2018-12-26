@@ -5,7 +5,7 @@
 //   Todo: omni-search bar (a la Google)
 // ==================================
 
-var flaresApp = angular.module('flaresMemberIndex', ['flaresBase']);
+var flaresApp = angular.module('flaresMember', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
     $http.get('/ng-app/components/member/memberContextMenuTemplate.html').then(function(response){

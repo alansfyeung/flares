@@ -1,7 +1,7 @@
 {{-- Search all members --}}
 @extends('layouts.base')
 
-@section('ng-app', 'flaresMemberIndex')
+@section('ng-app', 'flaresMember')
 @section('ng-controller', 'memberIndexController')
 @section('title', 'Members')
 
@@ -147,14 +147,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="result in results" ng-class="{'warning': result.deleted_at}" ng-click="selectMember(result)">
+                    <tr ng-repeat="result in results" class="search-result-row" ng-class="{'warning': result.deleted_at}" ng-click="selectMember(result)">
                         <td>@{{result.regt_num}}</td>
                         <td>@{{result.last_name}} <span ng-hide="result.is_active" title="This user is inactive. Please complete their details." class="glyphicon glyphicon-exclamation-sign text-danger"></span></td>
                         <td>@{{result.first_name}}</td>
                         <td>@{{result.rank}}</td>
                         <td>@{{result.sex}}</td>
                         <td>@{{result.ageDetails}}</td>
-                        <td><a class="btn btn-primary btn-xs fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
+                        <td><a class="btn btn-primary btn-block btn-xs fl-context-modal-button" ng-click="selectMemberContext(result); $event.stopPropagation();">More</a></td>
                     </tr>
                 </tbody>
             </table>

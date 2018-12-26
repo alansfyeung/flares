@@ -1,7 +1,7 @@
 {{-- Edit a member's existing decoration --}}
 @extends('layouts.base')
 
-@section('ng-app', 'flaresMemberDecorationViewEdit')
+@section('ng-app', 'flaresMemberDecoration')
 @section('ng-controller', 'memberEditDecorationController')
 @section('title', 'Edit - Decoration')
 

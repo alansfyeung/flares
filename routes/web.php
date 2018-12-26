@@ -18,9 +18,8 @@ Route::get('auth/api-oauth', function () {				// Member search page
 
 /* Dashboard */
 Route::group(['middleware' => 'auth'], function () {
-
     Route::get('/', ['as' => 'dashboard', function () {
-        return view('dashboard');
+        return view('dashboard.index');
     }]);
 });
 
@@ -51,19 +50,23 @@ Route::group(['as' => 'member::', 'middleware' => 'auth'], function () {
         return view('member.reports');
     });
     
-    Route::get('member', function(){
+    Route::get('member', function () {
         return view('member.view');
     });
     
-    // Route::get('member/decorations', function(){
+    // Route::get('member/decorations', function () {
         // return view('member.view-decorations');
     // })->name('view-decorations');
-    Route::get('member/decoration/edit', function(){
+    Route::get('member/decoration/edit', function () {
         return view('member.edit-decoration');
     })->name('edit-decoration');
-    Route::get('member/decorations/new', function(){
+    Route::get('member/decorations/new', function () {
         return view('member.assign-decoration');
     })->name('assign-decoration');
+
+    Route::get('approval', function () {
+        return view('member.approve-decoration');
+    })->name('approve-decoration');
     
 });
 

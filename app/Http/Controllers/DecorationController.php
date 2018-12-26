@@ -80,7 +80,7 @@ class DecorationController extends Controller
                 if ($isCollision){
                     DB::rollBack();
                     return response()->json([
-                        'error' => ['code' => ERR_DECORATION_SHORTCODES_EXHAUSTED, 'reason' => 'Attempted to generate non-conflicting shortcode but exhausted retries']
+                        'error' => ['code' => ResponseCodes::ERR_DECORATION_SHORTCODES_EXHAUSTED, 'reason' => 'Attempted to generate non-conflicting shortcode but exhausted retries']
                     ], 400);
                 }
                 

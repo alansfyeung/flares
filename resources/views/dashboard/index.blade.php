@@ -17,25 +17,28 @@
 @section('content')
 <div class="row">
 
-    @verbatim
-
     <div class="col-sm-6 col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Activity Log</h3>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a bs-show-tab href="#approval" aria-controls="approval" role="tab">Approval</a></li>
+            <li role="presentation"><a bs-show-tab href="#activity" aria-controls="activity" role="tab">Activity Log</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="approval">
+                @include('partials.approval')
             </div>
-            <div class="panel-body">
-                <p>Activity here</p>
-                <p>Activity here</p>
-                <p>Activity here</p>
-                <p>Activity here</p>
-                <p>Activity here</p>
+            <div role="tabpanel" class="tab-pane" id="activity">
+                @include('partials.activity')
             </div>
         </div>
+
     </div>
     
 	<div class="col-sm-6 col-md-4">
+        @verbatim
         <div class="container-fluid">
+            <h4>Quick status</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="panel panel-default">
@@ -59,7 +62,7 @@
                             </div>
                         </div>
                         <div class="list-group">
-                            <a href="/members" class="list-group-item active">View/search members</a>
+                            <a href="/members" class="list-group-item">View/search members</a>
                             <a href="/members/new" class="list-group-item">Add single member</a>
                             <!-- <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a> -->
                         </div>
@@ -77,36 +80,15 @@
                             </figure>
                         </div>
                         <div class="list-group">
-                            <a href="/decorations" class="list-group-item">Search decorations</a>
+                            <a href="/decorations" class="list-group-item">Manage decorations</a>
                             <a href="/decorations/new" class="list-group-item">Create new decoration</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endverbatim
     </div>
     
-    @endverbatim
-    
-    @if (env('APP_ENV') == 'dev')
-    <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Activities <span class="label label-warning">alpha</span></h3>
-            </div>
-            <div class="panel-body">
-                <figure class="dashboard-stat" ng-cloak>
-                    <figcaption class="stat-caption">Total ??</figcaption>
-                    <div class="stat-figure">TBA</div>
-                </figure>
-            </div>
-            <div class="list-group">
-                <a href="/activities" class="list-group-item">All activities</a>
-                <a href="/activities/new" class="list-group-item">Add new activity</a>
-            </div>
-        </div>
-	</div>
-    @endif
-
 </div>
 @endsection

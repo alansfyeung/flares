@@ -33,6 +33,11 @@ class Member extends Model
     {
         return $this->hasMany('App\MemberDecoration', 'regt_num');
     }
+
+    public function decoration_approvals() 
+    {
+        return $this->belongsTo('App\DecorationApproval', 'regt_num');
+    }
     
 	public function current_posting()
     {

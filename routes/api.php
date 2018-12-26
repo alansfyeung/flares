@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 
 // Dashboard API
 Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
+// Route::resource('dashboard/activity', 'DashboardController@activity');
 
 
 // Member API -- note that Search alias route MUST go before the resourceful route
@@ -51,7 +52,8 @@ Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@dest
 Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
 // Decoration Approval API
-// Route::resource('approval', 'ApprovalController', ['only' => ['index', 'store', 'show', 'update']]);        // No deleting allowed
+Route::get('approval/pending', 'DecorationApprovalController@pending');                                          // TBA: repurpose
+Route::resource('approval', 'DecorationApprovalController', ['only' => ['index', 'store', 'show', 'update']]);        // No deleting allowed
 
 // Admin Users API
 Route::resource('user', 'UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);

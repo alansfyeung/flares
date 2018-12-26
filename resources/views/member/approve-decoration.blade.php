@@ -1,12 +1,12 @@
 {{-- Approve a decoration for a member --}}
 @extends('layouts.base')
 
-@section('ng-app', 'flaresMemberApproveDecoration')
+@section('ng-app', 'flaresDecorationApproval')
 @section('ng-controller', 'memberApproveDecorationController')
 @section('title', 'Approve - Decoration')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberApproveDecoration.js"></script>
+<script src="/ng-app/components/approval/flaresApproveDecoration.js"></script>
 @endpush
 
 @section('heading')
@@ -72,7 +72,7 @@
             <h4>@{{appr.requestedDecoration.name}}</h4>
             <hr>
 
-            <div ng-show="appr.isDecided">
+            <div ng-if="appr.isDecided">
                 <div class="form-group">
                     <div class="col-sm-3">Decision</div>
                     <div class="col-sm-9">
@@ -100,7 +100,7 @@
                 </div>
 
             </div>
-            <div ng-hide="appr.isDecided">
+            <div ng-if="!appr.isDecided">
                 <form class="form-horizontal" ng-submit="submit()" autocomplete="off" display-mode="edit">
                     <fieldset>
                         <div class="form-group">

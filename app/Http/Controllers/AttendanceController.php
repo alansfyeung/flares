@@ -180,7 +180,7 @@ class AttendanceController extends Controller
 			$requestedAtt = Attendance::findOrFail($attId);
 			
 			if ($activity->acty_id != $requestedAtt->acty_id){
-				throw new Exception("Requested att record $attId does not belong to activity $activityId", 'ERR_MISMATCH');
+				throw new \Exception("Requested att record $attId does not belong to activity $activityId", ResponseCodes::ERR_MISMATCH);
 			}
 			
 			if ($action == 'update'){

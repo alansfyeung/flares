@@ -61,9 +61,12 @@
             {{-- Explainer about Forum SSO --}}
             <div role="tabpanel" class="tab-pane" id="forumsso">
                 <div class="alert alert-info">
-                    <p>Instead of using a password, you can log into FLARES via the forums (single-sign on). </p>
-                    <p><a href="{{ env('FL_HELP_FORUM_SSO_LINK') }}">Click here to access the forums</a></p>
+                    <p>Instead of using a password, you can log into FLARES via the forums (single-sign on), if your
+                        forums account is enabled as an admin user.</p>
                 </div>
+                <div class="text-right">
+                    <a class="btn btn-default" href="{{ env('FL_HELP_FORUM_SSO_LINK') }}">Click here to access the forums</a>
+                </div> 
             </div>
         </div>
 	</div>

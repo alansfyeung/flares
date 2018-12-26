@@ -1,4 +1,4 @@
-var flaresApp = angular.module('flaresMemberDecorationViewEdit', ['flaresBase']);
+var flaresApp = angular.module('flaresMemberDecoration', ['flaresBase']);
 
 flaresApp.controller('memberEditDecorationController', function ($scope, $rootScope, $controller, $http, $timeout, flAPI, flResource) {
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Auth;
 use DB;
 use App\Member;
 use App\Decoration;
@@ -44,6 +45,10 @@ class MemberDecorationController extends Controller
             $award->dec_id = $data['dec_id'];
             $award->citation = $data['citation'];
             $award->date = $data['date'];
+
+            // Capture the current admin user as the awarder 
+            $adminUser = Auth::user();
+            $award->user_id = $adminUser->user_id;
             
             // Save it
             $award->save();
