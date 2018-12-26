@@ -8,10 +8,10 @@
 var flaresApp = angular.module('flaresActivityOverview', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/app/components/activity/activityContextMenuTemplate.html').then(function(response){
+    $http.get('/ng-app/components/activity/activityContextMenuTemplate.html').then(function(response){
         $templateCache.put('activityContextMenuTemplate.html', response.data);        
     });
-    $http.get('/app/components/activity/activityOverviewFilterTemplate.html').then(function(response){
+    $http.get('/ng-app/components/activity/activityOverviewFilterTemplate.html').then(function(response){
         $templateCache.put('activityOverviewFilterTemplate.html', response.data);    
     });
 }]);

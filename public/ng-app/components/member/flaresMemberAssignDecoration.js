@@ -1,10 +1,10 @@
 var flaresApp = angular.module('flaresMemberAssignDecoration', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/app/components/decoration/decorationTypeaheadTemplate.html').then(function(response){
+    $http.get('/ng-app/components/decoration/decorationTypeaheadTemplate.html').then(function(response){
         $templateCache.put('decorationTypeaheadTemplate.html', response.data);
     });
-    $http.get('/app/components/decoration/decorationTypeaheadPopupTemplate.html').then(function(response){
+    $http.get('/ng-app/components/decoration/decorationTypeaheadPopupTemplate.html').then(function(response){
         $templateCache.put('template/typeahead/typeahead-popup.html', response.data);
     });
 }]);
@@ -99,7 +99,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
         if (newVal && newVal.dec_id){
             flAPI('decoration').nested('badge', [newVal.dec_id]).get().then(function(response){
                 if (response.data.exists){
-                    $scope.award.selectedDecorationBadgeUrl = flResource().raw(['/media', 'decoration', newVal.dec_id, 'badge'], [+new Date]);
+                    $scope.award.selectedDecorationBadgeUrl = flResource().raw(['/media', 'decoration', newVal.dec_id, 'badge']);
                 } else {
                     $scope.award.selectedDecorationBadgeUrl = decorationDefaultBadgeUrl;
                 }
@@ -118,9 +118,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
     
     $scope.$watch('formData.awardDate.month', function(newVal){
         if ($scope.award){
-            // $scope.$apply(function(){
             $scope.award.setDateMonth(newVal);
-            // });
         }
     });
     
@@ -128,9 +126,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
         if ($scope.award){
             // Range of OK is 1975 –> (this year + 5)
             if (newVal >= 1975 && newVal <= ((new Date).getFullYear() + 5)){
-                // $scope.$apply(function(){
                 $scope.award.setDateYear(newVal);
-                // });
             }
         }
     });
@@ -226,9 +222,9 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $locat
                     angular.element('#assignAnotherDecorationButton').focus();            
                 }, 300);
             }).catch(function(errorResponse){
-                console.log(errorResponse);
+                console.error(errorResponse);
                 if (errorResponse.data.error){
-                    if (errorResponse.data.error.code === 5030 || errorResponse.data.error.code === '5030'){
+                    if (String(errorResponse.data.error.code) === '5030'){
                         $scope.award.saveDuplicateError = true;
                     }
                 }

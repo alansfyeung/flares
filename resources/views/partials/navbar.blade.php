@@ -4,22 +4,18 @@
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/members" name="menu.member.search">Overview</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/members/new" name="menu.member.new">Add new</a></li>
-            {{-- <li><a href="/members/mass" name="menu.member.massactions">Mass actions</a></li> --}}
-            {{-- <li role="separator" class="divider"></li> --}}
-            {{-- <li><a href="/members/stats" name="menu.member.stats">Statistics</a></li> --}}
-            {{-- <li><a href="/members/reports" name="menu.member.reporting">Reporting</a></li> --}}
+              <li><a href="/members/new" name="menu.member.new">Add new</a></li>
+              <!-- <li role="separator" class="divider"></li> -->
+            <li><a href="/members" name="menu.member.search">Advanced search</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Decorations <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ route('decoration::index') }}">Overview</a></li>
-            <li><a href="{{ route('public::decoration-list') }}">Public gallery  &nbsp;<span class="glyphicon glyphicon-share text-warning"></span></a></li>
-            <li role="separator" class="divider"></li>
             <li><a href="{{ route('decoration::new') }}">Create new</a></li>
+            <li><a href="{{ route('decoration::index') }}">Search</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="{{ route('public::decoration-list') }}">Public gallery  &nbsp;<span class="glyphicon glyphicon-share text-muted"></span></a></li>
           </ul>
         </li> 
         {{-- <li class="dropdown">

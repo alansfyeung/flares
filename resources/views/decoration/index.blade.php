@@ -28,8 +28,8 @@
         <strong>No decorations found:</strong> Consider <a ng-href="{{gotoCreateNew}}">creating a new decoration</a>
     </div>
     
-    <uib-accordion close-others="false" template-url="/app/components/decoration/decorationAccordionTemplate.html">
-        <div uib-accordion-group class="panel panel-default" ng-repeat="decTier in decorations" heading="Tier {{decTier.tier}} – {{decTier.tierName}}" template-url="/app/components/decoration/decorationAccordionGroupTemplate.html">
+    <uib-accordion close-others="false" template-url="/ng-app/components/decoration/decorationAccordionTemplate.html">
+        <div uib-accordion-group class="panel panel-default" ng-repeat="decTier in decorations" heading="Tier {{decTier.tier}} – {{decTier.tierName}}" template-url="/ng-app/components/decoration/decorationAccordionGroupTemplate.html">
             <div class="table-wrapper" ng-show="decTier.decorations.length > 0">
                 <table class="table table-hover">
                     <colgroup>
@@ -45,7 +45,7 @@
                             <th>Tier</th>
                             <th>Shortcode</th>
                             <th>Name</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,7 +57,7 @@
                             <td>{{dec.tier}}</td>
                             <td>{{dec.shortcode | markBlanks}}</td>
                             <td>{{dec.name}}</td>
-                            <td><a class="btn btn-primary btn-xs fl-context-modal-button" ng-click="selectDecorationContext(dec); $event.stopPropagation();">More</a></td>
+                            <td><a class="btn btn-primary btn-block btn-xs fl-context-modal-button" ng-click="selectDecorationContext(dec); $event.stopPropagation();">Actions</a></td>
                         </tr>
                     </tbody>
                 </table>

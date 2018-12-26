@@ -30,7 +30,7 @@
                         <th>Shortcode</th>
                         <th>Name</th>
                         <th>Eligible from</th>
-                        <th></th>
+                        <th>View</th>
                     </tr>
                 </thead>
                 <tbody>

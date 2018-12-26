@@ -10,9 +10,9 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-6 col-md-8">
         <h1>{{ $dec->name }}</h1>
-        <h3>Tier <span class="label label-info">{{ $dec->tier }}</span> Award</h3>
+        <h3>Tier <span class="label label-tier">{{ $dec->tier }}</span> Award</h3>
         <hr>
         @if ($dec->desc)
         <h4>Purpose</h4>
@@ -23,9 +23,11 @@
         <p>{{ $dec->visual }}</p>
         @endif
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 col-md-4">
         <div class="well">
-            <img src="{{ $decBadgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->name }}">
+            <div class="thumbnail fl-record-thumbnail">
+                <img src="{{ $decBadgeUrl }}" alt="{{ $dec->shortcode }}" title="{{ $dec->name }}">
+            </div>
         </div>
         <div class="table-wrapper">
             <table class="table table-striped">
@@ -34,7 +36,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Within Tier <span class="label label-info">{{ $dec->tier }}</label></td>
+                        <td>Within Tier <span class="label label-tier">{{ $dec->tier }}</label></td>
                         <td>#{{ $dec->precedence or '--' }}</td>
                     </tr>
                     <tr>
@@ -61,7 +63,7 @@
                         <td><code>{{ $dec->shortcode or 'N/A' }}</code></td>
                     </tr>
                     <tr>
-                        <td>Minimum service period</td>
+                        <td>Min service period</td>
                         <td>{{ $dec->service_period_months or 'N/A' }} months</td>
                     </tr>
                     <tr>

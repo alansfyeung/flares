@@ -50,7 +50,10 @@ Route::post('decoration/{decorationId}/badge/new', 'DecorationBadgeController@st
 Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@destroy');
 Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
-// Admin API
+// Decoration Approval API
+// Route::resource('approval', 'ApprovalController', ['only' => ['index', 'store', 'show', 'update']]);        // No deleting allowed
+
+// Admin Users API
 Route::resource('user', 'UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
  
 // Ref data routes

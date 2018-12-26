@@ -116,42 +116,42 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
     // Function decs
     
 	function retrieveDecoration(decorationId){
-    return flAPI('decoration')
-        .get([decorationId])
-        .then(function(response){
-            // Process then store in VM
-            var dec = response.data.decoration;
-            var lowerDec = response.data.lowerDecoration;
-            var higherDec = response.data.higherDecoration;
-            // var children = response.data.children;
-            // var siblings = response.data.siblings;
-            processDecoration(dec);         // by reference
-            var baseResponse = {
-                id: dec.dec_id,
-                lowerId: lowerDec && lowerDec.dec_id,
-                higherId: higherDec && higherDec.dec_id,
-                // children: 
-                // siblings: 
-                data: dec
-            };
-            if (dec.parent_id){
-                // Retrieve the relationships
-                return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
-                    return angular.extend(baseResponse, parentInfo);
-                });
-            }
-            else {
-                return baseResponse;                
-            }
-        })
-        .catch(function(response){
-            if (response.status == 404){
-                $scope.dec.errorNotFound = true;
-            }
-            else {
-                $scope.dec.errorServerSide = true;
-            }
-        });
+        return flAPI('decoration')
+            .get([decorationId])
+            .then(function(response){
+                // Process then store in VM
+                var dec = response.data.decoration;
+                var lowerDec = response.data.lowerDecoration;
+                var higherDec = response.data.higherDecoration;
+                // var children = response.data.children;
+                // var siblings = response.data.siblings;
+                processDecoration(dec);         // by reference
+                var baseResponse = {
+                    id: dec.dec_id,
+                    lowerId: lowerDec && lowerDec.dec_id,
+                    higherId: higherDec && higherDec.dec_id,
+                    // children: 
+                    // siblings: 
+                    data: dec
+                };
+                if (dec.parent_id){
+                    // Retrieve the relationships
+                    return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
+                        return angular.extend(baseResponse, parentInfo);
+                    });
+                }
+                else {
+                    return baseResponse;                
+                }
+            })
+            .catch(function(response){
+                if (response.status == 404){
+                    $scope.dec.errorNotFound = true;
+                }
+                else {
+                    $scope.dec.errorServerSide = true;
+                }
+            });
 	}
     function retrieveDecorationRelationship(parentId){
         // Get the parent, also the surrounding siblings if any

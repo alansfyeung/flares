@@ -64,7 +64,17 @@
             aliases: [{
                 search: ['decorations', 'search']
             }]
-        }
+        },
+        approval: {
+            apiBase: '/api/approvals',
+            singular: 'approval',
+            plural: 'approvals',
+        },
+        user: {
+            apiBase: '/api/users',
+            singular: 'user',
+            plural: 'users',
+        },
     });
 
 

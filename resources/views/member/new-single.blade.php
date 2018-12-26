@@ -2,15 +2,15 @@
 @extends('layouts.base')
 
 @section('ng-app', 'flaresMemberNew')
-@section('ng-controller', 'newSimpleController')
-@section('title', 'Simple Member form')
+@section('ng-controller', 'newSingleController')
+@section('title', 'New Single Member Form')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberNewSimple.js"></script>
+<script src="/ng-app/components/member/flaresMemberNewSingle.js"></script>
 @endpush
 
 @section('heading')
-<h1>Simple member onboarding form</h1>
+<h1>Single member onboarding form</h1>
 @endsection
 
 @section('content')
@@ -21,7 +21,7 @@
     </div>
 
     <form class="form-horizontal" ng-submit="wf.submitNewRecord()" name="newSimpleStageOne">
-        <h2>Basic details <small>Step 1 of 2</small></h2>
+        <h2>Initiate member <small>Step 1 of 2</small></h2>
         <div class="alert alert-info">
             <span class="glyphicon glyphicon-info-sign"></span> 
             These details are used to match and de-duplicate any existing members. 
@@ -109,14 +109,15 @@
 
 <section ng-show="wf.state.stage === 2">
     <div class="alert alert-info">
-        <strong><span class="glyphicon glyphicon-floppy-saved"></span> Save success:</strong> Member was created. Add more information, or skip to continue.
+        <strong><span class="glyphicon glyphicon-floppy-saved"></span> Save success:</strong> Member was created. 
+        Add more information, or <a ng-click="wf.skipDetailedRecord()">skip to continue</a>.
     </div>
     
     {{-- <div class="text-right">
         <button type="button" class="btn btn-default" ng-click="wf.skipDetailedRecord()">Skip</button>    
     </div> --}}
 
-    <h2>Add more details <small>Step 2 of 2</small></h2>
+    <h2>Add member details <small>Step 2 of 2</small></h2>
     
     <form class="form-horizontal" ng-submit="wf.submitDetailedRecord()" ng-show="member.regtNum">
         <fieldset>
@@ -283,12 +284,12 @@
 <section ng-show="wf.state.stage === 3">
     <div class="alert alert-info">
         <strong><span class="glyphicon glyphicon-info-sign"></span> Member was successfully updated:</strong> 
-        &diam;@{{member.regtNum}} <strong>@{{member.data.last_name}}, @{{member.data.first_name}}  </strong>
+        <strong>@{{member.data.last_name}}, @{{member.data.first_name}} </strong> #@{{member.regtNum}}
     </div>
     <hr>
     <div class="col-sm-12">
         <div class="text-right">
-            <button class="btn btn-default" ng-click="viewMember()">Go and check out this new member</button>
+            <button class="btn btn-default" ng-click="viewMember()">View member</button>
             <button class="btn btn-primary" ng-click="reset()">Add another member</button>
         </div>
     </div>

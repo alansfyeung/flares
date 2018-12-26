@@ -8,7 +8,7 @@
 var flaresApp = angular.module('flaresMemberIndex', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/app/components/member/memberContextMenuTemplate.html').then(function(response){
+    $http.get('/ng-app/components/member/memberContextMenuTemplate.html').then(function(response){
         $templateCache.put('memberContextMenuTemplate.html', response.data);
     });
 }]);
@@ -19,8 +19,9 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
     
     $scope.state = {
         isSearch: false,
-        isAdvancedSearch: false,
+        isAdvancedSearch: true,     // Default to advanced search 
     };
+    $scope.retriveNumMostRecent = 10;
 	$scope.formData = {};
     
     // $scope.searchKeywords = (typeof $location.search() === 'object' && $location.search().keywords) || '';
@@ -34,7 +35,10 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
 		// is_active: '',
 		// discharged: ''
 	// }, $location.search() || {});
-    $scope.searchParams = $location.search() || {};
+    $scope.searchParams = $location.search() || {
+        sex: '',
+        discharged: '',
+    };
 	
     $scope.submitSimpleSearch = function(){
         
@@ -52,7 +56,7 @@ flaresApp.controller('memberIndexController', function($scope, $location, $windo
     };
     
     $scope.submitDefaultSearch = function(howMany){
-        howMany = howMany || 10;
+        howMany = howMany || $scope.retriveNumMostRecent || 10;
         flAPI('member').get(['search'], {
 			params: { 
                 'orderBy': 'CREATED',

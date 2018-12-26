@@ -1,9 +1,9 @@
-{{-- Display a single member --}}
+{{-- Edit a member's existing decoration --}}
 @extends('layouts.base')
 
 @section('ng-app', 'flaresMemberDecorationViewEdit')
 @section('ng-controller', 'memberEditDecorationController')
-@section('title', 'Edit Awarded Decoration')
+@section('title', 'Edit - Decoration')
 
 @push('scripts')
 <script src="/ng-app/components/member/flaresMemberEditDecoration.js"></script>
@@ -14,8 +14,7 @@
 <div>
     <h1>
         <a ng-href="{{ url('/') }}@{{cancelHref()}}">Member</a>
-        &rsaquo;
-        Edit an awarded decoration
+        &rsaquo; Edit an awarded decoration
     </h1>
 </div>
 @endsection
@@ -33,34 +32,50 @@
 @section('content')
 <div ng-show="member.regt_num">
     <div class="row">
+        <div class="col-sm-12">
+            <header class="member-header">
+                <h2>@{{member.last_name}}, @{{member.first_name}}</h2>
+                <div class="subheading text-muted">Flares ID: @{{member.regt_num}} &nbsp; Forums username: @{{member.forums_username}}</div>
+            </header>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-8">
-            <div>
-                <h2>@{{member.last_name}}, @{{member.first_name}} <small style="display: inline-block">&diams; @{{member.regt_num}}</small></h2>
-                <div>
-                    <div class="thumbnail fl-record-thumbnail" style="vertical-align: middle;">
-                        <img ng-src="@{{award.existingDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
-                    </div> &nbsp;
-                    <h4 style="display: inline-block;">@{{award.existingDecoration.name}} <span class="label label-info">@{{award.existingDecoration.tier}}</span></h4>            
-                </div>
+            <div class="alert alert-success" ng-show="award.saved">
+                <a id="viewMemberProfileButton" class="btn btn-success btn-xs pull-right" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="104">View member profile</a>
+                <p><strong>Saved</strong>: The decoration updates were saved</p>
             </div>
+            
+            <div class="text-muted">&hellip; was awarded</div>
+            <h4>@{{award.existingDecoration.name}}</h4>
             
             <hr>
-            
-            <div class="alert alert-success" ng-show="award.saved">
-                <a id="viewMemberProfileButton" class="btn btn-success btn-sm pull-right" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="104">View member profile</a>
-                <p class="lead"><strong>Saved</strong>: The decoration details were saved</p>
-            </div>
-    
             <form class="form-horizontal" ng-submit="submit()" autocomplete="off" display-mode="edit">
+                <fieldset>
+                    <div class="form-group">
+                        <div class="col-sm-3">Award date</div>
+                        <div class="col-sm-9">@{{award.data.date | date:'MMM yyyy'}} <span class="text-muted">(selected when awarding)</span></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">Record created on</div>
+                        <div class="col-sm-9">@{{award.data.created_at | date:'short'}}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">Record last updated on</div>
+                        <div class="col-sm-9">@{{award.data.updated_at | date:'short'}}</div>
+                    </div>
+                </fieldset>
+                <hr>
                 <fieldset ng-show="award.existingDecoration.dec_id">
                     <div class="form-group">
                         <label class="control-label col-sm-3">Date awarded</label>
                         <div class="col-sm-9">
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <select class="form-control" ng-model="formData.awardDate.month" ng-options="month.value as month.name for month in formData.months" tabindex="10"></select> 
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <input class="form-control" ng-model="formData.awardDate.year" type="number" tabindex="11">
                                 </div>
                             </div>
@@ -80,7 +95,7 @@
                         <div class="text-right">
                             <img ng-show="state.isSaving" src="{{ asset('assets/img/spinner.gif') }}" alt="Working...">
                             <a class="btn btn-default hidden" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101" ng-disabled="state.isSaving">Back to Member</a>
-                            <button ng-show="award" class="btn btn-primary" type="submit" tabindex="100" ng-disabled="state.isSaving">Save award details</button>
+                            <button ng-show="award" class="btn btn-primary" type="submit" tabindex="100" ng-disabled="state.isSaving">Update award details</button>
                         </div>
                     </div>
                 </div>
@@ -93,42 +108,43 @@
         </div>
         <div class="col-sm-4">
             <div class="panel panel-default">
-                <div class="panel-heading">Award info</div>
-                <div class="table-wrapper">
-                    <table class="table">
-                        <tr>
-                            <td>Member awarded date</td>
-                            <td>@{{award.data.date | date:'MMM yyyy'}}</td>
-                        </tr>
-                        <tr>
-                            <td>Record created on</td>
-                            <td>@{{award.data.created_at | date:'short'}}</td>
-                        </tr>
-                        <tr>
-                            <td>Record last updated on</td>
-                            <td>@{{award.data.updated_at | date:'short'}}</td>
-                        </tr>
-                    </table>
+                <div class="panel-heading">@{{award.existingDecoration.name}}</div>
+                <div class="panel-body">
+                    <div class="thumbnail fl-record-thumbnail">
+                        <img ng-src="@{{award.existingDecorationBadgeUrl}}" alt="@{{award.name}}" class="image-rounded memberview-thumb">
+                    </div>
+                    <div class="fl-record-caption">
+                        <p>@{{award.existingDecoration.desc}}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Decoration info</div>
                 <div class="table-wrapper">
                     <table class="table">
                         <tr>
-                            <td>Decoration min service period</td>
+                            <td>Shortcode</td>
+                            <td>
+                                <code>@{{award.existingDecoration.shortcode}}</code> &nbsp;
+                                <a target="_blank" ng-href="{{ route('public::decoration-details', [ 'shortcode' => '' ]) }}/@{{award.existingDecoration.shortcode}}">
+                                    <span class="glyphicon glyphicon-new-window"></span>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Tier/precedence</td>
+                            <td><span class="label label-tier">@{{award.existingDecoration.tier}}</span> &middot; #@{{award.existingDecoration.precedence}}</td>
+                        </tr>
+                        <tr>
+                            <td>Min service period</td>
                             <td>@{{award.existingDecoration.service_period_months | markBlanks}} months</td>
                         </tr>
                         <tr>
-                            <td>Decoration commencement</td>
-                            <td>@{{award.existingDecoration.date_commence | markBlanks | date:'MMM yyyy'}}</td>
+                            <td>Awarded from/until</td>
+                            <td>
+                                @{{award.existingDecoration.date_commence | markBlanks | date:'MMM yyyy'}} until 
+                                @{{award.existingDecoration.date_conclude | markBlanks | date:'MMM yyyy'}}
+                            </td>
                         </tr>
                         <tr>
-                            <td>Decoration conclusion</td>
-                            <td>@{{award.existingDecoration.date_conclude | markBlanks | date:'MMM yyyy'}}</td>
-                        </tr>
-                        <tr>
-                            <td>Decoration authority</td>
+                            <td>Awarding authority</td>
                             <td>@{{award.existingDecoration.authorized_by | markBlanks}}</td>
                         </tr>
                     </table>

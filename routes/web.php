@@ -36,7 +36,7 @@ Route::group(['as' => 'member::', 'middleware' => 'auth'], function () {
         return view('member.index');
     });
     Route::get('members/new', function () {         // Simple 1 page form
-        return view('member.new-simple');
+        return view('member.new-single');
     });
     Route::get('members/newmulti', function () {			// Member bulk add
         return view('member.new-multi');

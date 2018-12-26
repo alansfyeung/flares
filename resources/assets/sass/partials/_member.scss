@@ -7,6 +7,27 @@
     }
 }
 
+.member-header {
+    h2 {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    h2 + .subheading {
+        margin-top: -10px;   
+    }
+    // Add margin/etc to match heading
+    .member-status-labels {
+        float: right;
+    }
+    // First column 
+    table {
+        tr > th:nth-child(1),
+        tr > td:nth-child(1) {
+            width: 200px;
+        }
+    } 
+}
+
 .member-quickstatus {
 	border-bottom: 1px dashed #ddd;
 	margin-bottom: 20px;

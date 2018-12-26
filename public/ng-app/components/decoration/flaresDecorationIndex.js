@@ -1,10 +1,10 @@
 var flaresApp = angular.module('flaresDecoration', ['flaresBase', 'flow']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/app/components/decoration/decorationContextMenuTemplate.html').then(function(response){
+    $http.get('/ng-app/components/decoration/decorationContextMenuTemplate.html').then(function(response){
         $templateCache.put('decorationContextMenuTemplate.html', response.data);
     });
-    $http.get('/app/components/decoration/decorationAccordionGroupTemplate.html').then(function(response){
+    $http.get('/ng-app/components/decoration/decorationAccordionGroupTemplate.html').then(function(response){
         $templateCache.put('decorationAccordionGroupTemplate.html', response.data);
     });
 }]);
@@ -100,26 +100,28 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
     
     $scope.dec = context;
     
-    $scope.bodyButtons = [{
+    $scope.bodyActions = [{
         label: 'Edit decoration',
-        classNames: ['btn-primary'],
+        // classNames: ['btn-primary'],
         action: decorationDeepLink.bind(null, 'edit', 'details')
     }, {
         label: 'Assign to member',
-        classNames: ['btn-default'],
+        // classNames: ['btn-default'],
         action: decorationDeepLink.bind(null, 'edit', 'assign')
     }, {
-        label: 'View public page',
-        classNames: ['btn-default'],
+        label: 'View public page ',
+        // classNames: ['btn-default'],
         action: function(){
             if ($scope.dec.shortcode){
-                $window.open(flResource().raw(['public', 'decoration', $scope.dec.shortcode]), 'Preview Award', 'width=800, height=600');
+                $window.open(flResource().raw(['public', 'decorations', $scope.dec.shortcode]), 'Preview Award', 'width=800, height=600');
                 $modalInstance.close();
             }
             // $window.location.href = flResource('decoration').retrieve().addFragment(frag).getLink();
         }
-    }, {
-        label: 'Delete',
+    }];
+    /*
+    $scope.bodyButtons = [{
+        label: 'Delete decoration',
         classNames: ['btn-danger'],
         action: function(){
             if (!confirm("Are you sure you want to delete '"+$scope.dec.name+"'? This cannot be undone.")) return false;
@@ -139,6 +141,7 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
             });
         }
     }];
+    */
     $scope.footerButtons = [{
         label: 'Cancel',
         classNames: ['btn-default']

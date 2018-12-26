@@ -2,6 +2,10 @@
 // SCSS for FLARES form screens
 //=============================
 
+textarea {
+    max-width: 100%;
+}
+
 .control-label {
     &.control-label-required::after {
         content: ' *';
@@ -16,4 +20,10 @@
     display: inline-block;
     margin: 0 auto;
     max-width: 150px;
+}
+.fl-record-caption {
+    margin-top: 12px;
+    margin-bottom: 15px;
+    font-size: .9em;
+    line-height: 1.25;
 }

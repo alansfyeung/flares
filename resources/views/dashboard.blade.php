@@ -18,54 +18,74 @@
 <div class="row">
 
     @verbatim
-	<div class="col-sm-4">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Member management <span class="label label-success">beta</span></h3>
-			</div>
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-xs-6">
-						<figure class="dashboard-stat" ng-cloak>
-							<figcaption class="stat-caption">Posted Strength</figcaption>
-							<div class="stat-figure">{{stats.member.numActive}}</div>						
-						</figure>
-					</div>
-					<div class="col-xs-6">
-                		<figure class="dashboard-stat" ng-cloak>
-							<figcaption class="stat-caption">Total in system</figcaption>
-							<div class="stat-figure">{{stats.member.numTotal}}</div>
-						</figure>
-					</div>
-				</div>
-			</div>
-            <div class="list-group">
-                <a href="/members" class="list-group-item active">View/search members</a>
-                <a href="/members/new" class="list-group-item">Simple member onboarding</a>
-                <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a>
-            </div>
-		</div>
-	</div>
-    @endverbatim
-    
-    @verbatim
-	<div class="col-sm-4">
+
+    <div class="col-sm-6 col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Decorations <span class="label label-success">beta</span></h3>
+                <h3 class="panel-title">Activity Log</h3>
             </div>
             <div class="panel-body">
-                <figure class="dashboard-stat" ng-cloak>
-                    <figcaption class="stat-caption">Total decorations</figcaption>
-                    <div class="stat-figure">{{stats.decoration.num}}</div>
-                </figure>
-            </div>
-            <div class="list-group">
-                <a href="/decorations" class="list-group-item">All decorations</a>
-                <a href="/decorations/new" class="list-group-item">Add new decoration</a>
+                <p>Activity here</p>
+                <p>Activity here</p>
+                <p>Activity here</p>
+                <p>Activity here</p>
+                <p>Activity here</p>
             </div>
         </div>
-	</div>
+    </div>
+    
+	<div class="col-sm-6 col-md-4">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Member management</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <figure class="dashboard-stat" ng-cloak>
+                                        <figcaption class="stat-caption">Posted Strength</figcaption>
+                                        <div class="stat-figure">{{stats.member.numActive}}</div>						
+                                    </figure>
+                                </div>
+                                <div class="col-xs-6">
+                                    <figure class="dashboard-stat" ng-cloak>
+                                        <figcaption class="stat-caption">In system</figcaption>
+                                        <div class="stat-figure">{{stats.member.numTotal}}</div>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group">
+                            <a href="/members" class="list-group-item active">View/search members</a>
+                            <a href="/members/new" class="list-group-item">Add single member</a>
+                            <!-- <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Decorations</h3>
+                        </div>
+                        <div class="panel-body">
+                            <figure class="dashboard-stat" ng-cloak>
+                                <figcaption class="stat-caption">Decorations</figcaption>
+                                <div class="stat-figure">{{stats.decoration.num}}</div>
+                            </figure>
+                        </div>
+                        <div class="list-group">
+                            <a href="/decorations" class="list-group-item">Search decorations</a>
+                            <a href="/decorations/new" class="list-group-item">Create new decoration</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     @endverbatim
     
     @if (env('APP_ENV') == 'dev')

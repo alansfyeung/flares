@@ -42,3 +42,12 @@
         line-height: 100%;
     }
 }
+
+// Custom trim around a tier label
+.label.label-tier {
+    background: maroon;
+    color: white;
+    padding: .1em .4em .15em;
+    vertical-align: .15em;
+    font-size: 80%;
+}

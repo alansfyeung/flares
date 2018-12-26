@@ -1,8 +1,11 @@
 <div class="modal-header">
     <h4 class="modal-title">{{dec.name}}</h4>
-    <h5 class="modal-subtitle">Tier {{dec.tier}} decoration</h5>
+    <h5 class="modal-subtitle">{{dec.shortcode}} &middot; Tier <span class="label label-tier">{{dec.tier}}</span></h5>
 </div>
 <div class="modal-body">
+    <div class="list-group">
+        <a href="#" class="list-group-item" ng-class="menuItem.classNames" ng-click="menuItem.action()" ng-repeat="menuItem in bodyActions">{{menuItem.label}}</a>
+    </div>
     <a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="menuItem.action()">{{menuItem.label}}</a>
 </div>
 <div class="modal-footer">

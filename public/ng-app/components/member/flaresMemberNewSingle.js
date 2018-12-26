@@ -1,11 +1,11 @@
 // ==================================
-//   flaresMemberNew.js
+//   flaresMemberNewSingle.js
 //   Add new members
 // ==================================
 
 var flaresApp = angular.module('flaresMemberNew', ['flaresBase']);
 
-flaresApp.controller('newSimpleController', function($scope, $window, $location, flAPI, flResource){
+flaresApp.controller('newSingleController', function($scope, $window, $location, flAPI, flResource){
 
     //=======================================
     // DATA

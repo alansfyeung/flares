@@ -8041,6 +8041,10 @@ footer {
   }
 }
 
+textarea {
+  max-width: 100%;
+}
+
 .control-label.control-label-required::after {
   content: ' *';
   display: inline;
@@ -8052,6 +8056,13 @@ footer {
   display: inline-block;
   margin: 0 auto;
   max-width: 150px;
+}
+
+.fl-record-caption {
+  margin-top: 12px;
+  margin-bottom: 15px;
+  font-size: .9em;
+  line-height: 1.25;
 }
 
 .env-local .page-header, .env-dev .page-header {
@@ -8125,6 +8136,24 @@ footer {
 
 .member-status-labels .label {
   display: inline-block;
+}
+
+.member-header h2 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.member-header h2 + .subheading {
+  margin-top: -10px;
+}
+
+.member-header .member-status-labels {
+  float: right;
+}
+
+.member-header table tr > th:nth-child(1),
+.member-header table tr > td:nth-child(1) {
+  width: 200px;
 }
 
 .member-quickstatus {
@@ -8262,6 +8291,14 @@ select.ng-dirty.ng-invalid,
   display: block;
   text-align: center;
   line-height: 100%;
+}
+
+.label.label-tier {
+  background: maroon;
+  color: white;
+  padding: .1em .4em .15em;
+  vertical-align: .15em;
+  font-size: 80%;
 }
 
 .roll-view-container {
