@@ -1,7 +1,19 @@
 // Dashboard screen
 
-#dashboardApprovals table {
-    font-size: .9em;
+#dashboardApprovals {
+    table {
+        font-size: .9em;
+    }
+    .badge {
+        vertical-align: .1em;
+        background: $brand-danger;      // red badge please
+    }
+}
+
+
+.dashboard-tabcontent-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .dashboard-stat {

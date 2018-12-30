@@ -131,10 +131,6 @@
                 else if (path.subId) {
                     $location.path([path.id, path.mode, path.subId].join('/'));
                 }
-                else {
-                    throw 'Unexpected: Neither tab or subId conditions were met';
-                    // $location.path([path.id, path.mode, 0].join('/'));
-                }
             }
         };
 

@@ -36,7 +36,7 @@
                 <td>@{{appr.created_at | date:'shortDate'}}</td>
                 <td>
                     <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
-                        ng-href="{{ route('approval::approveDecoration') }}#!/@{{appr.dec_appr_id}}/edit/details">
+                        ng-href="{{ route('approval::approveDecoration') }}#!/@{{appr.dec_appr_id}}/edit">
                         <span class="glyphicon glyphicon-share text-muted"></span>
                     </a>
                 </td>

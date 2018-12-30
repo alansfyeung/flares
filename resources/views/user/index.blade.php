@@ -17,6 +17,7 @@
             <col>
             <col style="width: 120px;">
             <col style="width: 120px;">
+            <col style="width: 60px;">
             <col style="width: 200px;">
         </colgroup>
         <tbody>
@@ -26,6 +27,7 @@
                     <th>Username</th>
                     <th>Access Level</th>
                     <th>Added on</th>
+                    <th>SSO?</th>
                     <th>Linked Forums account</th>
                 </tr>
             </thead>
@@ -36,6 +38,7 @@
                     <td>{{$user->username}} <span class="text-muted">({{$user->email}})</span></td>
                     <td>{{$user->access_level}}</td>
                     <td>{{date('d-M-Y', strtotime($user->created_at))}}</td>
+                    <td>{{$user->allow_sso or 'no'}}</td>
                     <td>{{$user->forums_username or '--'}}</td>
                 </tr>
                 @endforeach
@@ -46,10 +49,6 @@
 
 <h3>Registering new users</h3>
 <div class="well">
-    <p>New users can be added:</p>
-    <ul>
-        <li>Via CLI using <code>php artisan create:user</code></li>
-        <li>By creating a Forums-linked admin user then SSO-ing to Flares</li>
-    </ul>
+    <p>New users can be added or modified via CLI using <code>php artisan create:user</code>, <code>php artisan users:reset</code>, etc</p>
 </div>
 @endsection

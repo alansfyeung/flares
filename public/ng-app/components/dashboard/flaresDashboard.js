@@ -18,7 +18,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
 
     $scope.selectApproval = function(approval){
         $window.location.href = flResource('approval')
-            .setFragment([approval.dec_appr_id, 'edit', 'details'])
+            .setFragment([approval.dec_appr_id, 'edit'])
             .getLink();
     };    
 

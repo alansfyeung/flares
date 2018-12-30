@@ -111,14 +111,21 @@
                             <tr>
                                 <th>Flares Regt Number</th>
                                 <td>@{{member.data.regt_num | markBlanks}}</td>
+                                <td class="text-right">
+                                    <small><a href="#" title="To be implemented">Migrate</a></small>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Forums username</th>
                                 <td>@{{member.data.forums_username | markBlanks}}</td>
+                                <td class="text-right">
+                                    <small><a href="#">Change</a> &middot; <a href="#">Forums profile</a></small>
+                                </td>
                             </tr>
                             <tr>
                                 <th>COMS ID</th>
                                 <td>@{{member.data.coms_username | markBlanks}} @{{member.coms_id}}</td>
+                                <td></td>
                             </tr>
                         </table>
                     </div>

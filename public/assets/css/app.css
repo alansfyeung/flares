@@ -8086,6 +8086,16 @@ textarea {
   font-size: .9em;
 }
 
+#dashboardApprovals .badge {
+  vertical-align: .1em;
+  background: #d9534f;
+}
+
+.dashboard-tabcontent-header {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .dashboard-stat {
   text-align: center;
 }
