@@ -16,7 +16,7 @@ class CreateUserSsoTable extends Migration
         Schema::create('user_sso', function (Blueprint $table) {
             $table->increments('sso_id');
             $table->unsignedInteger('user_id');
-            $table->string('sso_token', 32);
+            $table->string('sso_token', 32)->nullable();
             $table->tinyInteger('is_redirect')->nullable();
             $table->dateTime('expires_at')->nullable();
             $table->timestamps();

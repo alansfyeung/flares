@@ -16,7 +16,8 @@ class PersonalAccessTokenController extends Controller
     /**
      * Display a page that prompts to generate a PAT
      */
-    public function view(Request $request) {
+    public function view(Request $request) 
+    {
         $authedUser = $request->user();
         if ($authedUser->access_level >= User::ACCESS_ADMIN) {
             $users = User::all();
@@ -32,7 +33,8 @@ class PersonalAccessTokenController extends Controller
     /**
      * Generates and displays the PAT with scopes as selected
      */
-    public function generateAndView(Request $request) {
+    public function generateAndView(Request $request) 
+    {
         if ($request->has('scopes')) {
             // Maybe the authed user generated it for 
             $authedUser = $request->user();

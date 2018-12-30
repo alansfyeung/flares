@@ -60,6 +60,9 @@ Route::resource('approval', 'DecorationApprovalController', ['only' => ['index',
 
 // Admin Users API
 Route::resource('user', 'UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+Route::post('usersso/{userId}/link', 'UserSSOController@provisionSSO');
+Route::post('usersso', 'UserSSOController@store');
+Route::delete('usersso', 'UserSSOController@destroy');
  
 // Ref data routes
 Route::get('refdata', 'RefDataController@all');

@@ -25,6 +25,8 @@ class ResponseCodes
 	const ERR_P_NOPE = 7000;
     const ERR_P_NOT_ADMIN = 7001;
     const ERR_P_INSUFFICIENT = 7002;
+    const ERR_P_WRONG_ENTITY = 7003;
+    const ERR_P_ENTITY_NOT_ALLOWED = 7003;
     const ERR_P_OAUTH_SCOPE = 7100;
     
     // Gone and unavailable errors are 8000-series

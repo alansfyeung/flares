@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\User;
+use App\UserSSO;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
@@ -40,15 +41,8 @@ class UserSSOController extends Controller
 
             $postDataUser = $request->input('user', []);
 
-            // Check that it has a forums username
-            // if (!array_key_exists('forums_username', $postDataUser) || empty($postDataUser['forums_username'])) {
-            //     return response()->json([
-            //         'error' => ['code' => ResponseCodes::ERR_POSTDATA_MISSING, 'reason' => 'Forums username field required for SSO'],
-            //     ], 403);
-            // }
-
             // Conventionally, start their usernames with 'f.', and if the provided username doesn't, then prepend it. 
-            if (array_key_exists('username', $postDataUser)) {
+            if (!empty($postDataUser['username'])) {
                 if (substr($postDataUser['username'], 0, 2) != 'f.') {
                     $postDataUser['username'] = 'f.'.$postDataUser['username'];
                 }
@@ -56,10 +50,8 @@ class UserSSOController extends Controller
                 $postDataUser['username'] = 'f.'.$postDataUser['forums_username'];
             }
 
-            // Strip out the password field in case it's in $postDataUser
-            if (array_key_exists('password', $postDataUser)){
-                unset($postDataUser['password']);
-            }
+            $postDataUser['allow_sso'] = 1;
+            $postDataUser['password'] = 'x';            // This can't be authenticated against
             
             try {
                 $newUser = User::create($postDataUser);
@@ -119,7 +111,7 @@ class UserSSOController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function provisionSSO(Request $request, $id)
+    public function provisionSSO(Request $request, $userId)
     {
         // Are they allowed to provision?
         if (($accessError = $this->checkAccessErrors($request))) {
@@ -128,23 +120,39 @@ class UserSSOController extends Controller
             ], 403);
         }
 
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($userId);
+        // Is this user actually an SSO user?
+        if (empty($user->allow_sso) || $user->allow_sso != 1) {
+            return response()->json([
+                'error' => ['code' => ResponseCodes::ERR_P_ENTITY_NOT_ALLOWED, 'reason' => 'The user is not enabled for SSO'],
+            ], 422);
+        }
+
         try {
 
-            $linkToken = md5($id . str_random(32));
+            // If user has an unused unexpired link, then use that. Otherwise, create a new one
+            $existingSSO = UserSSO::where('user_id', $user->user_id)
+                                    ->whereNotNull('sso_token')
+                                    ->where('expires_at', '>', date('Y-m-d H:i:s'))
+                                    ->first();
+            if (!empty($existingSSO)) {
+                return response()->json([
+                    'token' => $existingSSO->sso_token,
+                    'link' => route('sso', ['token' => $existingSSO->sso_token]),
+                ]);
+            }
+
+            $linkToken = md5($userId . str_random(32));
 
             $sso = $user->userSSO()->create([
                 'sso_token' => $linkToken,
                 'is_redirect' => 1,
-                'expiry_date' => new Date('Y-m-d H:i:s', strtotime('+ 1 week')),
+                'expires_at' => date('Y-m-d H:i:s', strtotime('+ 1 hour')),
             ]);
-
-            // Figure out the full URL for redeeming this 
-            $url = route('sso', ['token' => $linkToken]);
 
             return response()->json([
                 'token' => $linkToken,
-                'link' => $url,
+                'link' => route('sso', ['token' => $linkToken]),
             ]);
         } catch (\Exception $ex) {
             return response()->json([
@@ -155,7 +163,7 @@ class UserSSOController extends Controller
 
     public function consumeSSO(Request $request, $token) 
     {
-        $sso = UserSSO::where('sso_token', $token)->get();
+        $sso = UserSSO::where('sso_token', $token)->whereNotNull('sso_token')->first();
 
         // If non-existent or expired, then return an error
         if (empty($sso) || (strtotime($sso->expires_at) < time())) {
@@ -163,13 +171,15 @@ class UserSSOController extends Controller
                 // Get rid of the SSO link, to keep it consistent with other 'sso records that can no longer be used'
                 $sso->sso_token = null;
                 $sso->save(); 
-            } 
-            if ($request->ajax()) {
-                response()->json([
-                    'error' => ['code' => ResponseCodes::ERR_LINK_INVALID, 'reason' => 'The link you provided is invalid or expired'],
-                ]);
             } else {
-                abort(400, 'Bad SSO token');
+                if ($request->ajax()) {
+                    return response()->json([
+                        'error' => ['code' => ResponseCodes::ERR_LINK_INVALID, 'reason' => 'The link you provided is invalid or expired'],
+                    ]);
+                } else {
+                    abort(400, 'Bad SSO token: The link you provided is invalid or expired');
+                    // return response('Bad SSO token', 400);
+                }
             }
         }
         
@@ -179,20 +189,21 @@ class UserSSOController extends Controller
         $sso->save();
 
         if ($request->ajax()) {
-            response()->json([
+            return response()->json([
                 'success' => true,
             ]);
         } else {
             if ($sso->is_redirect) {
-                redirect()->route('dashboard');
+                return redirect()->route('dashboard');
             } else {
-                response('', 204);      // 204 no content
+                return response('', 204);      // 204 no content
             }
         }
 
     }
 
-    private function checkAccessErrors(Request $request) {
+    private function checkAccessErrors(Request $request) 
+    {
         // Check for access to delete users
         $requester = $request->user();
         if (empty($requester) || empty($requester->access_level) || $requester->access_level < User::ACCESS_ADMIN) {
