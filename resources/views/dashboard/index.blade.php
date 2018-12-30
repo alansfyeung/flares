@@ -1,6 +1,6 @@
 {{-- Home page for Flares users. Shows links for quick access --}}
 
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresDashboard')
 @section('ng-controller', 'dashboardController')

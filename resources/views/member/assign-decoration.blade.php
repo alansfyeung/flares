@@ -1,5 +1,5 @@
 {{-- Assign a decoration to a member --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresMemberDecoration')
 @section('ng-controller', 'memberAssignDecorationController')

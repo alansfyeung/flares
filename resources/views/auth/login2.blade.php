@@ -1,5 +1,9 @@
 @extends('layouts.template')
 
+@section('navbar-sections')
+{{-- Intentionally empty in order to hide navbar --}}
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row">

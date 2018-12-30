@@ -1,22 +1,21 @@
 {{-- Search all members --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
-@section('ng-app', 'flaresUser')
-@section('ng-controller', 'indexController')
-@section('title', 'Flares Users')
+@section('title', 'Admin Users')
 
 @section('heading')
-<h1>Users</h1>
+<h1>Admin Users</h1>
 @endsection
 
-@push('scripts')
-<script src="/ng-app/components/decoration/flaresDecorationIndex.js"></script>
-@endpush
-@push('vendor-scripts')
-<script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
-@endpush
-
 @section('content')
+
+<div class="alert alert-info">
+    <p>New users can be added:</p>
+    <ul>
+        <li>Via CLI using <code>php artisan create:user</code></li>
+        <li>By creating a Forums-linked admin user then SSO-ing to Flares</li>
+    </ul>
+</div>
 
 <div class="table-wrapper">
     <table class="table table-striped">
@@ -25,10 +24,8 @@
             <tr>
                 <td>{{$user}}</td>
             </tr>
-            @endforeach        
+            @endforeach
         </tbody>
     </table>
 </div>
-
-
 @endsection

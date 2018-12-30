@@ -1,13 +1,11 @@
 {{-- Login page --}}
 @extends('layouts.template')
 
-@section('ng-app', 'flaresLogin')
-@section('ng-controller', 'loginController')
 @section('title', 'Login')
 
-@push('scripts')
-<script src="/ng-app/components/auth/flaresLogin.js"></script>
-@endpush
+@section('navbar-sections')
+{{-- Intentionally empty in order to hide navbar --}}
+@endsection
 
 @section('heading')
 <h1>Login</h1>
@@ -31,7 +29,7 @@
                 <form class="form auth-login-form" method="POST" action="{{ url('/login') }}">
                     <fieldset>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="FLARES username">
+                            <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="FLARES username" autocomplete="username">
                             @if ($errors->has('username'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('username') }}</strong>
@@ -39,7 +37,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="current-password">
                             @if ($errors->has('password'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('password') }}</strong>

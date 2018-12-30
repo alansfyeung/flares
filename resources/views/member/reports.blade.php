@@ -1,5 +1,5 @@
 {{-- Display a single member --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresMemberReports')
 @section('ng-controller', 'memberController')

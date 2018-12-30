@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('content')
 <div class="container">

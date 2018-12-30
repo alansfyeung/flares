@@ -1,5 +1,5 @@
 {{-- Add a single member using the simple form --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresMemberNew')
 @section('ng-controller', 'newSingleController')

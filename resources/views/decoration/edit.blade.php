@@ -1,11 +1,11 @@
 {{-- Display a single member --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'decorationViewEditController')
 @section('title', 'View Decoration')
 
-@push('scripts')
+@push('ng-scripts')
 <script src="/ng-app/components/decoration/flaresDecorationViewEdit.js"></script>
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
 @endpush

@@ -1,5 +1,5 @@
 {{-- Search all members --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresDecoration')
 @section('ng-controller', 'indexController')

@@ -1,5 +1,5 @@
 {{-- Activity Search --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresActivitySearch')
 @section('ng-controller', 'activitySearchController')

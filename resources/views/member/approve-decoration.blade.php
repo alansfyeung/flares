@@ -1,5 +1,5 @@
 {{-- Approve a decoration for a member --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresDecorationApproval')
 @section('ng-controller', 'memberApproveDecorationController')

@@ -1,5 +1,5 @@
 {{-- Activities View existing --}}
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresActivityView')
 @section('ng-controller', 'activityViewEditController')

@@ -1,5 +1,5 @@
 {{-- Roll for an activity --}} 
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 @section('ng-app', 'flaresActivityMarkRoll')
 @section('ng-controller', 'activityRollController')

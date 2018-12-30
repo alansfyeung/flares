@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+@if(View::hasSection('ng-app'))
 <html lang="en" ng-app="@yield('ng-app')" class="env-{{ config('app.env', 'local') }}">
+@else
+<html lang="en" class="env-{{ config('app.env', 'local') }}">
+@endif
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,14 +30,20 @@
 						<img alt="206 FLARES" src="{{{ asset('/assets/img/flareslogo.png') }}}" style="height: 20px;">
 					</a>
 				</div>
-				@yield('navbar-sections')
+                @section('navbar-sections')
+                    @include('partials.navbar')
+                @show
 			</div>
 		</nav>
 	</header>
 	@show
     
     @section('main')
+    @if(View::hasSection('ng-controller'))
     <div id="main" class="flares-main" ng-controller="@yield('ng-controller')" ng-cloak>
+    @else
+    <div id="main" class="flares-main">
+    @endif
         <div class="page-header">
             <div class="container">
             @yield('heading')				
@@ -66,22 +76,20 @@
     {{-- Core js --}}
     <script src="/assets/js/jquery-1.11.3.min.js"></script>
 	<script src="/assets/js/bootstrap.min.js"></script>
-    
-    {{-- Application js --}}
-    @section('angular-scripts')
+
+    {{-- Angular app js, if required --}}
+    @section('ng-scripts')
     <script src="/assets/js/angular.min.js"></script>
-	<script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
-	<script src="/ng-app/shared/flaresBase.js"></script>
-	<script src="/ng-app/shared/flaresBase-constants.js"></script>
-	<script src="/ng-app/shared/flaresBase-controllers.js"></script>
-	<script src="/ng-app/shared/flaresBase-service-resource.js"></script>
-	<script src="/ng-app/shared/flaresBase-service-api.js"></script>
+    <script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
     @show
-	@stack('scripts')
-    
+    @stack('ng-scripts')
+
     {{-- Plugin/add-on/vendor js --}}
 	<script src="/assets/js/notification-popups.js"></script>
 	@stack('vendor-scripts')
+    
+    {{-- Other custom js --}}
+	@stack('scripts')
     
 </body>
 </html>

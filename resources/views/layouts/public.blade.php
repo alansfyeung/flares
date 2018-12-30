@@ -22,5 +22,3 @@
         </div>
     </div>
 @endsection
-
-@section('angular-scripts', '<!-- No angular scripts -->')

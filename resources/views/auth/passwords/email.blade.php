@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.template-ng')
 
 <!-- Main Content -->
 @section('content')
