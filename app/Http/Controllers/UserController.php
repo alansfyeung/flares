@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use DB;
 use Hash;
 use App\User;
 use App\Http\Requests;
@@ -13,6 +13,15 @@ use App\Http\Custom\ResponseCodes;
 
 class UserController extends Controller
 {
+    /**
+     * Display a HTML page listing of the resource
+     */
+    public function indexTable()
+    {
+        $users = User::all();
+        return view('user.index', ['users' => $users]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -34,7 +43,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->has('user')){
+        // Check for access to create new users
+        $requester = $request->user();
+        if (empty($requester) || empty($requester->access_level) || $requester->access_level < User::ACCESS_ADMIN) {
+            return response()->json([
+                'error' => ['code' => ResponseCodes::ERR_P_INSUFFICIENT, 'reason' => 'Only ACCESS_ADMIN or above can create or modify users'],
+            ], 403);
+        }
+
+        if ($request->has('user')) {
             
             DB::beginTransaction();
             try {
@@ -44,7 +61,7 @@ class UserController extends Controller
                     unset($postDataUser['password']);
                 }
                 
-                $newUser = FlaresUser::create($postDataUser);
+                $newUser = User::create($postDataUser);
                 
                 if (!$request->has('password')){
                     throw new \Exception("No password was provided in the postdata - cannot set password.", ResponseCodes::ERR_POSTDATA_MISSING);
@@ -56,10 +73,10 @@ class UserController extends Controller
                 
                 DB::commit();
                 return response()->json([
-                    'recordId' => $newUser->user_id;
+                    'recordId' => $newUser->user_id,
                 ]);
-            } 
-            catch (\Exception $ex) {
+            } catch (\Exception $ex) {
+                DB::rollBack();
                 return response()->json([
                     'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
                 ], 500);
@@ -68,7 +85,7 @@ class UserController extends Controller
         }
         
         return response()->json([
-            'error' => ['code' => ResponseCodes::ERR_POSTDATA_MISSING, 'reason' => 'New user postdata missing']
+            'error' => ['code' => ResponseCodes::ERR_POSTDATA_MISSING, 'reason' => 'New user postdata missing'],
         ], 400);
 		
     }
@@ -81,7 +98,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = FlaresUser::findOrFail($id);
+        $user = User::findOrFail($id);
         return response()->json([
             'user' => $user->toArray()
         ]);
@@ -96,20 +113,28 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Check for access to edit new users
+        $requester = $request->user();
+        if (empty($requester) || empty($requester->access_level) || $requester->access_level < User::ACCESS_ADMIN) {
+            return response()->json([
+                'error' => ['code' => ResponseCodes::ERR_P_INSUFFICIENT, 'reason' => 'Only ACCESS_ADMIN or above can create or modify users'],
+            ], 403);
+        }
+
         $updated = 0;
         $passwordUpdated = false;
 		
 		try {
 			if ($request->has('user')){
 				$postDataUpdate = $request->user;
-				$updated = FlaresUser::updateOrCreate(['user_id' => $id], $postDataUpdate);
+				$updated = User::updateOrCreate(['user_id' => $id], $postDataUpdate);
 			}
             if ($request->has('password')){
                 $passwordPlain = $request->password;
                 
                 // Hash the password 
                 $passwordPlain = $request->password;
-                $user = FlaresUser::findOrFail($id);
+                $user = User::findOrFail($id);
                 $user->password = Hash::make($passwordPlain);
                 $user->save();
                 
@@ -125,8 +150,7 @@ class UserController extends Controller
                 'recordId' => $updated,
                 'passwordUpdated' => $passwordUpdated
             ]);
-		}
-		catch (\Exception $ex){
+		} catch (\Exception $ex){
             return response()->json([
                 'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
             ], 400);
@@ -142,14 +166,21 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        // Check for access to edit new users
+        $requester = $request->user();
+        if (empty($requester) || empty($requester->access_level) || $requester->access_level < User::ACCESS_ADMIN) {
+            return response()->json([
+                'error' => ['code' => ResponseCodes::ERR_P_INSUFFICIENT, 'reason' => 'Only ACCESS_ADMIN or above can create or modify users'],
+            ], 403);
+        }
+
         $deleted = 0;   
         try {
             $deleted = Member::findOrFail($id)->delete();
             return response()->json([
 				'success' => $deleted
 			]);            
-        }
-        catch (\Exception $ex){
+        } catch (\Exception $ex){
             return response()->json([
                 'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
             ], 403);

@@ -22,10 +22,10 @@ class DecorationPublicController extends Controller
         
         // Assign the image to each decoration
         foreach ($decorations as &$dec){
-            $dec['badgeUrl'] = route('media::decoration-badge', ['decorationId' => $dec->dec_id]);
+            $dec['badgeUrl'] = route('media::decorationBadge', ['decorationId' => $dec->dec_id]);
             if (count($dec->related)){
                 foreach ($dec->related as &$related){
-                    $related['badgeUrl'] = route('media::decoration-badge', ['decorationId' => $related->dec_id]);
+                    $related['badgeUrl'] = route('media::decorationBadge', ['decorationId' => $related->dec_id]);
                 }
             }
         }
@@ -66,7 +66,7 @@ class DecorationPublicController extends Controller
             
         return view('public.decoration', [
             'dec' => $decoration,
-            'decBadgeUrl' => route('media::decoration-badge', ['decorationId' => $decoration->dec_id]),
+            'decBadgeUrl' => route('media::decorationBadge', ['decorationId' => $decoration->dec_id]),
             'prevDec' => $prevDecoration,
             'nextDec' => $nextDecoration,
         ]);

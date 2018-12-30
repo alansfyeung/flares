@@ -45,7 +45,7 @@
                             @if (count($dec->related)) &rsaquo; <a href="#" class="subdec-toggle" data-subdec-visible="false" onclick="toggleVisible({{ $dec->dec_id }}, this)">show more</a> @endif
                         </td>
                         <td>{{ date('M Y', strtotime($dec->date_commence)) }}</td>
-                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decoration-details', [ 'shortcode' => $dec->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decoration-details", [ "shortcode" => $dec->shortcode ]) }}'); return false;">
+                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $dec->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decorationDetails", [ "shortcode" => $dec->shortcode ]) }}'); return false;">
                             <span class="glyphicon glyphicon-new-window"></span>
                         </a></td>
                     </tr>
@@ -58,7 +58,7 @@
                         <td><code>{{ $related->shortcode }}</code></td>
                         <td>{{ $related->name }}</td>
                         <td>{{ date('M Y', strtotime($related->date_commence)) }}</td>
-                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decoration-details', [ 'shortcode' => $related->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decoration-details", [ "shortcode" => $related->shortcode ]) }}'); return false;">
+                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $related->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decorationDetails", [ "shortcode" => $related->shortcode ]) }}'); return false;">
                             <span class="glyphicon glyphicon-new-window"></span>
                         </a></td>
                     </tr>

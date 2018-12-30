@@ -15,7 +15,7 @@
             <li><a href="{{ route('decoration::new') }}">Create new</a></li>
             <li><a href="{{ route('decoration::index') }}">Manage collection</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ route('public::decoration-list') }}">Public gallery  &nbsp;<span class="glyphicon glyphicon-share text-muted"></span></a></li>
+            <li><a href="{{ route('public::decorationList') }}">Public gallery  &nbsp;<span class="glyphicon glyphicon-share text-muted"></span></a></li>
           </ul>
         </li> 
         {{-- <li class="dropdown">
@@ -33,8 +33,7 @@
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">System Users</a></li>
-            <li><a href="#">Audit</a></li>
+            <li><a href="/users">Admin Users</a></li>
           </ul>
         </li>
         {{-- <li class="dropdown">

@@ -26,7 +26,7 @@
                 <td>{{approval.statusName}}</td>
                 <td>
                     <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
-                        ng-href="{{ route('approval::approve-decoration') }}#!/@{{approval.dec_appr_id}}/edit">
+                        ng-href="{{ route('approval::approveDecoration') }}#!/@{{approval.dec_appr_id}}/edit">
                         <span class="glyphicon glyphicon-share text-muted"></span>
                     </a>
                 </td>

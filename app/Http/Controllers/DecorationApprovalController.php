@@ -162,8 +162,7 @@ class DecorationApprovalController extends Controller
                     throw new \Exception('Missing an approval decision', ResponseCodes::ERR_POSTDATA_MISSING);    
                 }
                 // Resolve the admin user who is making the request. 
-                $adminUser = Auth::user();
-                $postData['user_id'] = $adminUser->user_id;
+                $postData['user_id'] = Auth::id();
                 $postData['decision_date'] = date('Y-m-d');
                 $updatedApproval = DecorationApproval::updateOrCreate(['dec_appr_id' => $id], $postData);
                 $updatedApprovalId = $updatedApproval->dec_appr_id;
@@ -174,7 +173,7 @@ class DecorationApprovalController extends Controller
                 $award->dec_id = $updatedApproval['dec_id'];
                 $award->citation = $updatedApproval['citation'];
                 $award->date = $updatedApproval['date'];
-                $award->user_id = $adminUser->user_id;       // The currently logged in admin user
+                $award->user_id = Auth::id();       // The currently logged in admin user
                 $award->dec_appr_id = $updatedApprovalId;       // Link to the decorationapproval
                 
                 // Save it

@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(App\FlaresUser::class, function (Faker\Generator $faker) {
+$factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'forums_username' => $faker->name,
         'email' => $faker->companyEmail,

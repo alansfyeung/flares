@@ -103,7 +103,7 @@ class DecorationBadgeController
         $imageExists = !($dec->badge_blob === null);
         $response = [ 'exists' => $imageExists ];
         if ($imageExists){
-            $response['url'] = route('media::decoration-badge', ['decorationId' => $decorationId]);
+            $response['url'] = route('media::decorationBadge', ['decorationId' => $decorationId]);
         }
         return response()->json($response);
 	}

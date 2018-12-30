@@ -1,27 +1,27 @@
-# Laravel PHP Framework
+![Flares logo](https://www.206acu.org.au/flares/assets/img/flareslogo.png)
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+# Flares Member Management System
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Since 2017, Flares has primarily been used as a ribbon/decoration management systemm, and in late 2018 it became 
+exclusively for ribbon management. Originally an acryonym for "Falcon - Leave Awards and REporting System", it is now stylised as 'Flares' in proper case. 
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Adding admin users to Flares
 
-## Official Documentation
+Admin users are able to access Flares to perform administrative tasks. The personnel records with Flares, on the other 
+hand, are called 'members'. To add a new admin user directly (where they will login via the Flares webapp _/login_ page), 
+use the CLI command: 
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+```
+ PS C:\inetpub\206flares> php artisan users:create
 
-## Contributing
+ New username:
+ >
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+```
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## Registering admin users through Forums
 
-## License
+The Forums Flares plugin contains the ability to register a new Flares admin user by linking that user to a Forums 
+account. When a forums-linked admin user needs to access Flares, they must do so via SSO from the Forums. 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).

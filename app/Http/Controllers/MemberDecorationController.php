@@ -47,8 +47,7 @@ class MemberDecorationController extends Controller
             $award->date = $data['date'];
 
             // Capture the current admin user as the awarder 
-            $adminUser = Auth::user();
-            $award->user_id = $adminUser->user_id;
+            $award->user_id = Auth::id();
             
             // Save it
             $award->save();

@@ -24,8 +24,11 @@ class ResponseCodes
     // Permission errors are 7000-series
 	const ERR_P_NOPE = 7000;
     const ERR_P_NOT_ADMIN = 7001;
+    const ERR_P_INSUFFICIENT = 7002;
+    const ERR_P_OAUTH_SCOPE = 7100;
     
     // Gone and unavailable errors are 8000-series
     const ERR_OP_UNAVAILABLE = 8001;
+    const ERR_LINK_INVALID = 8002;
     
 }

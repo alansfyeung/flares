@@ -179,7 +179,7 @@
                             <td>Shortcode</td>
                             <td>
                                 <code>@{{appr.requestedDecoration.shortcode}}</code> &nbsp;
-                                <a target="_blank" ng-href="{{ route('public::decoration-details', [ 'shortcode' => '' ]) }}/@{{appr.requestedDecoration.shortcode}}">
+                                <a target="_blank" ng-href="{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/@{{appr.requestedDecoration.shortcode}}">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
                             </td>

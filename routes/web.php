@@ -12,15 +12,15 @@
 */
 
 Auth::routes();
-Route::get('auth/api-oauth', function () {				// Member search page
-    return view('auth.authorize-api');
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('sso/{token}', 'UserSSOController@consumeSSO')->name('sso');
 });
 
 /* Dashboard */
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', ['as' => 'dashboard', function () {
+    Route::get('/', function () {
         return view('dashboard.index');
-    }]);
+    })->name('dashboard');
 });
 
 /*
@@ -70,7 +70,7 @@ Route::group(['as' => 'approval::', 'middleware' => 'auth'], function () {
 
     Route::get('approval', function () {
         return view('member.approve-decoration');
-    })->name('approve-decoration');
+    })->name('approveDecoration');
 
 });
 
@@ -98,19 +98,23 @@ Route::group(['as' => 'activity::', 'middleware' => 'auth'], function () {
     });
 });
 
-Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function (){
+Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function () {
     
-    Route::get('decorations', function (){
+    Route::get('decorations', function () {
         return view('decoration.index');
     })->name('index');
-    Route::get('decorations/new', function (){
+    Route::get('decorations/new', function () {
         return view('decoration.new');
     })->name('new');
     
-    Route::get('decoration', function (){
+    Route::get('decoration', function () {
         return view('decoration.view');
     })->name('view');
     
+});
+
+Route::group(['as' => 'user::', 'middleware' => 'auth'], function() {
+    Route::get('users', 'UserController@indexTable');
 });
 
 
@@ -118,14 +122,14 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function (){
  * Public routes
  */
 Route::group(['as' => 'public::', 'prefix' => 'public'], function () {
-    Route::get('decorations', 'DecorationPublicController@index')->name('decoration-list');
-    Route::get('decorations/{shortcode}', 'DecorationPublicController@show')->name('decoration-details');
+    Route::get('decorations', 'DecorationPublicController@index')->name('decorationList');
+    Route::get('decorations/{shortcode}', 'DecorationPublicController@show')->name('decorationDetails');
 });
 
 /** 
  * Image and other media content endpoints (separate this from the concerns of the API)
  */
 Route::group(['as' => 'media::', 'prefix' => 'media'], function () { 
-    Route::get('member/{memberId}/picture', 'MemberPictureController@show')->name('member-picture');
+    Route::get('member/{memberId}/picture', 'MemberPictureController@show')->name('memberPicture');
     Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show')->name('decoration-badge');
 });

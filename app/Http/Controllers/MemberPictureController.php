@@ -110,7 +110,7 @@ class MemberPictureController
 		return response()
             ->json([
                 'count' => $all->count(), 
-                'url' => route('media::member-picture', ['memberId' => $memberId]),
+                'url' => route('media::memberPicture', ['memberId' => $memberId]),
                 'exists' => true,
             ]);
 	}

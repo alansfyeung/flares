@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\CreateUser::class,
         \App\Console\Commands\ResetUser::class,
         \App\Console\Commands\ListUsers::class,
+        \App\Console\Commands\ChangeUserAccess::class,
     ];
 
     /**

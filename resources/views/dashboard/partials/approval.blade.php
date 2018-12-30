@@ -4,12 +4,15 @@
         <strong>No pending approvals.</strong> All requests have been processed.
     </div>
 
-    <div ng-show="state.approvalsRemaining">
-        <p class="pull-right text-muted">
-            <span class="glyphicon glyphicon-th-list"></span> @{{approvals.length}} approval(s) pending
-        </p>
+    <header class="dashboard-tabcontent-header" ng-show="state.approvalsRemaining">
+        <div class="pull-right">
+            <!-- <span class="glyphicon glyphicon-th-list"></span> -->
+            <span class="badge" ng-show="approvals.length > 0"> @{{approvals.length}}</span>
+            <span ng-hide="approvals.length > 0">No</span>
+            <span>approval<span ng-hide="approvals.length == 1">s</span> pending</span>
+        </div>
         <h4>Pending decoration requests</h4>
-    </div>
+    </header>
     
     <table class="table table-hover" ng-show="state.approvalsRemaining">
         <colgroup>
@@ -33,7 +36,7 @@
                 <td>@{{appr.created_at | date:'shortDate'}}</td>
                 <td>
                     <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
-                        ng-href="{{ route('approval::approve-decoration') }}#!/@{{appr.dec_appr_id}}/edit/details">
+                        ng-href="{{ route('approval::approveDecoration') }}#!/@{{appr.dec_appr_id}}/edit/details">
                         <span class="glyphicon glyphicon-share text-muted"></span>
                     </a>
                 </td>

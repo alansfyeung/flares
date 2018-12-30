@@ -41,11 +41,11 @@
                     </tr>
                     <tr>
                         <td>Next (higher)</td>
-                        <td>@if ($nextDec) <a href="{{ route('public::decoration-details', ['shortcode'=>$nextDec->shortcode]) }}">{{ $nextDec->name }}</a> @else -- @endif</td>
+                        <td>@if ($nextDec) <a href="{{ route('public::decorationDetails', ['shortcode'=>$nextDec->shortcode]) }}">{{ $nextDec->name }}</a> @else -- @endif</td>
                     </tr>
                     <tr>
                         <td>Next (lower)</td>
-                        <td>@if ($prevDec) <a href="{{ route('public::decoration-details', ['shortcode'=>$prevDec->shortcode]) }}">{{ $prevDec->name }}</a> @else -- @endif</td>
+                        <td>@if ($prevDec) <a href="{{ route('public::decorationDetails', ['shortcode'=>$prevDec->shortcode]) }}">{{ $prevDec->name }}</a> @else -- @endif</td>
                     </tr>
                 </tbody>
             </table>
