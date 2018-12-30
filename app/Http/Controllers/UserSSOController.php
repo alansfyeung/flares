@@ -112,6 +112,7 @@ class UserSSOController extends Controller
         }
     }
 
+
     /**
      * Provision a link to for Single-Sign On
      *
@@ -198,8 +199,8 @@ class UserSSOController extends Controller
             return ['code' => ResponseCodes::ERR_P_INSUFFICIENT, 'reason' => 'Only ACCESS_ADMIN or above can create or modify users'];
         }
         // Specifically check for SSO scope before actioning
-        if (!$requester->tokenCan(SSO_SCOPE_NAME)) {
-            return ['code' => ResponseCodes::ERR_P_OAUTH_SCOPE, 'reason' => 'OAuth token requires scope '.SSO_SCOPE_NAME.' to perform this action'];
+        if (!$requester->tokenCan(self::SSO_SCOPE_NAME)) {
+            return ['code' => ResponseCodes::ERR_P_OAUTH_SCOPE, 'reason' => 'OAuth token requires scope '.self::SSO_SCOPE_NAME.' to perform this action'];
         }
         return null;        // No issues!
     }

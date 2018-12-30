@@ -34,6 +34,7 @@
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/users">Admin Users</a></li>
+            <li><a href="/users/patokens">PA Tokens</a></li>
           </ul>
         </li>
         {{-- <li class="dropdown">

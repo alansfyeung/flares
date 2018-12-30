@@ -115,6 +115,8 @@ Route::group(['as' => 'decoration::', 'middleware' => 'auth'], function () {
 
 Route::group(['as' => 'user::', 'middleware' => 'auth'], function() {
     Route::get('users', 'UserController@indexTable');
+    Route::get('users/patokens', 'PersonalAccessTokenController@view');
+    Route::post('users/patokens', 'PersonalAccessTokenController@generateAndView');
 });
 
 

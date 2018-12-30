@@ -31,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(Carbon::now()->addDays(30));
         Passport::tokensCan([
             'manage-sso' => 'Create SSO users and perform SSO',
+            'sync-members' => 'Create members by syncing from the forums',
         ]);
     }
 }

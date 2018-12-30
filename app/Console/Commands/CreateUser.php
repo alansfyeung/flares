@@ -78,7 +78,7 @@ class CreateUser extends Command
         $tableData = [
             [ User::ACCESS_NONE, 'No access (cannot login)' ],
             [ User::ACCESS_READONLY, 'Can view members profiles' ],
-            [ User::ACCESS_ASSIGN, 'All above and can assign decorations' ],
+            [ User::ACCESS_ASSIGN, 'All above and can add members and assign decorations' ],
             [ User::ACCESS_CREATE, 'All above and can create new decorations' ],
             [ User::ACCESS_ADMIN, 'All above and can add other admin users' ],
         ];

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
-use DB;
-use Log;
 use App\Member;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -187,17 +187,23 @@ class MemberController extends Controller
 		
 		if ($request->has('member')){
 			// Deal with the member data
-			$postDataMember = $request->input('member');
+            $postDataMember = $request->input('member');
+            if (!empty($postDataMember['forums_username'])) {
+                $postDataMember['forums_username'] = strtolower($postDataMember['forums_username']);        // Always lowercase
+            }
 			
 			DB::beginTransaction();
 			try {
 				// Get their regimental number
-				$newRegtNum = $this->generateStandardRegtNumber($context) . ($postDataMember['sex'] == 'F' ? 'F' : '');	
-				
+                $newRegtNum = $this->generateStandardRegtNumber($context);	
 				if (!empty($newRegtNum)){
+
+                    if (!empty($postDataMember['sex']) && $postDataMember['sex'] == 'F') {
+                        $newRegtNum .= 'F';
+                    }
 					
 					// Assign regt num, create new record, and generate initial posting
-					$postDataMember['regt_num'] = $newRegtNum;
+                    $postDataMember['regt_num'] = $newRegtNum;
 					$newMember = Member::create($postDataMember);
 					
 					if ($newMember->regt_num > 0){

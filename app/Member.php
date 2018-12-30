@@ -11,7 +11,7 @@ class Member extends Model
 	
 	protected $primaryKey = 'regt_num';
 	protected $dates = ['deleted_at', 'dob'];
-	protected $guarded = ['is_fully_enrolled', 'coms_username', 'coms_id', 'forums_username', 'forums_userid'];
+	protected $guarded = ['regt_num', 'coms_username', 'coms_id', 'forums_username', 'forums_userid', 'is_enrolled'];
     protected $dateFormat = '';
 	
 	// Disable any auto-increment business

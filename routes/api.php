@@ -32,10 +32,13 @@ Route::delete('member/{memberId}/picture', 'MemberPictureController@destroy');
 Route::resource('member', 'MemberController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 Route::resource('member.posting', 'MemberPostingController', ['only' => ['index', 'store', 'show']]);
 Route::resource('member.decoration', 'MemberDecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-
 // Route::resource('api/member.documents', 'MemberDocumentController');
 // Route::resource('api/awards', 'AwardsController');
 // Route::resource('api/systemuser', 'SystemUserController');
+
+// Member Sync API - intended for use by oauth client app
+Route::post('membersync', 'MemberSyncController@sync');
+Route::post('membersync/presync', 'MemberSyncController@presync');
 
 // Activtity API
 Route::get('activity/search', 'ActivityController@search');

@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 
 trait ProcessesMemberRecordsTrait
 {	
-
 	//==================================================
 	// Statistical functionality
 	//==================================================
@@ -79,12 +78,15 @@ trait ProcessesMemberRecordsTrait
 	protected function getContextDefaults($contextName = 'newRecruitment')
 	{
 		// Allowed $contextName values are: 
-		// newRecruitment, newTransfer, newVolunteerStaff, newAdultCadetStaff
+        // CTX_NEW_RECRUITMENT newRecruitment, 
+        // CTX_NEW_TRANSFER newTransfer, 
+        // CTX_NEW_DAH newVolunteerStaff, 
+        // CTX_NEW_ACS newAdultCadetStaff
 		
 		$thisYear = substr(date('Y'), 2, 2);
 		$thisCycle = intval(date('n')) < 7 ? 1 : 2;
 		
-		if ($contextName == 'newTransfer'){
+		if ($contextName == 'newRecruitment'){
 			return [
 				'newPlatoon' => '1PL',
 				'newPosting' => 'MBR',
