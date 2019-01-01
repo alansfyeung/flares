@@ -27,7 +27,7 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function (flowFactoryP
 }]);
 
 flaresApp.run(['$http', '$templateCache', function ($http, $templateCache) {
-    $http.get('/ng-app/components/member/memberDisplayPictureTemplate.html').then(function (response) {
+    $http.get('ng-app/components/member/memberDisplayPictureTemplate.html').then(function (response) {
         $templateCache.put('memberDisplayPictureTemplate.html', response.data);
     });
 }]);

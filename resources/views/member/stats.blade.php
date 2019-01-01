@@ -13,7 +13,7 @@ Statistics for members
 @endsection
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberStats.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberStats.js')}}"></script>
 @endpush
 
 @section('content')

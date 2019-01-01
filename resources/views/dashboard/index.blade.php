@@ -11,7 +11,7 @@
 @endsection
 
 @push('scripts')
-<script src="/ng-app/components/dashboard/flaresDashboard.js"></script>
+<script src="{{asset('ng-app/components/dashboard/flaresDashboard.js')}}"></script>
 @endpush
 
 @section('content')

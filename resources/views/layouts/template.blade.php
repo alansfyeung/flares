@@ -10,8 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('partials.favicons')
+    <base href="{{url('/')}}/" data-href="{{url('/')}}">
     <title>@yield('title') | FLARES</title>
-	<link href="/assets/css/app.css" rel="stylesheet">
+	<link href="assets/css/app.css" rel="stylesheet">
     <link rel="shortcut icon" href="{{{ asset('assets/icons/favicon.ico') }}}">
 </head>
 <body flow-prevent-drop>
@@ -26,7 +27,7 @@
 						<span class="glyphicon glyphicon-menu-hamburger"></span>
                     </button>
                     @show
-					<a class="navbar-brand" href="/">
+					<a class="navbar-brand" href="{{url('/')}}">
 						<img alt="206 FLARES" src="{{{ asset('/assets/img/flareslogo.png') }}}" style="height: 20px;">
 					</a>
 				</div>
@@ -74,18 +75,18 @@
     {{-- Todo: With OAuth2 --}}
     
     {{-- Core js --}}
-    <script src="/assets/js/jquery-1.11.3.min.js"></script>
-	<script src="/assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
 
     {{-- Angular app js, if required --}}
     @section('ng-scripts')
-    <script src="/assets/js/angular.min.js"></script>
-    <script src="/assets/js/ui-bootstrap-0.14.2.min.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/ui-bootstrap-0.14.2.min.js"></script>
     @show
     @stack('ng-scripts')
 
     {{-- Plugin/add-on/vendor js --}}
-	<script src="/assets/js/notification-popups.js"></script>
+	<script src="assets/js/notification-popups.js"></script>
 	@stack('vendor-scripts')
     
     {{-- Other custom js --}}

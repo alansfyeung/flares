@@ -6,7 +6,7 @@
 @section('title', 'Edit - Decoration')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberEditDecoration.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberEditDecoration.js')}}"></script>
 @endpush
 
 @section('heading')

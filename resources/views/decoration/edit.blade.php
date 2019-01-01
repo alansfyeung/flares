@@ -6,7 +6,7 @@
 @section('title', 'View Decoration')
 
 @push('ng-scripts')
-<script src="/ng-app/components/decoration/flaresDecorationViewEdit.js"></script>
+<script src="{{asset('ng-app/components/decoration/flaresDecorationViewEdit.js')}}"></script>
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
 @endpush
 

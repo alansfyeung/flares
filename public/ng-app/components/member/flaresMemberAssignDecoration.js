@@ -1,10 +1,10 @@
 var flaresApp = angular.module('flaresMemberDecoration', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/ng-app/components/decoration/decorationTypeaheadTemplate.html').then(function(response){
+    $http.get('ng-app/components/decoration/decorationTypeaheadTemplate.html').then(function(response){
         $templateCache.put('decorationTypeaheadTemplate.html', response.data);
     });
-    $http.get('/ng-app/components/decoration/decorationTypeaheadPopupTemplate.html').then(function(response){
+    $http.get('ng-app/components/decoration/decorationTypeaheadPopupTemplate.html').then(function(response){
         $templateCache.put('template/typeahead/typeahead-popup.html', response.data);
     });
 }]);

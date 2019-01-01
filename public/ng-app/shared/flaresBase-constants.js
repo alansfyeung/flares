@@ -11,6 +11,9 @@
     // 1. Flares Resource Definitions - A source of truth for factories/services
     // =================
 
+    var base = angular.element('base');
+    flaresBase.constant('flApiPathRoot', base ? (base.data('href') || base.attr('href')) : '');
+
     flaresBase.constant('flResourceDefinitions', {
         refData: {
             apiBase: '/api/refdata',

@@ -82,5 +82,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/ng-app/components/activity/flaresActivityNew.js"></script>
+<script src="{{asset('ng-app/components/activity/flaresActivityNew.js')}}"></script>
 @endsection

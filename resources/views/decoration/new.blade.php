@@ -6,7 +6,7 @@
 @section('title', 'New Decoration')
 
 @push('scripts')
-<script src="/ng-app/components/decoration/flaresDecorationNew.js"></script>
+<script src="{{asset('ng-app/components/decoration/flaresDecorationNew.js')}}"></script>
 @endpush
 
 @section('heading')

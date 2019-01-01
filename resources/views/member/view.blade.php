@@ -6,7 +6,7 @@
 @section('title', 'Member View')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberViewEdit.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberViewEdit.js')}}"></script>
 @endpush
 @push('vendor-scripts')
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>

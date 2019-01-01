@@ -218,5 +218,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/ng-app/components/activity/flaresActivityMarkRoll.js"></script>
+<script src="{{asset('ng-app/components/activity/flaresActivityMarkRoll.js')}}"></script>
 @endsection

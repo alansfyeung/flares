@@ -23,8 +23,8 @@
 
     flaresBase.run(['$http', '$templateCache', function ($http, $templateCache) {
         // Preload/precache some templates
-        registerTemplate($http, $templateCache, 'template/modal/backdrop.html', '/ng-app/shared/uibModalBackdrop.html');
-        registerTemplate($http, $templateCache, 'template/modal/window.html', '/ng-app/shared/uibModalWindow.html');
+        registerTemplate($http, $templateCache, 'template/modal/backdrop.html', 'ng-app/shared/uibModalBackdrop.html');
+        registerTemplate($http, $templateCache, 'template/modal/window.html', 'ng-app/shared/uibModalWindow.html');
     }]);
 
 

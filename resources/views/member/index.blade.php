@@ -10,7 +10,7 @@
 @endsection
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberIndex.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberIndex.js')}}"></script>
 @endpush
 
 @section('advancedSearchForm')

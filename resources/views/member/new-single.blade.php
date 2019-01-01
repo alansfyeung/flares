@@ -6,7 +6,7 @@
 @section('title', 'New Single Member Form')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberNewSingle.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberNewSingle.js')}}"></script>
 @endpush
 
 @section('heading')

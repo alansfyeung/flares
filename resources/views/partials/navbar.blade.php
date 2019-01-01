@@ -4,9 +4,9 @@
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="/members/new" name="menu.member.new">Add new</a></li>
+              <li><a href="{{url('/members/new')}}" name="menu.member.new">Add new</a></li>
               <!-- <li role="separator" class="divider"></li> -->
-            <li><a href="/members" name="menu.member.search">Advanced search</a></li>
+            <li><a href="{{url('/members')}}" name="menu.member.search">Advanced search</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -21,29 +21,22 @@
         {{-- <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Activity <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/activities" name="menu.activity.overview">Overview</a></li>
-            <li><a href="/activities/search" name="menu.activity.search">Search</a></li>
+            <li><a href="{{url('/activities')}}" name="menu.activity.overview">Overview</a></li>
+            <li><a href="{{url('/activities/search')}}" name="menu.activity.search">Search</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="/activities/new" name="menu.activity.new">New Activity</a></li>
+            <li><a href="{{url('/activities/new')}}" name="menu.activity.new">New Activity</a></li>
             <li role="separator" class="divider"></li>
             <!-- <li><a href="/activity/roll" name="menu.activity.roll">Mark Roll</a></li> -->
-            <li><a href="/activities/awol" name="menu.activity.awol">All AWOLs</a></li>
+            <li><a href="{{url('/activities/awol')}}" name="menu.activity.awol">All AWOLs</a></li>
           </ul>
         </li> --}}
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/users">Admin Users</a></li>
-            <li><a href="/users/patokens">PA Tokens</a></li>
+            <li><a href="{{url('/users')}}">Admin Users</a></li>
+            <li><a href="{{url('/users/patokens')}}">PA Tokens</a></li>
           </ul>
         </li>
-        {{-- <li class="dropdown">
-          <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">System Users</a></li>
-            <li><a href="#">Audit</a></li>
-          </ul>
-        </li> --}}
     </ul>
     @if (Auth::check())
     <ul class="nav navbar-nav navbar-right">

@@ -16,5 +16,5 @@
 @endsection
 
 @section('ng-script')
-<script src="/ng-app/components/member/flaresMemberMassAction.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberMassAction.js')}}"></script>
 @endsection

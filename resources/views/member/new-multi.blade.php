@@ -6,7 +6,7 @@
 @section('title', 'Member Onboarding')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberNewMulti.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberNewMulti.js')}}"></script>
 @endpush
 
 @section('heading')

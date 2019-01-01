@@ -7,14 +7,14 @@
 
     var flaresBase = angular.module('flaresBase');
 
-    flaresBase.factory('flAPI', ['$http', '$filter', 'flResourceDefinitions', function ($http, $filter, flResourceDefinitions) {
+    flaresBase.factory('flAPI', ['$http', '$filter', 'flApiPathRoot', 'flResourceDefinitions', function ($http, $filter, flApiPathRoot, flResourceDefinitions) {
         /**
          * The FlaresAPI constructor
          * @param endpoint string Path to the resource endpoint
          * @param subresources string[] Names of known subresources required
          */
         function FlaresAPI(endpoint, subresources) {
-            this.endpoint = endpoint;
+            this.endpoint = flApiPathRoot + endpoint;
             if (angular.isArray(subresources)) {
                 subresources.forEach(function (subresourceName) {
                     // Create a "subresource" shortcut e.g. 

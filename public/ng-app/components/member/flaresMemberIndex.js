@@ -8,7 +8,7 @@
 var flaresApp = angular.module('flaresMember', ['flaresBase']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/ng-app/components/member/memberContextMenuTemplate.html').then(function(response){
+    $http.get('ng-app/components/member/memberContextMenuTemplate.html').then(function(response){
         $templateCache.put('memberContextMenuTemplate.html', response.data);
     });
 }]);

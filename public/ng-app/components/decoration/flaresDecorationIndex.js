@@ -1,10 +1,10 @@
 var flaresApp = angular.module('flaresDecoration', ['flaresBase', 'flow']);
 
 flaresApp.run(['$http', '$templateCache', function($http, $templateCache){
-    $http.get('/ng-app/components/decoration/decorationContextMenuTemplate.html').then(function(response){
+    $http.get('ng-app/components/decoration/decorationContextMenuTemplate.html').then(function(response){
         $templateCache.put('decorationContextMenuTemplate.html', response.data);
     });
-    $http.get('/ng-app/components/decoration/decorationAccordionGroupTemplate.html').then(function(response){
+    $http.get('ng-app/components/decoration/decorationAccordionGroupTemplate.html').then(function(response){
         $templateCache.put('decorationAccordionGroupTemplate.html', response.data);
     });
 }]);

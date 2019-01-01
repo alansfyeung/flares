@@ -40,5 +40,5 @@ Displays a historical aggregation of AWOLs across all activities
 @endsection
 
 @section('ng-script')
-<script src="/ng-app/components/activity/flaresActivitySearch.js"></script>
+<script src="{{asset('ng-app/components/activity/flaresActivitySearch.js')}}"></script>
 @endsection

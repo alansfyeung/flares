@@ -10,7 +10,7 @@
 @endsection
 
 @push('scripts')
-<script src="/ng-app/components/decoration/flaresDecorationIndex.js"></script>
+<script src="{{asset('ng-app/components/decoration/flaresDecorationIndex.js')}}"></script>
 @endpush
 @push('vendor-scripts')
 <script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
@@ -28,8 +28,8 @@
         <strong>No decorations found:</strong> Consider <a ng-href="{{gotoCreateNew}}">creating a new decoration</a>
     </div>
     
-    <uib-accordion close-others="false" template-url="/ng-app/components/decoration/decorationAccordionTemplate.html">
-        <div uib-accordion-group class="panel panel-default" ng-repeat="decTier in decorations" heading="Tier {{decTier.tier}} – {{decTier.tierName}}" template-url="/ng-app/components/decoration/decorationAccordionGroupTemplate.html">
+    <uib-accordion close-others="false" template-url="ng-app/components/decoration/decorationAccordionTemplate.html">
+        <div uib-accordion-group class="panel panel-default" ng-repeat="decTier in decorations" heading="Tier {{decTier.tier}} – {{decTier.tierName}}" template-url="ng-app/components/decoration/decorationAccordionGroupTemplate.html">
             <div class="table-wrapper" ng-show="decTier.decorations.length > 0">
                 <table class="table table-hover">
                     <colgroup>

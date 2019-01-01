@@ -6,7 +6,7 @@
 @section('title', 'Assign - Decoration')
 
 @push('scripts')
-<script src="/ng-app/components/member/flaresMemberAssignDecoration.js"></script>
+<script src="{{asset('ng-app/components/member/flaresMemberAssignDecoration.js')}}"></script>
 @endpush
 
 @section('heading')
@@ -89,7 +89,7 @@
                                 placeholder="Search for a decoration" 
                                 uib-typeahead="dec as dec.name for dec in decorations | filter: (selectedTier ? { tier: selectedTier.tier } : undefined) | filter:{ name:$viewValue }" 
                                 typeahead-template-url="decorationTypeaheadTemplate.html" 
-                                typeahead-popup-template-url="/ng-app/components/decoration/decorationTypeaheadPopupTemplate.html" 
+                                typeahead-popup-template-url="ng-app/components/decoration/decorationTypeaheadPopupTemplate.html" 
                                 typeahead-show-hint="true" 
                                 typeahead-min-length="0" 
                                 tabindex="6">
