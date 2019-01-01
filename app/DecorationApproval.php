@@ -14,7 +14,7 @@ class DecorationApproval extends Model
 	{
 		return $this->belongsTo('App\Member', 'regt_num');
     }
-    public function requestedDecoration() 
+    public function requested_decoration() 
     {
         return $this->belongsTo('App\Decoration', 'dec_id');
     }

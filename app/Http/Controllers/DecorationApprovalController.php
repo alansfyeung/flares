@@ -20,7 +20,34 @@ class DecorationApprovalController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DecorationApproval::with('requester', 'approver', 'requestedDecoration');
+        $query = DecorationApproval::with(['approver', 'requested_decoration']);
+
+        if (!empty($request->query('forumsUsername'))) {
+            $forumsUsername = strtolower((string) $request->query('forumsUsername'));
+            $member = Member::where('forums_username', $forumsUsername)->firstOrFail();
+            $query->where('regt_num', $member->regt_num);
+        } else {
+            $query->with('requester');      // was omitted from forumsUsername request because you already know who it is.
+        }
+
+        switch ($request->query('status')) {
+            case 'pending':
+                $query->whereNull('is_approved');       // Return only non-decided records.
+                break;
+            case 'approved':
+                $query->where('is_approved', '>=', 1);
+                break;
+            case 'declined':
+            case 'rejected':
+                $query->where('is_approved', 0);
+                break;
+            case 'history':
+                $query->whereNotNull('is_approved');
+                break;
+            default: 
+                // none
+                break;
+        }
 
         $limit = intval($request->query('limit'));
         $offset = intval($request->query('offset'));
@@ -34,46 +61,6 @@ class DecorationApprovalController extends Controller
         return response()->json([
             'approvals' => $query->get()
         ]);
-    }
-
-    /**
-     * Show approvals for a specific member
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  $memberId  
-     * @return \Illuminate\Http\Response
-     */
-    public function indexMember(Request $request, $memberId) 
-    {
-        $member = Member::findOrFail($memberId);
-        // return $member->
-    }
-
-    /**
-     * Show only pending approvals that have not had a decision made yet. 
-     * The pending repsonse will include eager-loaded relations.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function pending(Request $request)
-    {
-        $query = DecorationApproval::with('requester', 'requestedDecoration');
-        
-        // Return only non-decided records.
-        $query->whereNull('is_approved');
-
-        $limit = intval($request->query('limit'));
-        $offset = intval($request->query('offset'));
-        if ($limit > 0){
-            $query->take($limit);
-        }
-        if ($offset > 0){
-            $query->skip($offset);
-        }
-
-        return response()->json([
-            'approvals' => $query->get()
-        ]);    
     }
 
     /**
@@ -140,10 +127,12 @@ class DecorationApprovalController extends Controller
      */
     public function show($id)
     {
+        // $approval = DecorationApproval::with(['requested_decoration', 'requester', 'approver'])->firstOrFail($id);
         $approval = DecorationApproval::findOrFail($id);
+        $approval->load(['requested_decoration', 'requester', 'approver']);
         return response()->json([
             'approval' => $approval,
-            'requestedDecoration' => $approval->requestedDecoration,
+            'requestedDecoration' => $approval->requested_decoration,
             'requester' => $approval->requester,
             'approver' => $approval->approver,
 		]);

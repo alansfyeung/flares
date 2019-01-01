@@ -32,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan([
             'manage-sso' => 'Create SSO users and perform SSO',
             'sync-members' => 'Create members by syncing from the forums',
+            'submit-decorations' => 'Submit requests for decorations, pending approval',
         ]);
     }
 }

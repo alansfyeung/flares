@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/', function () {
+    return response()->json(['version' => 'Flares API'], 200);
+});
+
 // Dashboard API
 Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 // Route::resource('dashboard/activity', 'DashboardController@activity');
@@ -50,7 +54,6 @@ Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@dest
 Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
 // Decoration Approval API
-Route::get('approval/pending', 'DecorationApprovalController@pending');                                          // TBA: repurpose
 Route::resource('approval', 'DecorationApprovalController', ['only' => ['index', 'store', 'show', 'update']]);        // No deleting allowed
 
 // Admin Users API

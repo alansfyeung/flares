@@ -14,7 +14,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     $scope.approvals = [];
     
     retrieveDashboardData();
-    retrieveApprovalList();
+    retrievePendingApprovalList();
 
     $scope.selectApproval = function(approval){
         $window.location.href = flResource('approval')
@@ -25,8 +25,10 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     // ==================
     // Functions 
 
-    function retrieveApprovalList() {
-        flAPI('approval').get(['pending']).then(function (response) {
+    function retrievePendingApprovalList() {
+        flAPI('approval').getAll({
+            params: { status: 'pending' },
+        }).then(function (response) {
             $scope.state.approvalsLoaded = true;
             if (response.data && angular.isArray(response.data.approvals)) {
                 // Use approvals object as-is, and invent a status name for it as well. 

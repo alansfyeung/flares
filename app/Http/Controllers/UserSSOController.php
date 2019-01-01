@@ -25,13 +25,6 @@ class UserSSOController extends Controller
      */
     public function store(Request $request)
     {
-        // Check for access to create new users
-        // if (($accessError = $this->checkAccessErrors($request))) {
-        //     return response()->json([
-        //         'error' => $accessError,
-        //     ], 403);
-        // }
-
         if ($request->has('user')) {
 
             // Simple validations
@@ -84,13 +77,6 @@ class UserSSOController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        // Check for access to delete users
-        // if (($accessError = $this->checkAccessErrors($request))) {
-        //     return response()->json([
-        //         'error' => $accessError,
-        //     ], 403);
-        // }
-
         $deleted = false;
         try {
             $member = Member::findOrFail($id);
@@ -107,22 +93,6 @@ class UserSSOController extends Controller
     }
 
     /**
-     * Check the authenticated state of this user. 
-     * 
-     * @param  Request  $request
-     */
-    public function me(Request $request)
-    {
-
-
-
-        return response()->json([
-            'user' => $request->user(),
-            'scopes' => Passport::scopes(),
-        ]);
-    }
-
-    /**
      * Provision a link to for Single-Sign On
      *
      * @param  int  $id
@@ -130,13 +100,6 @@ class UserSSOController extends Controller
      */
     public function provisionSSO(Request $request, $userId)
     {
-        // Are they allowed to provision?
-        // if (($accessError = $this->checkAccessErrors($request))) {
-        //     return response()->json([
-        //         'error' => $accessError,
-        //     ], 403);
-        // }
-
         $user = User::findOrFail($userId);
         // Is this user actually an SSO user?
         if (empty($user->allow_sso) || $user->allow_sso != 1) {

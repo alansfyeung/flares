@@ -46,11 +46,11 @@
                         </div>
                     </fieldset>
                     <div class="form-group">
-                        <input type="hidden" name="loginType" value="fallback"/>  {{-- Otherwise to be set at submit-time by the ng controller --}}
-                        <button type="submit" class="btn btn-primary pull-right">Login</button>
-                        <div class="checkbox">
+                        <div class="checkbox col-sm-6">
                             <label><input type="checkbox" name="remember"> Remember Me</label>
                         </div>
+                        <button type="submit" class="btn btn-primary pull-right">Login</button>
+                        <input type="hidden" name="loginType" value="fallback"/>  {{-- Otherwise to be set at submit-time by the ng controller --}}
                     </div>
                     {!! csrf_field() !!}
                 </form>

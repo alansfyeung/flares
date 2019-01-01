@@ -161,7 +161,7 @@ flaresApp.controller('memberAssignDecorationController', function($scope, $filte
                     
                     // Check if the member image exists, and if it does then load it
                     // Otherwise attempt to find default member image from refdata
-                    flAPI('member').nested('picture', [memberId]).get('exists').then(function(response){
+                    flAPI('member').nested('picture', [memberId]).get().then(function(response){
                         if (response.data.exists){
                             $scope.memberPictureUrl = flAPI('member').nested('picture', [memberId]).url();
                         }

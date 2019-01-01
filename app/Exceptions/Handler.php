@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Laravel\Passport\Exceptions\MissingScopeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -48,11 +49,18 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof ModelNotFoundException) {
-            $exception = new NotFoundHttpException($exception->getMessage(), $exception);
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Not found'], 404);
+            } else {
+                $exception = new NotFoundHttpException($exception->getMessage(), $exception);
+            }
         }
-        if ($exception instanceof MissingScopeException && $request->expectsJson()) {
-            // $exception = new AuthorizationException($exception->getMessage(), 403, $exception);
-            return response()->json(['error' => 'Invalid token scope'], 403);
+        if ($exception instanceof MissingScopeException) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Invalid token scope'], 403);
+            } else {
+                $exception = new AuthorizationException($exception->getMessage(), 403, $exception);
+            }
         }
         return parent::render($request, $exception);
     }
