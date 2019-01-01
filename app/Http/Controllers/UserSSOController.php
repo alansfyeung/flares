@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Passport;
 
 use App\User;
 use App\UserSSO;
@@ -25,11 +26,11 @@ class UserSSOController extends Controller
     public function store(Request $request)
     {
         // Check for access to create new users
-        if (($accessError = $this->checkAccessErrors($request))) {
-            return response()->json([
-                'error' => $accessError,
-            ], 403);
-        }
+        // if (($accessError = $this->checkAccessErrors($request))) {
+        //     return response()->json([
+        //         'error' => $accessError,
+        //     ], 403);
+        // }
 
         if ($request->has('user')) {
 
@@ -78,16 +79,17 @@ class UserSSOController extends Controller
      * Disable the SSO user. Note that this will just prevent them from SSO-ing, but their user record will remain.
      *
      * @param  int  $id
+     * @param  Request  $request
      * @return Response
      */
     public function destroy(Request $request, $id)
     {
         // Check for access to delete users
-        if (($accessError = $this->checkAccessErrors($request))) {
-            return response()->json([
-                'error' => $accessError,
-            ], 403);
-        }
+        // if (($accessError = $this->checkAccessErrors($request))) {
+        //     return response()->json([
+        //         'error' => $accessError,
+        //     ], 403);
+        // }
 
         $deleted = false;
         try {
@@ -104,6 +106,21 @@ class UserSSOController extends Controller
         }
     }
 
+    /**
+     * Check the authenticated state of this user. 
+     * 
+     * @param  Request  $request
+     */
+    public function me(Request $request)
+    {
+
+
+
+        return response()->json([
+            'user' => $request->user(),
+            'scopes' => Passport::scopes(),
+        ]);
+    }
 
     /**
      * Provision a link to for Single-Sign On
@@ -114,11 +131,11 @@ class UserSSOController extends Controller
     public function provisionSSO(Request $request, $userId)
     {
         // Are they allowed to provision?
-        if (($accessError = $this->checkAccessErrors($request))) {
-            return response()->json([
-                'error' => $accessError,
-            ], 403);
-        }
+        // if (($accessError = $this->checkAccessErrors($request))) {
+        //     return response()->json([
+        //         'error' => $accessError,
+        //     ], 403);
+        // }
 
         $user = User::findOrFail($userId);
         // Is this user actually an SSO user?
@@ -172,7 +189,7 @@ class UserSSOController extends Controller
                 $sso->sso_token = null;
                 $sso->save(); 
             } else {
-                if ($request->ajax()) {
+                if ($request->expectsJson()) {
                     return response()->json([
                         'error' => ['code' => ResponseCodes::ERR_LINK_INVALID, 'reason' => 'The link you provided is invalid or expired'],
                     ]);
@@ -188,7 +205,7 @@ class UserSSOController extends Controller
         $sso->sso_token = null;
         $sso->save();
 
-        if ($request->ajax()) {
+        if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
             ]);

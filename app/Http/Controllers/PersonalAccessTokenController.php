@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 
 use App\User;
 use App\Http\Requests;
@@ -11,8 +12,6 @@ use App\Http\Custom\ResponseCodes;
 
 class PersonalAccessTokenController extends Controller
 {
-    protected $scopes = ['manage-sso', 'sync-members'];
-
     /**
      * Display a page that prompts to generate a PAT
      */
@@ -26,7 +25,7 @@ class PersonalAccessTokenController extends Controller
         }
         return view('user.patoken', [
             'users' => $users,
-            'scopes' => $this->scopes,
+            'scopes' => Passport::scopes(),
         ]);
     }
 

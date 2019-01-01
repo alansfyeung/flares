@@ -15,6 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
+    protected $clientCredentialsHeaderName = 'X-Api-UsesClientCredentials';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -23,8 +24,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
     }
 
@@ -35,45 +34,49 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
+        $this->mapWebRoutes();      // Web routes, public and authed
 
-        $this->mapWebRoutes();
-
-        //
+        $request = $this->app['request'];       // Inspect request to find out if API should expose client_credentials
+        if ($request->hasHeader($this->clientCredentialsHeaderName)) {
+            $this->mapApiClientCredentialsRoutes();     // API routes for oauth client_credentials
+        } else {
+            $this->mapApiRoutes();      // API routes with authentication
+        }
     }
 
     /**
      * Define the "web" routes for the application.
-     *
      * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
      */
     protected function mapWebRoutes()
     {
-        Route::group([
-            'middleware' => 'web',
-            'namespace' => $this->namespace,
-        ], function ($router) {
+        Route::group(['middleware' => 'web', 'namespace' => $this->namespace], function ($router) {
             require base_path('routes/web.php');
+        });
+
+        Route::group(['middleware' => ['auth', 'web'], 'namespace' => $this->namespace], function ($router) {
+            require base_path('routes/web-auth.php');
         });
     }
 
     /**
      * Define the "api" routes for the application.
-     *
      * These routes are typically stateless.
-     *
-     * @return void
      */
     protected function mapApiRoutes()
     {
-        Route::group([
-            'middleware' => 'api',
-            'namespace' => $this->namespace,
-            'prefix' => 'api',
-        ], function ($router) {
+        Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => $this->namespace], function ($router) {
             require base_path('routes/api.php');
+        });
+    }
+
+    /**
+     * For API routes that are accessed with a token from an oauth client_credentials flow
+     */
+    protected function mapApiClientCredentialsRoutes()
+    {
+        Route::group(['middleware' => 'apiClientCredentials', 'prefix' => 'api', 'namespace' => $this->namespace], function ($router) {
+            require base_path('routes/api-clientcred.php');
         });
     }
 }

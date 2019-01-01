@@ -4,7 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Laravel\Passport\Exceptions\MissingScopeException;
 
 class Handler extends ExceptionHandler
 {
@@ -47,6 +50,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             $exception = new NotFoundHttpException($exception->getMessage(), $exception);
         }
+        if ($exception instanceof MissingScopeException && $request->expectsJson()) {
+            // $exception = new AuthorizationException($exception->getMessage(), 403, $exception);
+            return response()->json(['error' => 'Invalid token scope'], 403);
+        }
         return parent::render($request, $exception);
     }
 
@@ -62,7 +69,6 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson() || collect($request->route()->middleware())->contains('api')) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-
         return redirect()->guest('login');
     }
 }

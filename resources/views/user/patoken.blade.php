@@ -58,7 +58,8 @@
             @forelse ($scopes as $scope)
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="scopes[]" value="{{$scope}}" checked> {{$scope}}
+                    <input type="checkbox" name="scopes[]" value="{{$scope->id}}" checked> 
+                    {{$scope->id}} <span class="text-muted">{{$scope->description}}</span>
                 </label>
             </div>
             @empty

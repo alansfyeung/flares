@@ -37,6 +37,19 @@ class DecorationApprovalController extends Controller
     }
 
     /**
+     * Show approvals for a specific member
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $memberId  
+     * @return \Illuminate\Http\Response
+     */
+    public function indexMember(Request $request, $memberId) 
+    {
+        $member = Member::findOrFail($memberId);
+        // return $member->
+    }
+
+    /**
      * Show only pending approvals that have not had a decision made yet. 
      * The pending repsonse will include eager-loaded relations.
      *

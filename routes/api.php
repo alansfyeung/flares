@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::get('/user', function (Request $request) {
-    // return $request->user();
-// })->middleware('auth:api');
-
 // Dashboard API
 Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
 // Route::resource('dashboard/activity', 'DashboardController@activity');
@@ -47,7 +43,6 @@ Route::resource('activity', 'ActivityController', ['only' => ['index', 'store', 
 Route::resource('activity.roll', 'AttendanceController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
 // Decorations API
-
 Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@exists');                                          // TBA: repurpose
 Route::get('decoration/{decorationId}/badge/new', 'DecorationBadgeController@chunkCheck');
 Route::post('decoration/{decorationId}/badge/new', 'DecorationBadgeController@store');
@@ -60,10 +55,7 @@ Route::resource('approval', 'DecorationApprovalController', ['only' => ['index',
 
 // Admin Users API
 Route::resource('user', 'UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-Route::post('usersso/{userId}/link', 'UserSSOController@provisionSSO');
-Route::post('usersso', 'UserSSOController@store');
-Route::delete('usersso', 'UserSSOController@destroy');
- 
+
 // Ref data routes
 Route::get('refdata', 'RefDataController@all');
 Route::get('refdata/{key}', 'RefDataController@get');
