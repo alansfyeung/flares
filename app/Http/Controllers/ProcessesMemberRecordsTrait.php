@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use App\Member;
+use App\Promotion;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -36,21 +37,21 @@ trait ProcessesMemberRecordsTrait
 	protected function keywordExtractRank($keyword)
 	{
 		$ranks = DB::table('ref_ranks')->orderBy('pos', 'asc')->get();
-		foreach ($ranks as $rank){
+		foreach ($ranks as $rank) {
 			$clean = preg_replace('/\s+/', '', $keyword);
 			$clean = strtoupper($clean);
 			$abbr = strtoupper($rank->abbr);
 			
 			// maybe direct match
-			if ($abbr == $clean){
+			if ($abbr == $clean) {
 				return $rank->abbr;
 			}
 			// maybe in format "CDTCPL"
-			if (strlen($abbr) > 3 && substr($abbr, 3) === $clean){
+			if (strlen($abbr) > 3 && substr($abbr, 3) === $clean) {
 				return $rank->abbr;
 			}
 			// maybe in format "CAPT (AAC)"
-			if (preg_replace('/\(AAC\)/', '', $abbr) === $clean){
+			if (preg_replace('/\(AAC\)/', '', $abbr) === $clean) {
 				return $rank->abbr;
 			}
 			
@@ -86,18 +87,18 @@ trait ProcessesMemberRecordsTrait
 		$thisYear = substr(date('Y'), 2, 2);
 		$thisCycle = intval(date('n')) < 7 ? 1 : 2;
 		
-		if ($contextName == 'newRecruitment'){
+		if ($contextName == 'newRecruitment') {
 			return [
 				'newPlatoon' => '1PL',
 				'newPosting' => 'MBR',
 				'newRank' => 'CDT',
 				'thisYear' => $thisYear,
 				'thisCycle' => $thisCycle,
-				'generateForumsAccounts' => true
+				'generateForumsAccounts' => false
 			];
 		}
 		
-		if ($contextName == 'newVolunteerStaff'){
+		if ($contextName == 'newVolunteerStaff') {
 			return [
 				'newPlatoon' => 'VAS',
 				'newPosting' => 'VAS',
@@ -108,7 +109,7 @@ trait ProcessesMemberRecordsTrait
 			];
 		}
 		
-		if ($contextName == 'newAdultCadetStaff'){
+		if ($contextName == 'newAdultCadetStaff') {
 			return [
 				'newPlatoon' => 'ACS',
 				'newPosting' => 'ACS',
@@ -148,7 +149,7 @@ trait ProcessesMemberRecordsTrait
 		 */
 		
 		// Extract the overrides
-		if (is_array($opts)){
+		if (is_array($opts)) {
 			extract($opts);
 		}
 		
@@ -156,45 +157,40 @@ trait ProcessesMemberRecordsTrait
 		
 		// Lookup the index for this number
 		$res = DB::table('ref_misc')->where('name', 'regtNumLast')->where('cond', $prefix)->first();
-		if (sizeof($res) > 0){
+		if ($res) {
 			$refDataRowId = $res->id;
 			$lastIndex = intval($res->value);
 			$nextIndex = $lastIndex + 1;
-		}
-		else {
-			$nextIndex = 0;
+		} else {
+			$nextIndex = 1;
 		}
 		
 		// Check for no conflict - try a few
 		$proposedRegtNum = $prefix . str_pad($nextIndex, 2, '0', STR_PAD_LEFT);
 		$counterNoConflict = 0;
-		while ($counterNoConflict < 10){
-			$res = Member::select()->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
-			// $res = DB::table('members')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->first();
-			if (sizeof($res) > 0){
+		while ($counterNoConflict < 100) {
+			$existing = DB::table('members')->whereIn('regt_num', [$proposedRegtNum, $proposedRegtNum . 'F'])->get();
+			if ($existing->count() > 0) {
 				// Is conflicted; try next index
 				$counterNoConflict++;
 				$proposedRegtNum = $prefix . str_pad(++$nextIndex, 2, '0', STR_PAD_LEFT);
 				continue;
-			}
-			break;
+            }
+            
+            if (isset($refDataRowId)) {
+                // Update the ref_misc table with this latest regtNumLast index
+                DB::table('ref_misc')->where('id', $refDataRowId)->update(['value' => $nextIndex]);			
+            } else {
+                // Insert it cos it doesn't exist yet
+                DB::table('ref_misc')->insert(['name' => 'regtNumLast', 'value' => $nextIndex, 'cond' => $prefix]);
+            }
+            
+            return $proposedRegtNum;
 		}
 		
-		if ($counterNoConflict >= 10){	// The no conflict attempts didn't work
-			return false;
-		}
-		
-		if (isset($refDataRowId)){
-			// Update the ref_misc table with this latest regtNumLast index
-			$res = DB::table('ref_misc')->where('id', $refDataRowId)->update(['value' => $nextIndex]);			
-		}
-		else {
-			// Insert it cos it doesn't exist yet
-			$res = DB::table('ref_misc')->insert(['name' => 'regtNumLast', 'value' => $nextIndex, 'cond' => $prefix]);
-		}
-		
-		
-		return $proposedRegtNum;
+		// The no conflict attempts didn't work
+        return false;		
+
 	}
 	
 	
@@ -217,23 +213,23 @@ trait ProcessesMemberRecordsTrait
 		$promoAuth = 'OC';
 		$recordedBy = '1';				// TODO: Temp, replce this recorded by
 		
-		if (is_array($opts)){
+		if (is_array($opts)) {
 			// overwrite vars above with the overrides
 			extract($opts);
             
             // Cleanup
-            if (is_array($newPlatoon)){
+            if (is_array($newPlatoon)) {
                 $newPlatoon = $newPlatoon['abbr'];
             }
-            if (is_array($newPosting)){
+            if (is_array($newPosting)) {
                 $newPosting = $newPosting['abbr'];
             }
-            if (is_array($newRank)){
+            if (is_array($newRank)) {
                 $newRank = $newRank['abbr'];
             }
 		}
         
-		$postingRecord = [
+        $postingPromo = Promotion::create([
 			'regt_num' => $id,
 			'effective_date' => $effectiveDate,
 			'new_platoon' => $newPlatoon,
@@ -241,10 +237,9 @@ trait ProcessesMemberRecordsTrait
 			'new_rank' => $newRank,
 			'promo_auth' => $promoAuth,
 			'recorded_by' => $recordedBy
-		];
-        
-		$id = DB::table('posting_promo')->insertGetId($postingRecord);		
-		return $id;
+		]);
+		// $id = DB::table('posting_promo')->insertGetId($postingRecord);
+		return $postingPromo->promo_id;
 	}
 	
 	/**
@@ -265,21 +260,21 @@ trait ProcessesMemberRecordsTrait
 		$recordedBy = 1;				// TODO: Temp, replce this value dynamically 
 		$dischargeRank = null;
 		
-		if (is_array($opts)){
+		if (is_array($opts)) {
 			// overwrite vars above with the overrides
 			extract($opts);
 		} 
 		 
-		$postingRecord = [
+        $postingPromo = Promotion::create([
 			'is_discharge' => 1,
 			'regt_num' => $id,
 			'effective_date' => $effectiveDate,
 			'new_rank' => $dischargeRank,
 			'promo_auth' => 'OC',
 			'recorded_by' => $recordedBy
-		];
-		$id = DB::table('posting_promo')->insertGetId($postingRecord);		// TODO - use the PostingPromo model to do this
-		return $id;
+		]);
+		// $id = DB::table('posting_promo')->insertGetId($postingRecord);
+		return $postingPromo->promo_id;
 	}
 	
     
@@ -291,9 +286,8 @@ trait ProcessesMemberRecordsTrait
      */ 
     protected function transformMembersPostingPromo(&$members)
     {
-        foreach ($members as &$member){
-            // var_dump($member);
-            if (!empty($member['current_posting'])){
+        foreach ($members as &$member) {
+            if (!empty($member['current_posting'])) {
                 $member['current_posting'] = [
                     'effective_date' => $member['current_posting']['effective_date'],
                     'posting' => $member['current_posting']['new_posting'],
@@ -305,14 +299,14 @@ trait ProcessesMemberRecordsTrait
                     // 'is_discharge' => $member->current_posting->is_discharge
                 // ];
             }
-            if (!empty($member['current_rank'])){
+            if (!empty($member['current_rank'])) {
                 $member['current_rank'] = [
                     'effective_date' => $member['current_rank']['effective_date'],
                     'rank' => $member['current_rank']['new_rank'],
                     'is_acting' => $member['current_rank']['is_acting']
                 ];
             }
-            if (!empty($member['current_platoon'])){
+            if (!empty($member['current_platoon'])) {
                 $member['current_platoon'] = [
                     'effective_date' => $member['current_platoon']['effective_date'],
                     'platoon' => $member['current_platoon']['new_platoon']
@@ -320,11 +314,5 @@ trait ProcessesMemberRecordsTrait
             }
         }
 	}
-    
-    
-	protected function generateForumsAccount(){
-		
-	}
-	
 	
 }

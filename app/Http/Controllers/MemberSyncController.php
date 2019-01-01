@@ -94,9 +94,9 @@ class MemberSyncController extends Controller
 			
 			$context = $contextDefaults;
 		}
-        
+
         // Expect 'members' is an array
-		if ($request->has('members')){
+		if ($request->has('members')) {
 			// Deal with the member data
             $membersData = $request->input('members');
             if (is_array($membersData)) {
@@ -144,7 +144,7 @@ class MemberSyncController extends Controller
                                     'posting_id' => $initialPostingId,
                                 ]; 
                             } catch (\Exception $ex) {
-                                throw new \Exception('Looks like the database rejected this regt num. ' . "Expected regt num: $newRegtNum", ResponseCodes::ERR_REGT_NUM);
+                                throw new \Exception('Looks like the database rejected this member record. ' . "Expected regt num: $newRegtNum", ResponseCodes::ERR_REGT_NUM);
                             }
                             
                         } else {
@@ -185,7 +185,7 @@ class MemberSyncController extends Controller
         }
         $existingUsers = $existingUsersQuery->get();
         return $existingUsers->map(function ($result) {
-            return $result->forums_username;
+            return strtolower($result->forums_username);
         });
     }
 

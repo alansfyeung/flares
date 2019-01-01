@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Promotion extends Model
 {
     protected $table = 'posting_promo';
-	protected $primaryKey = 'promo_id';
+    protected $primaryKey = 'promo_id';
+    protected $guarded = ['promo_id'];
 	
 	// Relationships
 	public function member(){

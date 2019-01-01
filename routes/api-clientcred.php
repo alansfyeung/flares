@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return response()->json(['version' => 'Flares API (client credentials)'], 200);
+Route::get('version', function () {
+    return response()->json(['version' => 'Flares API (client credentials) v2'], 200);
 });
 
 Route::group(['middleware' => 'clientCredentials:manage-sso'], function() {

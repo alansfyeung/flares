@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function () {
-    return response()->json(['version' => 'Flares API'], 200);
+Route::get('version', function () {
+    return response()->json(['version' => 'Flares API v2']);
 });
 
 // Dashboard API
