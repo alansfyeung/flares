@@ -36,10 +36,6 @@ Route::resource('member.decoration', 'MemberDecorationController', ['only' => ['
 // Route::resource('api/awards', 'AwardsController');
 // Route::resource('api/systemuser', 'SystemUserController');
 
-// Member Sync API - intended for use by oauth client app
-Route::post('membersync', 'MemberSyncController@sync');
-Route::post('membersync/presync', 'MemberSyncController@presync');
-
 // Activtity API
 Route::get('activity/search', 'ActivityController@search');
 Route::get('activity/{activityId}/awol', 'AttendanceController@awol');		// Get the AWOLs

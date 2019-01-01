@@ -18,12 +18,16 @@ Route::get('/', function () {
     return response()->json(['version' => 'Flares API (client credentials)'], 200);
 });
 
-Route::group(['as' => 'usersso::', 'middleware' => 'clientCredentials:manage-sso'], function() {
+Route::group(['middleware' => 'clientCredentials:manage-sso'], function() {
     Route::post('usersso/{userId}/link', 'UserSSOController@provisionSSO')->name('link');
-    Route::post('usersso', 'UserSSOController@store');
-    Route::delete('usersso', 'UserSSOController@destroy');
+    Route::resource('usersso', 'UserSSOController', ['only' => ['store', 'destroy']]);
 });
 
 Route::group(['middleware' => 'clientCredentials:submit-decorations'], function() {
     Route::resource('approval', 'DecorationApprovalController', ['only' => ['index', 'store']]);
+});
+
+Route::group(['middleware' => 'clientCredentials:sync-members'], function() {
+    Route::post('membersync', 'MemberSyncController@sync');
+    Route::post('membersync/presync', 'MemberSyncController@presync');
 });

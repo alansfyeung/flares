@@ -42,7 +42,7 @@ class MemberSyncController extends Controller
 
                 return response()->json([
                     'existing' => $existing->values()->all(),
-                    'new' => $notExisting->values()->all(),           // use ->all() on the result of a collection filter
+                    'unmatched' => $notExisting->values()->all(),           // use ->all() on the result of a collection filter
                 ]);
             } else {
                 return response()->json([
@@ -65,13 +65,6 @@ class MemberSyncController extends Controller
      */
     public function sync(Request $request)
 	{
-        // Check for access to sync users
-        if (($accessError = $this->checkAccessErrors($request))) {
-            return response()->json([
-                'error' => $accessError,
-            ], 403);
-        }
-
 		$results = [];
 		
 		// Deal with the context data
@@ -145,9 +138,12 @@ class MemberSyncController extends Controller
                                 $newMember->is_enrolled = 1;       // guarded
                                 $newMember->save();   
                                 $initialPostingId = $this->generateInitialPostingRecord($newMember->regt_num, $context);
-                                $results[$postDataMember['forums_username']] = [$newMember->regt_num, $initialPostingId]; 
+                                $results[$postDataMember['forums_username']] = [
+                                    'id' => $newMember->regt_num,       // For dumb clients who don't know what regt_num is. 
+                                    'regt_num' => $newMember->regt_num, 
+                                    'posting_id' => $initialPostingId,
+                                ]; 
                             } catch (\Exception $ex) {
-                                dd($ex);
                                 throw new \Exception('Looks like the database rejected this regt num. ' . "Expected regt num: $newRegtNum", ResponseCodes::ERR_REGT_NUM);
                             }
                             

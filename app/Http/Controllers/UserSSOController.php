@@ -44,13 +44,17 @@ class UserSSOController extends Controller
                 $postDataUser['username'] = 'f.'.$postDataUser['forums_username'];
             }
 
+            if (empty($postDataUser['access_level'])) {
+                $postDataUser['access_level'] = User::ACCESS_ASSIGN;
+            }
             $postDataUser['allow_sso'] = 1;
             $postDataUser['password'] = 'x';            // This can't be authenticated against
             
             try {
                 $newUser = User::create($postDataUser);
                 return response()->json([
-                    'id' => $newUser->user_id,
+                    'user_id' => $newUser->user_id,
+                    'username' => $newUser->username, 
                     'forums_username' => $newUser->forums_username, 
                 ]);
             } catch (\Exception $ex) {
@@ -112,9 +116,9 @@ class UserSSOController extends Controller
 
             // If user has an unused unexpired link, then use that. Otherwise, create a new one
             $existingSSO = UserSSO::where('user_id', $user->user_id)
-                                    ->whereNotNull('sso_token')
-                                    ->where('expires_at', '>', date('Y-m-d H:i:s'))
-                                    ->first();
+                            ->whereNotNull('sso_token')
+                            ->where('expires_at', '>', date('Y-m-d H:i:s'))
+                            ->first();
             if (!empty($existingSSO)) {
                 return response()->json([
                     'token' => $existingSSO->sso_token,
