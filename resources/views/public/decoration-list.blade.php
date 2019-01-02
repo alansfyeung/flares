@@ -42,10 +42,10 @@
                         <td><code>{{ $dec->shortcode }}</code></td>
                         <td>
                             {{ $dec->name }} 
-                            @if (count($dec->related)) &rsaquo; <a href="#" class="subdec-toggle" data-subdec-visible="false" onclick="toggleVisible({{ $dec->dec_id }}, this)">show more</a> @endif
+                            @if (count($dec->related)) &rsaquo; <a href="#" class="subdec-toggle" data-subdec-visible="false" onclick="toggleVisible(event, {{ $dec->dec_id }}, this)">show more</a> @endif
                         </td>
                         <td>{{ date('M Y', strtotime($dec->date_commence)) }}</td>
-                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $dec->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decorationDetails", [ "shortcode" => $dec->shortcode ]) }}'); return false;">
+                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $dec->shortcode ]) }}" onclick="openDecorationDetails(event, '{{ route("public::decorationDetails", [ "shortcode" => $dec->shortcode ]) }}'); return false;">
                             <span class="glyphicon glyphicon-new-window"></span>
                         </a></td>
                     </tr>
@@ -58,7 +58,7 @@
                         <td><code>{{ $related->shortcode }}</code></td>
                         <td>{{ $related->name }}</td>
                         <td>{{ date('M Y', strtotime($related->date_commence)) }}</td>
-                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $related->shortcode ]) }}" onclick="openDecorationDetails('{{ route("public::decorationDetails", [ "shortcode" => $related->shortcode ]) }}'); return false;">
+                        <td><a class="btn btn-default btn-xs" href="{{ route('public::decorationDetails', [ 'shortcode' => $related->shortcode ]) }}" onclick="openDecorationDetails(event, '{{ route("public::decorationDetails", [ "shortcode" => $related->shortcode ]) }}'); return false;">
                             <span class="glyphicon glyphicon-new-window"></span>
                         </a></td>
                     </tr>
@@ -75,7 +75,8 @@
 
 @push('scripts')
 <script>
-function toggleVisible(decorationId, toggleElem, cssDisplayValue){
+function toggleVisible(event, decorationId, toggleElem, cssDisplayValue){
+    event.preventDefault();
     cssDisplayValue = cssDisplayValue || 'table-row';
     var currentlyVisible = toggleElem.getAttribute('data-subdec-visible') === 'true';
     var rows = document.querySelectorAll('.subdec-row[data-dec-parent=\''+decorationId+'\']');
@@ -85,7 +86,8 @@ function toggleVisible(decorationId, toggleElem, cssDisplayValue){
     toggleElem.setAttribute('data-subdec-visible', currentlyVisible ? 'false' : 'true');
     return false;
 }
-function openDecorationDetails(decorationDetailsUrl){
+function openDecorationDetails(event, decorationDetailsUrl){
+    event.preventDefault();
     window.open(decorationDetailsUrl, 'FlaresDecorationDescription', 'width=800, height=600'); 
     return false;
 }
