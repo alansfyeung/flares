@@ -26,6 +26,7 @@ class DecorationApprovalController extends Controller
             $forumsUsername = strtolower((string) $request->query('forumsUsername'));
             $member = Member::where('forums_username', $forumsUsername)->firstOrFail();
             $query->where('regt_num', $member->regt_num);
+            $query->orderBy('created_at', 'desc');
         } else {
             $query->with('requester');      // was omitted from forumsUsername request because you already know who it is.
         }
@@ -175,14 +176,21 @@ class DecorationApprovalController extends Controller
                 $updatedApproval->decision_date = $postData['decision_date'];
                 $updatedApproval->save();
                 $updatedApprovalId = $updatedApproval->dec_appr_id;
+                // Note: Preserve the date on the original request, but update the date for the real request
 
                 if ($isRequestApproved) {
                     // Create an award record based off this info 
                     $award = new MemberDecoration();
                     $award->regt_num = $updatedApproval['regt_num'];
                     $award->dec_id = $updatedApproval['dec_id'];
-                    $award->citation = $updatedApproval['citation'];
-                    $award->date = $updatedApproval['date'];
+                    if (!empty($postData['date'])) {
+                        $award->date = date('Y-m-d', strtotime($postData['date']));
+                    } elseif (!empty($updatedApproval['date'])) {
+                        $award->date = date('Y-m-d', strtotime($updatedApproval['date']));
+                    }
+                    if (!empty($postData['citation'])) {
+                        $award->citation = $postData['citation'];
+                    }
                     $award->user_id = Auth::id();       // The currently logged in admin user
                     $award->dec_appr_id = $updatedApprovalId;       // Link to the decorationapproval
                     
@@ -190,7 +198,7 @@ class DecorationApprovalController extends Controller
                     $award->save();
                     $awardId = $award->awd_id;
                 }
-                
+
 			} else {
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
             }
@@ -198,13 +206,22 @@ class DecorationApprovalController extends Controller
             DB::commit();
 			return response()->json([
                 'id' => $updatedApprovalId,
-                'memberDecorationId' => $awardId,
+                'memberDecorationId' => !empty($awardId) ? $awardId : null,
             ]);
 		} catch (\Exception $ex) {
             DB::rollBack();
-            return response()->json([
-                'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
-            ], 400);
+
+            // Check for an integrity issue it's probably a duplicate award. 
+            if ($ex->getCode() == '23000') {
+                // SQLSTATE[23000]: Integrity constraint violation
+                return response()->json([
+                    'error' => ['code' => ResponseCodes::ERR_DECORATION_ALREADY_ASSIGNED, 'reason' => 'Decoration was already assigned to the member']
+                ], 500);
+            } else {
+                return response()->json([
+                    'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+                ], 500);
+            }
 		}
     }
 

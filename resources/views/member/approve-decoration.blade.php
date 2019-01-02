@@ -20,17 +20,17 @@
 @endsection
 
 @section('alerts')
-<div ng-show="appr.saveError">
+<div ng-show="state.saveError">
     <div class="alert alert-danger">
         <p><strong>Saving failed.</strong> We couldn't save this decoration approval.</p>
     </div>
 </div>
-<div ng-show="appr.saveDuplicateError">
+<div ng-show="state.saveDuplicateError">
     <div class="alert alert-warning">
         <p><strong>Saving failed.</strong> The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
         <hr>
         <div>
-            <a class="btn btn-default" ng-href="@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
+            <a class="btn btn-default" ng-href="@{{memberHref()}}" target="_blank">View member profile <span class="glyphicon glyphicon-share"></span></a>
         </div>
     </div>
 </div>

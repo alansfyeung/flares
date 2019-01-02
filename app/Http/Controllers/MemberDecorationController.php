@@ -57,15 +57,16 @@ class MemberDecorationController extends Controller
 				'id' => $award->awd_id
 			], 201);
 		} catch (\Exception $ex) {
-            if ($ex->getCode() == '23000'){
+            if ($ex->getCode() == '23000') {
                 // SQLSTATE[23000]: Integrity constraint violation
                 return response()->json([
                     'error' => ['code' => ResponseCodes::ERR_DECORATION_ALREADY_ASSIGNED, 'reason' => 'Decoration was already assigned to the member']
-                ], 403);
+                ], 500);
+            } else {
+                return response()->json([
+                    'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
+                ], 500);
             }
-			return response()->json([
-				'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
-			], 500);
 		}
     }
     

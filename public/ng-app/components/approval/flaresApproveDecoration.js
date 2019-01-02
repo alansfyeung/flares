@@ -116,11 +116,19 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
 
     };
 
-    $scope.cancelHref = function () {
+    $scope.cancelHref = function() {
         return flResource().getLink();      // This should take back to the dashboard
     };
+    $scope.memberHref = function() {
+        if ($scope.member && $scope.member.regt_num){
+            return flResource('member').setFragment([$scope.member.regt_num, 'view', 'decorations']).getLink();
+        }
+        else {
+            return flResource('member').getLink();
+        }
+    };
 
-    $scope.$watch('formData.approvalDecision', function (newVal) {
+    $scope.$watch('formData.approvalDecision', function(newVal) {
         if ($scope.appr) {
             switch (newVal) {
                 case 'yes':
@@ -276,6 +284,9 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
 
     function saveApprovalDecision() {
 
+        $scope.state.saveError = null;
+        $scope.state.saveDuplicateError = null;
+
         // Do not bother saving if already decided.
         if ($scope.appr.isDecided) {
             console.warn('Cannot save since it is already decisioned');
@@ -320,7 +331,13 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
         }).catch(function (errorResponse) {
             console.error(errorResponse);
             $scope.state.isSaving = false;
-            $scope.appr.saveError = true;
+            let errorData = errorResponse.data && errorResponse.data.error;
+            if (errorData && String(errorData.code) === '5030') {
+                $scope.state.saveDuplicateError = true;     // This is a duplicate so it can't be created again.
+            }
+            else {
+                $scope.state.saveError = true;
+            }
         });
         
     }
@@ -332,7 +349,6 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     function Approval() {
         this.id = null;     // must be set
         this.saved = false;
-        this.saveError = false;
         this.saveDuplicateError = false;
         this.validationError = null;    // Populate with string message if required
         this.requestedDecoration = null;
@@ -345,7 +361,8 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
         this.decisionDate = null;       // " 
         this.submittedDate = null;      // " 
         this.data = {
-            justification: '',
+            justification: null,
+            citation: null,
             is_approved: null,   // 1, 0 or null  // This value can be dirty, as opposed to the other isApproved which represents the persisted result.
             date: new Date(),       // Requested award date post-approval
         };
