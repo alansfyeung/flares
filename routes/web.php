@@ -32,5 +32,5 @@ Route::group(['as' => 'public::', 'prefix' => 'public'], function () {
  */
 Route::group(['as' => 'media::', 'prefix' => 'media'], function () { 
     Route::get('member/{memberId}/picture', 'MemberPictureController@show')->name('memberPicture');
-    Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show')->name('decoration-badge');
+    Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@show')->name('decorationBadge');
 });

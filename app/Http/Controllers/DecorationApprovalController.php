@@ -76,9 +76,9 @@ class DecorationApprovalController extends Controller
         try {
             if ($request->has('member')) {
                 $memberData = $request->input('member');    // expect either regt_num or forums_username as keys. 
-                if ($memberData['regt_num']) {
+                if (!empty($memberData['regt_num'])) {
                     $member = Member::findOrFail($memberData['regt_num']);
-                } elseif ($memberData['forums_username']) {
+                } elseif (!empty($memberData['forums_username'])) {
                     $member = Member::where('forums_username', $memberData['forums_username'])->firstOrFail();
                 } else {
                     throw new \Exception('Could not find a way to resolve the member', ResponseCodes::ERR_POSTDATA_MISSING);
@@ -132,7 +132,7 @@ class DecorationApprovalController extends Controller
         $approval->load(['requested_decoration', 'requester', 'approver']);
         return response()->json([
             'approval' => $approval,
-            'requestedDecoration' => $approval->requested_decoration,
+            'requested_decoration' => $approval->requested_decoration,
             'requester' => $approval->requester,
             'approver' => $approval->approver,
 		]);
@@ -166,7 +166,12 @@ class DecorationApprovalController extends Controller
                 // Resolve the admin user who is making the request. 
                 $postData['user_id'] = Auth::id();
                 $postData['decision_date'] = date('Y-m-d');
-                $updatedApproval = DecorationApproval::updateOrCreate(['dec_appr_id' => $id], $postData);
+                $updatedApproval = DecorationApproval::findOrFail($id);
+                $updatedApproval->is_approved = $postData['is_approved'];
+                $updatedApproval->justification = $postData['justification'];
+                $updatedApproval->user_id = $postData['user_id'];
+                $updatedApproval->decision_date = $postData['decision_date'];
+                $updatedApproval->save();
                 $updatedApprovalId = $updatedApproval->dec_appr_id;
 
                 // Create an award record based off this info 

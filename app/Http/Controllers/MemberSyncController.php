@@ -108,8 +108,7 @@ class MemberSyncController extends Controller
 
                         if (empty($postDataMember['forums_username'])) {
                             throw new \Exception('Missing forums username key', ResponseCodes::ERR_POSTDATA_MISSING);
-                        }
-                        else {
+                        } else {
                             $postDataMember['forums_username'] = strtolower($postDataMember['forums_username']);        // Always lowercase
                         }
 

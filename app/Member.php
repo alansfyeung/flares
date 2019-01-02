@@ -36,7 +36,7 @@ class Member extends Model
 
     public function decoration_approvals() 
     {
-        return $this->belongsTo('App\DecorationApproval', 'regt_num');
+        return $this->hasMany('App\DecorationApproval', 'regt_num');
     }
     
 	public function current_posting()

@@ -1,7 +1,7 @@
 @extends('layouts.template')
     
-@section('navbar-mobile-toggle', '<!-- No nav toggle -->')
-@section('navbar-sections', '<!-- No navbar sections -->')
+@section('navbar-mobile-toggle', '')
+@section('navbar-sections', '')
 
 @section('main')
     <div id="main" class="flares-main">

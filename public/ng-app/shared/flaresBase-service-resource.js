@@ -7,11 +7,11 @@
 
     var flaresBase = angular.module('flaresBase');
 
-    flaresBase.factory('flResource', ['flResourceDefinitions', function(flResourceDefinitions){
+    flaresBase.factory('flResource', ['flResourceDefinitions', 'flApiPathRoot', function(flResourceDefinitions, flApiPathRoot){
         
         function FlaresLinkBuilder(opts){
             opts = opts || {};
-            this.url = opts.prefix || '';
+            this.urlPrefix = flApiPathRoot + (opts.prefix || '');
             this.singular = opts.singular || '';
             this.plural = opts.plural || '';
             this.frag = '';
@@ -72,16 +72,15 @@
         
         FlaresLinkBuilder.prototype.setUrl = function(urlParts){        // expect an array or a string
             if (angular.isArray(urlParts)){
-                this.url = '/' + urlParts.join('/');
+                this.url = this.urlPrefix + '/' + urlParts.join('/');
             }
             else if (arguments.length > 0){
-                var path = '';
+                this.url = this.urlPrefix;
                 angular.forEach(arguments, function(value, key){
                     if (angular.isString(value)){
                         this.url += '/' + urlParts;
                     }
                 }, this);
-                this.url = path;
             }
             return this;
         };
@@ -97,17 +96,23 @@
             hashFragParts = hashFragParts || [];            // expect hash frag to be separated by slashes
             opts = angular.extend({
                 absolutePath: true,
+                usePrefix: true,
             }, opts || {});
-            var path = '';
-            path = pathParts.join('/');
+            var path = pathParts.join('/');
             if (queryStringParts.length > 0){
                 path += '?' + queryStringParts.join('&');
             }
             if (hashFragParts.length > 0){
                 path += '#' + queryStringParts.join('/');
             }
-            if (opts.absolutePath && path.charAt(0) !== '/'){
-                path = '/' + path;
+            // Apply defaults: absolute path
+            if (opts.absolutePath){
+                if (opts.usePrefix){
+                    path = this.urlPrefix + ((path.charAt(0) !== '/') ? '/' : '') + path;
+                }
+                else {
+                    path = '/' + path;          // Prefix at the top
+                }
             }
             return path;
         };

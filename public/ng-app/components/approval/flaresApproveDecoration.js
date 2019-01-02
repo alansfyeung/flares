@@ -189,8 +189,8 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
                         var appv = response.data.approver;
                         $scope.appr.decisionedBy = appv;
                     }
-                    if (response.data.requestedDecoration) {
-                        var dec = response.data.requestedDecoration;
+                    if (response.data.requested_decoration) {
+                        var dec = response.data.requested_decoration;
                         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'updated_at'], dec);
                         $scope.appr.requestedDecoration = dec;
                         $scope.appr.requestedDecorationBadgeUrl = flResource().raw(['/media', 'decoration', dec.dec_id, 'badge']);
@@ -198,6 +198,10 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
                     if (response.data.requester) {
                         var requester = response.data.requester;
                         $scope.member = requester;
+                    }
+                    if (response.data.approval && response.data.approval.request_comment) {
+                        var comment = response.data.approval.request_comment;
+                        $scope.appr.requestComment = comment;
                     }
                 }
 
@@ -333,6 +337,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
         this.validationError = null;    // Populate with string message if required
         this.requestedDecoration = null;
         this.requestedDecorationBadgeUrl = null;
+        this.requestComment = null;
         this.isDecided = false;     // If set to true, then it will prevent editing
         this.isApproved = null;         // Populate from response data
         this.justification = null;      // "

@@ -13,7 +13,7 @@
 <!-- page main header -->
 <div>
     <h1>
-        <a ng-href="{{ url('/') }}@{{cancelHref()}}">Member</a>
+        <a ng-href="{{ url('/') }}">Member</a>
         &rsaquo; Edit an awarded decoration
     </h1>
 </div>

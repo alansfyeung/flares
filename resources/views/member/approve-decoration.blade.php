@@ -13,7 +13,7 @@
 <!-- page main header -->
 <div ng-show="member.regt_num">
     <h1>
-        <a ng-href="{{ url('/') }}@{{cancelHref()}}">Member</a>
+        <a ng-href="{{ url('/') }}">Member</a>
         &rsaquo; Approve a decoration 
     </h1>
 </div>
@@ -68,6 +68,16 @@
             <h4>@{{appr.requestedDecoration.name}}</h4>
             <hr>
 
+            <div ng-if="appr.requestComment">
+                <div class="row form-group">
+                    <div class="col-sm-3">Request comment</div>
+                    <div class="col-sm-9">
+                        <blockquote class="approve-request-comment">@{{appr.requestComment}}</blockquote>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
             <div ng-if="appr.isDecided">
                 <div class="row form-group">
                     <div class="col-sm-3">Decision</div>
@@ -87,7 +97,6 @@
                         <p class="text-muted">@{{appr.justification | markBlanks}}</p>
                     </div>
                 </div>
-
                 <hr>
 
                 <div class="row" display-mode="view">
