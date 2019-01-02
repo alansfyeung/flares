@@ -9,7 +9,7 @@
 <script src="{{asset('ng-app/components/member/flaresMemberViewEdit.js')}}"></script>
 @endpush
 @push('vendor-scripts')
-<script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
+<script src="{{asset('assets/js/flow/ng-flow-standalone.min.js')}}"></script>
 @endpush
 
 @section('heading')

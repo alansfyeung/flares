@@ -13,7 +13,7 @@
 <!-- page main header -->
 <div>
     <h1>
-        <a ng-href="{{ url('/') }}">Member</a>
+        <a ng-href="@{{cancelHref()}}">Member</a>
         &rsaquo; Edit an awarded decoration
     </h1>
 </div>
@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-sm-8">
             <div class="alert alert-success" ng-show="award.saved">
-                <a id="viewMemberProfileButton" class="btn btn-success btn-xs pull-right" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="104">View member profile</a>
+                <a id="viewMemberProfileButton" class="btn btn-success btn-xs pull-right" ng-href="@{{cancelHref()}}" tabindex="104">View member profile</a>
                 <p><strong>Saved</strong>: The decoration updates were saved</p>
             </div>
             
@@ -94,7 +94,7 @@
                     <div class="col-sm-12">
                         <div class="text-right">
                             <img ng-show="state.isSaving" src="{{ asset('assets/img/spinner.gif') }}" alt="Working...">
-                            <a class="btn btn-default hidden" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101" ng-disabled="state.isSaving">Back to Member</a>
+                            <a class="btn btn-default hidden" ng-href="@{{cancelHref()}}" tabindex="101" ng-disabled="state.isSaving">Back to Member</a>
                             <button ng-show="award" class="btn btn-primary" type="submit" tabindex="100" ng-disabled="state.isSaving">Update award details</button>
                         </div>
                     </div>

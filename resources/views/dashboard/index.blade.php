@@ -36,7 +36,6 @@
     </div>
     
 	<div class="col-sm-6 col-md-4">
-        @verbatim
         <div class="container-fluid">
             <h4>Quick status</h4>
             <div class="row">
@@ -50,21 +49,21 @@
                                 <div class="col-xs-6">
                                     <figure class="dashboard-stat" ng-cloak>
                                         <figcaption class="stat-caption">Posted Strength</figcaption>
-                                        <div class="stat-figure">{{stats.member.numActive}}</div>						
+                                        <div class="stat-figure">@{{stats.member.numActive}}</div>						
                                     </figure>
                                 </div>
                                 <div class="col-xs-6">
                                     <figure class="dashboard-stat" ng-cloak>
                                         <figcaption class="stat-caption">In system</figcaption>
-                                        <div class="stat-figure">{{stats.member.numTotal}}</div>
+                                        <div class="stat-figure">@{{stats.member.numTotal}}</div>
                                     </figure>
                                 </div>
                             </div>
                         </div>
                         <div class="list-group">
-                            <a href="/members" class="list-group-item">View/search members</a>
-                            <a href="/members/new" class="list-group-item">Add single member</a>
-                            <!-- <a href="/members/newmulti" class="list-group-item">Multi member onboarding</a> -->
+                            <a href="{{url('members')}}" class="list-group-item">View/search members</a>
+                            <a href="{{url('members/new')}}" class="list-group-item">Add single member</a>
+                            <!-- <a href="{{url('/members/newmulti')}}" class="list-group-item">Multi member onboarding</a> -->
                         </div>
                     </div>
                 </div>
@@ -76,18 +75,17 @@
                         <div class="panel-body">
                             <figure class="dashboard-stat" ng-cloak>
                                 <figcaption class="stat-caption">Decorations</figcaption>
-                                <div class="stat-figure">{{stats.decoration.num}}</div>
+                                <div class="stat-figure">@{{stats.decoration.num}}</div>
                             </figure>
                         </div>
                         <div class="list-group">
-                            <a href="/decorations" class="list-group-item">Manage decorations</a>
-                            <a href="/decorations/new" class="list-group-item">Create new decoration</a>
+                            <a href="{{url('/decorations')}}" class="list-group-item">Manage decorations</a>
+                            <a href="{{url('/decorations/new')}}" class="list-group-item">Create new decoration</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @endverbatim
     </div>
     
 </div>

@@ -13,7 +13,7 @@
 <!-- page main header -->
 <div ng-show="member.regt_num">
     <h1>
-        <a ng-href="{{ url('/') }}">Member</a>
+        <a ng-href="@{{cancelHref()}}">Member</a>
         &rsaquo; Award a decoration
     </h1>
 </div>
@@ -33,7 +33,7 @@
         <p>The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
         <hr>
         <div>
-            <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
+            <a class="btn btn-default" ng-href="@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
         </div>
     </div>
 </div>
@@ -59,7 +59,7 @@
                 <hr>
                 <div>
                     <button id="assignAnotherDecorationButton" type="button" class="btn btn-success" ng-click="assignAnother()" tabindex="103">Assign another</button>
-                    <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="104">View member profile</a>
+                    <a class="btn btn-default" ng-href="@{{cancelHref()}}" tabindex="104">View member profile</a>
                 </div>
             </div>
         </div>
@@ -139,7 +139,7 @@
                 <div class="form-group">
                     <div class="col-sm-12">
                         <div class="text-right">
-                            <a class="btn btn-default pull-left" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101">Back to Member</a>
+                            <a class="btn btn-default pull-left" ng-href="@{{cancelHref()}}" tabindex="101">Back to Member</a>
                             <button ng-show="award.selectedDecoration.dec_id" class="btn btn-primary" type="submit" tabindex="100">Award this decoration</button>
                         </div>
                     </div>

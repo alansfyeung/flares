@@ -178,7 +178,7 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
                         c.util.convertToDateObjects(['date', 'decision_date', 'created_at', 'updated_at'], appr);
                         $scope.appr.id = appr.dec_appr_id;
                         $scope.appr.isDecided = (appr.is_approved != null);
-                        $scope.appr.isApproved = Boolean(appr.is_approved);     // Convert from 0 and 1
+                        $scope.appr.isApproved = Boolean(Number(appr.is_approved));     // Convert from 0 and 1
                         $scope.appr.decisionDate = appr.decision_date;
                         $scope.appr.justification = appr.justification;
                         $scope.appr.submittedDate = appr.created_at;

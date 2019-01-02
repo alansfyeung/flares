@@ -156,36 +156,41 @@ class DecorationApprovalController extends Controller
                     throw new \Exception('Contained prohibited fields: regt_num, dec_id and/or request_comment', ResponseCodes::ERR_POSTDATA_FORMAT);
                 }
                 // Make sure that the approval has got a decision, and a justification if required. 
-                if (array_key_exists('is_approved', $postData)) {
+                if (array_key_exists('is_approved', $postData) && !is_null($postData['is_approved'])) {
                     if ((string) $postData['is_approved'] == '0' && (!array_key_exists('justification', $postData) || empty($postData['justification']))) {
                         throw new \Exception('Missing a justification for an declined decision', ResponseCodes::ERR_POSTDATA_MISSING);        
                     }
+                    $isRequestApproved = (int) $postData['is_approved'] > 0;
                 } else {
                     throw new \Exception('Missing an approval decision', ResponseCodes::ERR_POSTDATA_MISSING);    
                 }
+
                 // Resolve the admin user who is making the request. 
                 $postData['user_id'] = Auth::id();
                 $postData['decision_date'] = date('Y-m-d');
                 $updatedApproval = DecorationApproval::findOrFail($id);
-                $updatedApproval->is_approved = $postData['is_approved'];
+                $updatedApproval->is_approved = $postData['is_approved'];       // Need to save it as 0 or 1
                 $updatedApproval->justification = $postData['justification'];
                 $updatedApproval->user_id = $postData['user_id'];
                 $updatedApproval->decision_date = $postData['decision_date'];
                 $updatedApproval->save();
                 $updatedApprovalId = $updatedApproval->dec_appr_id;
 
-                // Create an award record based off this info 
-                $award = new MemberDecoration();
-                $award->regt_num = $updatedApproval['regt_num'];
-                $award->dec_id = $updatedApproval['dec_id'];
-                $award->citation = $updatedApproval['citation'];
-                $award->date = $updatedApproval['date'];
-                $award->user_id = Auth::id();       // The currently logged in admin user
-                $award->dec_appr_id = $updatedApprovalId;       // Link to the decorationapproval
+                if ($isRequestApproved) {
+                    // Create an award record based off this info 
+                    $award = new MemberDecoration();
+                    $award->regt_num = $updatedApproval['regt_num'];
+                    $award->dec_id = $updatedApproval['dec_id'];
+                    $award->citation = $updatedApproval['citation'];
+                    $award->date = $updatedApproval['date'];
+                    $award->user_id = Auth::id();       // The currently logged in admin user
+                    $award->dec_appr_id = $updatedApprovalId;       // Link to the decorationapproval
+                    
+                    // Save it
+                    $award->save();
+                    $awardId = $award->awd_id;
+                }
                 
-                // Save it
-                $award->save();
-                $awardId = $award->awd_id;
 			} else {
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
             }

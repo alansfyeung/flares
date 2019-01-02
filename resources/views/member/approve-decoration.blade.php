@@ -13,7 +13,7 @@
 <!-- page main header -->
 <div ng-show="member.regt_num">
     <h1>
-        <a ng-href="{{ url('/') }}">Member</a>
+        <a ng-href="@{{cancelHref()}}">Member</a>
         &rsaquo; Approve a decoration 
     </h1>
 </div>
@@ -30,7 +30,7 @@
         <p><strong>Saving failed.</strong> The selected decoration was already assigned. To assign this decoration, delete the existing entries from the member's profile.</p>
         <hr>
         <div>
-            <a class="btn btn-default" ng-href="{{ url('/') }}@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
+            <a class="btn btn-default" ng-href="@{{cancelHref()}}" target="_blank" tabindex="105">View member profile <span class="glyphicon glyphicon-share"></span></a>
         </div>
     </div>
 </div>
@@ -58,7 +58,7 @@
 
             <div class="alert alert-success" ng-show="appr.saved">
                 <div class="pull-right">
-                    <a class="btn btn-default btn-xs" ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="103">Back to approvals</a>
+                    <a class="btn btn-default btn-xs" ng-href="{{ url('/') }}" tabindex="103">Back to approvals</a>
                     <button id="viewApprovalDecision" type="button" class="btn btn-success btn-xs" ng-click="appr.saved = null" tabindex="104">View decision</button>
                 </div>
                 <p><strong>Saved.</strong> The decision was recorded</p>
@@ -101,7 +101,7 @@
 
                 <div class="row" display-mode="view">
                     <div class="col-sm-12">
-                        <a class="btn btn-default " ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101">Back to approvals</a>
+                        <a class="btn btn-default " ng-href="@{{cancelHref()}}" tabindex="101">Back to approvals</a>
                     </div>
                 </div>
 
@@ -161,7 +161,7 @@
                         </div>
                         <div class="col-sm-12">
                             <div class="text-left">
-                                <a class="btn btn-default " ng-href="{{ url('/') }}@{{cancelHref()}}" tabindex="101">Cancel</a>
+                                <a class="btn btn-default " ng-href="@{{cancelHref()}}" tabindex="101">Cancel</a>
                                 <button class="btn btn-primary pull-right" type="submit" tabindex="100">Submit decision</button>
                             </div>
                         </div>
