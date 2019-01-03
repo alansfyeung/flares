@@ -342,8 +342,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     function updateUploaderDestination(){
         var decID = $scope.dec.id;
         if ($scope.$flow && decID){
-            $scope.$flow.opts.target = '/api/decoration/'+$scope.dec.id+'/badge/new';
-            // $scope.$flow.opts.target = flAPI('decoration').sub('badge/new', decID).url();
+            $scope.$flow.opts.target = flResource().raw(['/api', 'decoration', $scope.dec.id, 'badge', 'new']);
             console.log('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
         }

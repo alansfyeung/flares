@@ -469,7 +469,7 @@ flaresApp.controller('pictureController', function ($scope, $rootScope, $http, $
     };
     function updateUploaderDestination() {
         if ($scope.$flow && $scope.member.regtNum) {
-            $scope.$flow.opts.target = '/api/member/' + $scope.member.regtNum + '/picture/new';
+            $scope.$flow.opts.target = flResource().raw(['/api', 'member', $scope.member.regtNum, 'picture', 'new']);
             console.log('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
         }
