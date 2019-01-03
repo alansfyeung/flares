@@ -1,20 +1,16 @@
 var flaresApp = angular.module('flaresDecoration', ['flaresBase', 'flow']);
 
-flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryProvider, $httpProvider){	
+flaresApp.config(['flowFactoryProvider', '$httpProvider', 'flLaravelCsrfToken', function(flowFactoryProvider, $httpProvider, flLaravelCsrfToken){	
 
 	function imageResizer(fileObj){	// fileObj is an instance of FlowFile
 		console.log(fileObj);
 		console.log('TODO ImageResizer: file size is ' + Math.floor(fileObj.file.size/1024) + ' KB');
 	};
 
-	// $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
-	flowFactoryProvider.defaults = { 
-		headers: {},
-		initFileFn: imageResizer,
-		singleFile: true,
-		allowDuplicateUploads: true,
-	};
-	flowFactoryProvider.defaults.headers[$httpProvider.defaults.xsrfHeaderName] = (function(cookieName){
+    let headers = {};
+    
+    // $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
+	headers[$httpProvider.defaults.xsrfHeaderName] = (function(cookieName){
 		var c = document.cookie.split('; ');
 		for (var i = 0; i < c.length; i++){
 			var cookie = c[i].split('=');
@@ -22,8 +18,18 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function(flowFactoryPr
 			  return decodeURIComponent(cookie[1]);
 			}
 		}
-	}($httpProvider.defaults.xsrfCookieName));
-	
+    }($httpProvider.defaults.xsrfCookieName));
+
+    // Must add X-CSRF-TOKEN as well in order to work with Laravel Passport laravel_token auth
+    headers['X-CSRF-TOKEN'] = flLaravelCsrfToken;
+
+    flowFactoryProvider.defaults = { 
+		headers: headers,
+		initFileFn: imageResizer,
+		singleFile: true,
+		allowDuplicateUploads: true,
+    };
+
 }]);
 
 flaresApp.controller('decorationViewEditController', function($scope, $window, $controller, $q, $uibModal, flAPI, flResource){
@@ -50,6 +56,14 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
         decorationTiers: []
     };
 
+    $scope.edit = function () {
+        if ($scope.state.isView()) {
+            $scope.beginEdit();     // If in view mode, toggle to Edit mode
+        }
+        else if ($scope.state.isEdit()) {
+            $scope.finishEdit();       // Save the changes and send back to view mode
+        }
+    };
     $scope.beginEdit = function(){
         $scope.state.path.mode = 'edit';
         return false;

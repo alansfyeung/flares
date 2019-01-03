@@ -8,11 +8,15 @@
     
     // =================
     // Register constants
-    // 1. Flares Resource Definitions - A source of truth for factories/services
+    // 1. Base API root (especially for non-domain-root apps)
+    // 2. Laravel CSRF Token, for laravel_token API auth
+    // 3. Flares Resource Definitions - A source of truth for factories/services
     // =================
 
     var base = angular.element('base');
     flaresBase.constant('flApiPathRoot', base ? (base.data('href') || base.attr('href')) : '');
+
+    flaresBase.constant('flLaravelCsrfToken', window.csrfToken || angular.element('meta[name="csrf-token"]').attr('content'));
 
     flaresBase.constant('flResourceDefinitions', {
         refData: {

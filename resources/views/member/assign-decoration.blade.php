@@ -167,9 +167,12 @@
                             <td>Shortcode</td>
                             <td>
                                 <code>@{{award.selectedDecoration.shortcode}}</code> &nbsp;
-                                <a target="_blank" ng-href="{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/@{{award.selectedDecoration.shortcode}}">
+                                <a class="btn btn-default btn-xs" target="_blank" ng-href="{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/@{{award.selectedDecoration.shortcode}}">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
+                                <!-- <button class="btn btn-default btn-xs" onclick="openDecorationDetails(event, '{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/' + @{{award.selectedDecoration.shortcode}});">
+                                    <span class="glyphicon glyphicon-new-window"></span>
+                                </button> -->
                             </td>
                         </tr>
                         <tr>

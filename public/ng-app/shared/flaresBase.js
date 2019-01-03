@@ -14,11 +14,9 @@
     // 1b. Create a $httpProvider interceptor, and whack the crsf token to the top of everything. This enables API auth. 
     // 2a. Cache some templates.
     
-    flaresBase.config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
-        // ! mode
-        $locationProvider.html5Mode(false).hashPrefix('!');
-        // CRSF Token 
-        registerApiTokenInterceptor($httpProvider);
+    flaresBase.config(['$locationProvider', '$httpProvider', 'flLaravelCsrfToken', function ($locationProvider, $httpProvider, flLaravelCsrfToken) {
+        $locationProvider.html5Mode(false).hashPrefix('!');         // ! mode
+        registerApiTokenInterceptor($httpProvider, flLaravelCsrfToken);     // Set CRSF Token for Angular HTTP
     }]);
 
     flaresBase.run(['$http', '$templateCache', function ($http, $templateCache) {
@@ -152,7 +150,7 @@
         });
     }
 
-    function registerApiTokenInterceptor($httpProvider) {
+    function registerApiTokenInterceptor($httpProvider, laravelCsrfToken) {
 
         // 1a. Use httpProvider config to set the xrsf header info
         // Note: This assumes that Laravel already set the XSRF cookie for us.
@@ -167,8 +165,7 @@
         $httpProvider.interceptors.push(function() {
             return {
                 'request': function(config) {
-                    let csrfToken = window.csrfToken || angular.element('meta[name="csrf-token"]').attr('content');
-                    config.headers['X-CSRF-TOKEN'] = csrfToken;
+                    config.headers['X-CSRF-TOKEN'] = laravelCsrfToken;
                     return config;
                 },
             }

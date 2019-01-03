@@ -122,15 +122,20 @@
             var path = this.state.path;
             if (path.id) {
                 if (path.tab) {
-                    // try to activate the correct tab
                     if (hasTab(path.tab)) {
-                        getTabElement(path.tab).tab('show');
+                        getTabElement(path.tab).tab('show');    // try to activate the correct tab
                     }
                     $location.path([path.id, path.mode, path.tab].join('/'));
                 }
                 else if (path.subId) {
                     $location.path([path.id, path.mode, path.subId].join('/'));
                 }
+                else if (path.mode) {
+                    $location.path([path.id, path.mode].join('/'));
+                }
+            }
+            else {
+                console.warn('Update location called but no id found in path', path);
             }
         };
 

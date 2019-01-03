@@ -101,13 +101,13 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
     $scope.dec = context;
     
     $scope.bodyActions = [{
-        label: 'Edit decoration',
+        label: 'Edit/delete decoration',
         // classNames: ['btn-primary'],
         action: decorationDeepLink.bind(null, 'edit', 'details')
     }, {
-        label: 'Assign to member',
+        label: 'Upload new image',
         // classNames: ['btn-default'],
-        action: decorationDeepLink.bind(null, 'edit', 'assign')
+        action: decorationDeepLink.bind(null, 'edit', 'badge')
     }, {
         label: 'View public page ',
         // classNames: ['btn-default'],
@@ -119,29 +119,6 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
             // $window.location.href = flResource('decoration').retrieve().addFragment(frag).getLink();
         }
     }];
-    /*
-    $scope.bodyButtons = [{
-        label: 'Delete decoration',
-        classNames: ['btn-danger'],
-        action: function(){
-            if (!confirm("Are you sure you want to delete '"+$scope.dec.name+"'? This cannot be undone.")) return false;
-            flAPI('decoration').delete([$scope.dec.dec_id]).then(function(){
-                // Todo: splice
-                angular.forEach($scope.$parent.decorations, function(tier){
-                    var found = tier.decorations.indexOf($scope.dec);
-                    if (~found){
-                        tier.decorations.splice(found, 1);
-                    }
-                });
-                $modalInstance.close();
-            }).catch(function(err){
-                alert('The decoration could not be deleted. This is possibly because members have been awarded this decoration, and those awards need to be deleted first. See the console for more details.');
-                console.warn(err);
-                $modalInstance.close();
-            });
-        }
-    }];
-    */
     $scope.footerButtons = [{
         label: 'Cancel',
         classNames: ['btn-default']
@@ -151,15 +128,12 @@ flaresApp.controller('decorationContextMenuController', function ($scope, $parse
         $modalInstance.dismiss('cancel');
     };
     
-    // $scope.ok = function () {
-        // $modalInstance.close($scope.selected.item);
-    // };
-    
     function decorationDeepLink(mode, tab){
         mode = mode || 'view';
         tab = tab || 'details';
         var frag = [$scope.dec.dec_id, mode, tab];
-        $window.location.href = flResource('decoration').retrieve().addFragment(frag).getLink();
+        // console.log(flResource('decoration').addFragment(frag).build());
+        $window.location.href = flResource('decoration').addFragment(frag).build();
     }
     
 });

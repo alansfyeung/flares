@@ -1,20 +1,16 @@
 var flaresApp = angular.module('flaresMemberViewEdit', ['flaresBase', 'flow']);
 
-flaresApp.config(['flowFactoryProvider', '$httpProvider', function (flowFactoryProvider, $httpProvider) {
+flaresApp.config(['flowFactoryProvider', '$httpProvider', 'flLaravelCsrfToken', function (flowFactoryProvider, $httpProvider, flLaravelCsrfToken) {
 
     function imageResizer(fileObj) {	// fileObj is an instance of FlowFile
         console.log(fileObj);
         console.log('TODO ImageResizer: file size is ' + Math.floor(fileObj.file.size / 1024) + ' KB');
     };
 
+    let headers = {};
+
     // $httpProvider.defaults.xsrfCookieName should be XSRF-TOKEN
-    flowFactoryProvider.defaults = {
-        headers: {},
-        initFileFn: imageResizer,
-        singleFile: true,
-        allowDuplicateUploads: true,
-    };
-    flowFactoryProvider.defaults.headers[$httpProvider.defaults.xsrfHeaderName] = (function (cookieName) {
+    headers[$httpProvider.defaults.xsrfHeaderName] = (function (cookieName) {
         var c = document.cookie.split('; ');
         for (var i = 0; i < c.length; i++) {
             var cookie = c[i].split('=');
@@ -23,6 +19,16 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', function (flowFactoryP
             }
         }
     }($httpProvider.defaults.xsrfCookieName));
+
+    // Must add X-CSRF-TOKEN as well in order to work with Laravel Passport laravel_token auth
+    headers['X-CSRF-TOKEN'] = flLaravelCsrfToken;
+
+    flowFactoryProvider.defaults = {
+        headers: headers,
+        initFileFn: imageResizer,
+        singleFile: true,
+        allowDuplicateUploads: true,
+    };
 
 }]);
 
@@ -70,26 +76,22 @@ flaresApp.controller('memberViewEditController', function ($scope, $rootScope, $
     $scope.shiftKeyPressed = false;
 
     $scope.edit = function () {
-        var sw = $scope.state;
-        if (sw.isView()) {
-            // If in view mode, toggle to Edit mode
-            sw.path.mode = 'edit';
-            return;
-        }
-        if (sw.isEdit()) {
-            // Save the changes
-            // send back to view mode
-            updateMemberRecord();
-            sw.path.mode = 'view';
+        if ($scope.state.isView()) {
+            $scope.state.path.mode = 'edit';      // If in view mode, toggle to Edit mode
+        } 
+        else if ($scope.state.isEdit()) {
+            updateMemberRecord();       // Save the changes and send back to view mode
+            $scope.state.path.mode = 'view';
         }
     };
     $scope.cancelEdit = function () {
         if ($scope.state.isLoaded) {
             $scope.member.data = angular.copy($scope.originalMember.data);
             $scope.state.path.mode = 'view';
-            return;
         }
-        console.warn('Cannot cancel - member record was never loaded');
+        else {
+            console.warn('Cannot cancel - member record was never loaded');
+        }
     };
 
     $scope.activate = function () {

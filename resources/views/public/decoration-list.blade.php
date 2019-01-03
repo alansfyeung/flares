@@ -86,10 +86,5 @@ function toggleVisible(event, decorationId, toggleElem, cssDisplayValue){
     toggleElem.setAttribute('data-subdec-visible', currentlyVisible ? 'false' : 'true');
     return false;
 }
-function openDecorationDetails(event, decorationDetailsUrl){
-    event.preventDefault();
-    window.open(decorationDetailsUrl, 'FlaresDecorationDescription', 'width=800, height=600'); 
-    return false;
-}
 </script>
 @endpush

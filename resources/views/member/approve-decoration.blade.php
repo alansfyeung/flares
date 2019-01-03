@@ -12,6 +12,13 @@
 @section('heading')
 <!-- page main header -->
 <div ng-show="member.regt_num">
+    <aside class="titlebar-actions pull-right" ng-show="appr.isDecided">
+        <!-- EDIT BUTTON -->
+		<button class="btn btn-link" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()" ng-hide="state.isEdit()">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+        </button>
+		<button class="btn btn-link" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel Edit</button>
+	</aside>
     <h1>
         <a ng-href="@{{cancelHref()}}">Member</a>
         &rsaquo; Approve a decoration 
@@ -188,7 +195,7 @@
                             <td>Shortcode</td>
                             <td>
                                 <code>@{{appr.requestedDecoration.shortcode}}</code> &nbsp;
-                                <a target="_blank" ng-href="{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/@{{appr.requestedDecoration.shortcode}}">
+                                <a class="btn btn-default btn-xs" target="_blank" ng-href="{{ route('public::decorationDetails', [ 'shortcode' => '' ]) }}/@{{appr.requestedDecoration.shortcode}}">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
                             </td>

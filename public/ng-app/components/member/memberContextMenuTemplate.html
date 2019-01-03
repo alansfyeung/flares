@@ -1,11 +1,14 @@
 <div class="modal-header">
     <h4 class="modal-title">{{member.last_name}}, {{member.first_name}}</h4>
     <h5 class="modal-subtitle">
-        &diam; {{member.regt_num}} 
+        ID: {{member.regt_num}} &nbsp; <span ng-show="member.forums_username">Forums: {{member.forums_username}}</span>
         <span class="label" ng-class="memberStatus.labelClassNames">{{memberStatus.label}}</span>
     </h5>
 </div>
 <div class="modal-body">
+    <div class="list-group">
+        <a href="#" class="list-group-item" ng-class="menuItem.classNames" ng-click="menuItem.action(); $event.preventDefault()" ng-repeat="menuItem in bodyActions">{{menuItem.label}}</a>
+    </div>
     <a class="btn btn-block" ng-repeat="menuItem in bodyButtons" ng-class="menuItem.classNames" ng-click="parseClick(menuItem.click)">{{menuItem.label}}</a>
 </div>
 <div class="modal-footer">

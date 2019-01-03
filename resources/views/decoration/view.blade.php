@@ -1,4 +1,4 @@
-{{-- Display a single member --}}
+{{-- Display a decoration --}}
 @extends('layouts.template-ng')
 
 @section('ng-app', 'flaresDecoration')
@@ -7,13 +7,19 @@
 
 @push('scripts')
 <script src="{{asset('ng-app/components/decoration/flaresDecorationViewEdit.js')}}"></script>
-<script src="/assets/js/flow/ng-flow-standalone.min.js"></script>
+<script src="{{asset('assets/js/flow/ng-flow-standalone.min.js')}}"></script>
 @endpush
 
 @section('heading')
 <!-- page main header -->
 <div ng-if="state.isDecorationLoaded">
     <aside class="titlebar-actions pull-right">
+        <!-- EDIT BUTTON -->
+		<button class="btn btn-link" ng-class="{'btn-success': state.isEdit()}" ng-click="edit()">
+            <span class="glyphicon" ng-class="{'glyphicon-pencil': state.isView(), 'glyphicon-floppy-disk': state.isEdit()}"></span> 
+            @{{state.isEdit() ? 'Save details' : 'Edit details'}}
+        </button>
+		<button class="btn btn-link" ng-show="state.isEdit()" ng-click="cancelEdit()">Cancel</button>
         <!-- DotDotDot menu toggle -->
         <span uib-dropdown>
             <a id="decoration-menu" class="btn btn-link" uib-dropdown-toggle>
@@ -22,7 +28,7 @@
             <ul class="dropdown-menu uib-dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu" aria-labelledby="decoration-menu">
                 <li role="menuitem"><a ng-click="beginEdit()">Edit</a></li>
                 <li class="divider"></li>
-                <li role="menuitem"><a href="/decorations/new">Add new decoration</a></li>
+                <li role="menuitem"><a href="{{url('/decorations/new')}}">Add new decoration</a></li>
             </ul>
         </span>
     </aside>

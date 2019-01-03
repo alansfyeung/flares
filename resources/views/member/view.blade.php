@@ -290,7 +290,7 @@
                                             <td>@{{award.data.citation}} @{{award.data.awd_score}} @{{award.data.awd_grade}}</td>
                                             <td>@{{award.data.date | date:'MMM yyyy'}}</td>
                                             <td>
-                                                <a ng-hide="shiftKeyPressed" class="btn btn-primary btn-block btn-xs fl-context-modal-button" ng-href="{{ route('member::edit-decoration') }}#!/@{{member.regtNum}}/edit/@{{award.data.awd_id}}">Edit</a>
+                                                <a ng-hide="shiftKeyPressed" class="btn btn-primary btn-block btn-xs fl-context-modal-button" ng-href="{{ route('member::editDecoration') }}#!/@{{member.regtNum}}/edit/@{{award.data.awd_id}}">Edit</a>
                                                 <a ng-show="shiftKeyPressed" class="btn btn-danger btn-block btn-xs fl-context-modal-button" ng-click="removeAward(award)">Remove</a>
                                             </td>
                                         </tr>

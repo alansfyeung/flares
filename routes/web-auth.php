@@ -53,10 +53,10 @@ Route::group(['as' => 'member::'], function () {
     // })->name('view-decorations');
     Route::get('member/decoration/edit', function () {
         return view('member.edit-decoration');
-    })->name('edit-decoration');
+    })->name('editDecoration');
     Route::get('member/decorations/new', function () {
         return view('member.assign-decoration');
-    })->name('assign-decoration');
+    })->name('assignDecoration');
     
 });
 

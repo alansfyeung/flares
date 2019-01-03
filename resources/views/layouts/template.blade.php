@@ -28,7 +28,7 @@
                     </button>
                     @show
 					<a class="navbar-brand" href="{{url('/')}}">
-						<img alt="206 FLARES" src="{{{ asset('/assets/img/flareslogo.png') }}}" style="height: 20px;">
+						<img alt="206 FLARES" src="{{{ asset('assets/img/flareslogo.png') }}}" style="height: 20px;">
 					</a>
 				</div>
                 @section('navbar-sections')
@@ -90,6 +90,7 @@
 	@stack('vendor-scripts')
     
     {{-- Other custom js --}}
+	<script src="assets/js/flares-helpers.js"></script>
 	@stack('scripts')
     
 </body>

@@ -86,22 +86,20 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
     });
 
     $scope.edit = function(){
-		var sw = $scope.state;
-		if (sw.isView()){
-			// If in view mode, toggle to Edit mode
-			sw.path.mode = 'edit';
-			return;
+		if ($scope.state.isView()){
+			$scope.state.path.mode = 'edit';
 		}
-		if (sw.isEdit()){
-			// Save the changes
-			// send back to view mode
-			updateMemberRecord();
-			sw.path.mode = 'view';
+		else if ($scope.state.isEdit()){
+            if ($scope.appr.saved){
+                $scope.state.path.mode = 'view';
+            } 
+            else {
+                alert('You need to explicitly approve or decline this request using the form submit button');
+            }
 		}
 	};
 	$scope.cancelEdit = function(){
 		if ($scope.state.isLoaded){
-			$scope.member.data = angular.copy($scope.originalMember.data);
 			$scope.state.path.mode = 'view';
 			return;
 		}
@@ -324,7 +322,10 @@ flaresApp.controller('memberApproveDecorationController', function ($scope, $fil
             setTimeout(function () {
                 $scope.$apply(function () {
                     $scope.state.isSaving = false;
-                    $scope.state.path.mode = 'view';
+                    if ($scope.state.isEdit()){
+                        $scope.state.path.mode = 'view';
+                    }
+                    console.log('Set path mode to view');
                     angular.element('#viewApprovalDecision').focus();
                 });
             }, 300);
