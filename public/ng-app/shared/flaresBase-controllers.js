@@ -13,12 +13,6 @@
     flaresBase.controller('viewEditController', function ($scope, $http, $window, $location, flAPI) {
         var viewEditController = this;
 
-        // this.loadInto = function(childController, callback){
-        // angular.extend(childController, viewEditController);
-        // $scope.state = Object.create(viewEditController.state);
-        // (callback || function(){})();       // invoke the callback or whatever
-        // };
-
         $scope.record = {};     // Expect this to be aliased in child instance.
         $scope.originalRecord = angular.copy($scope.record);         // Expect this to be aliased in child instance.
 
@@ -27,7 +21,7 @@
             this.isRequested = false;
             this.isLoaded = false;
             this.isAsync = false;
-
+            this.reloadOnIdChange = true;
             this.path = {
                 id: 0,
                 mode: 'view',		// by default
@@ -38,6 +32,14 @@
             this.isEdit = function () {
                 return this.path.mode === 'edit';
             };
+            this.setPath = function (newPath) {
+                this.path = newPath;
+                Object.getPrototypeOf(this).path = newPath;
+            };
+            this.setReloadOnIdChange = function (newSetting) {
+                this.reloadOnIdChange = newSetting;
+                Object.getPrototypeOf(this).reloadOnIdChange = newSetting;
+            }
         });
 
         $scope.config = {};
@@ -102,7 +104,8 @@
         this.updateWorkflowPath = function () {           // called after $location change
             var path = this.state.path;
             var pathParts = this.parseUrl();
-            if (path.id !== pathParts.id) {
+
+            if (path.id !== pathParts.id && this.state.reloadOnIdChange) {
                 // If the ID changed, gotta reload the page.. bye
                 $window.location.reload();
             }

@@ -69,6 +69,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a bs-show-tab href="#details" aria-controls="details" role="tab">Details</a></li>
                         <li role="presentation"><a bs-show-tab href="#related" aria-controls="related" role="tab">Related</a></li>
+                        <li role="presentation"><a bs-show-tab href="#prec" aria-controls="prec" role="tab">Precedence</a></li>
                     </ul>
                     
                     <div class="tab-content">
@@ -124,7 +125,7 @@
                             <p>If this decoration is part of a family (e.g. varying seniority) then select the parent decoration below.</p>
                             <table class="table record-view">
                                 <tr>
-                                    <td>Decoration parent</td>
+                                    <th>Decoration parent</th>
                                     <td display-mode="view">{{dec.parentDecoration.name | markBlanks}}</td>
                                     <td display-mode="edit">
                                         <select name="parent_id" ng-options="exDec.dec_id as exDec.name for exDec in formData.existingDecorations | filter:{tier: dec.data.tier}" ng-model="dec.data.parent_id">
@@ -133,8 +134,56 @@
                                     </td>
                                 </tr>
                             </table>
-                            <h3>Decorations in this family</h3>
-                            <p>TBA</p>
+                            <br>
+                            <h3>Other decorations in this family</h3>
+                            <p class="text-muted" ng-hide="state.areRelatedDecorationsLoaded">There are no related decorations</p>
+                            <table class="table table-condensed" ng-show="state.areRelatedDecorationsLoaded">
+                                <colgroup>
+                                    <col style="width: 110px;">
+                                    <col>
+                                    <col style="width: 60px;">
+                                    <col style="width: 40px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Shortcode</th>
+                                        <th>Name</th>
+                                        <th>Order</th>
+                                        <th><!-- Go --></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="familyDec in dec.familyDecorations" ng-class="{ 'info': familyDec.dec_id == dec.id }">
+                                        <td><code>{{familyDec.shortcode | markBlanks}}</code></td>
+                                        <td>{{familyDec.name}}</td>
+                                        <td class="text-center text-muted">{{familyDec.parent_order}}</td>
+                                        <td>
+                                            <button class="btn btn-default btn-xs" ng-click="navToDecoration(familyDec.dec_id)" ng-disabled="!familyDec.dec_id">Go</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="prec">
+                            <h3>Precedence</h3>
+                            <p>Set the order of precedence in which these decorations will be shown.</p>
+                            <table class="table record-view">
+                                <tr>
+                                    <td>Precedence <span class="text-muted" ng-show="dec.parentDecoration">(from parent)</span></td>
+                                    <td display-mode="view">{{dec.data.precedence | markBlanks}}</td>
+                                    <td display-mode="edit">
+                                        <input type="text" name="precedence" ng-model="dec.data.precedence" placeholder="In months e.g. 6" ng-if="!dec.parentDecoration">
+                                        <span class="text-muted" ng-show="dec.parentDecoration">This decoration has a parent so precedence cannot be changed.</span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="dec.parentDecoration">
+                                    <td>Ordering under parent</td>
+                                    <td display-mode="view">{{dec.data.parent_order}}</td>
+                                    <td display-mode="edit">
+                                        <input type="text" name="parent_order" ng-model="dec.data.parent_order" placeholder="Ordinal number">
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -196,12 +245,12 @@
     <hr>
     
     <div display-mode="view">
-        <a class="btn btn-default" ng-href="{{state.higherUrl}}" ng-disabled="!state.higherUrl">
+        <button class="btn btn-default" ng-click="navToDecoration(dec.higherId)" ng-disabled="!dec.higherId">
             <span class="glyphicon glyphicon-menu-left"></span> Higher
-        </a>
-        <a class="btn btn-default" ng-href="{{state.lowerUrl}}" ng-disabled="!state.lowerUrl">
+        </button>
+        <button class="btn btn-default" ng-click="navToDecoration(dec.lowerId)" ng-disabled="!dec.lowerId">
             Lower <span class="glyphicon glyphicon-menu-right"></span>
-        </a>
+        </button>
     </div>
     <div class="text-right" display-mode="edit">
         <button class="btn btn-danger pull-left" ng-click="delete()">Delete</button>

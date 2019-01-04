@@ -40,7 +40,7 @@ flaresApp.controller('indexController', function($scope, $window, $location, $co
         return flResource().raw(['media', 'decoration', decId, 'badge']);
     }
     
-    
+    // Load all decorations here
     flAPI('decoration').getAll().then(function(resp){
         if (resp.data && angular.isArray(resp.data.decorations)){
             // $scope.decorations = resp.data.decorations;
@@ -61,6 +61,19 @@ flaresApp.controller('indexController', function($scope, $window, $location, $co
                         decorationTiers[decorationTierIndex].decorations.push(decoration);
                     }
                 });
+                angular.forEach(decorationTiers, function(decorationTier){
+                    // Sort each decoration tier by precedence number
+                    if (angular.isArray(this[decorationTier.tier])) {
+                        this[decorationTier.tier].sort(function(a, b) {
+                            if (Number(b.precedence) == Number(a.precedence) && a.parent_id === b.parent_id) {
+                                return Number(b.parent_order) - Number(a.parent_order);     // Then sort by parent_order instead
+                            }
+                            else {
+                                return Number(b.precedence) - Number(a.precedence);
+                            }
+                        });
+                    }
+                }, decorationTierMap);
                 $scope.decorations = decorationTiers;
                 $scope.state.loading = false;
             });

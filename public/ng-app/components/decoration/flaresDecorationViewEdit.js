@@ -32,11 +32,11 @@ flaresApp.config(['flowFactoryProvider', '$httpProvider', 'flLaravelCsrfToken', 
 
 }]);
 
-flaresApp.controller('decorationViewEditController', function($scope, $window, $controller, $q, $uibModal, flAPI, flResource){
+flaresApp.controller('decorationViewEditController', function($scope, $window, $controller, flAPI, flResource){
 
     // Add some base - unzip base controller's stuff into this controller
     angular.extend(this, $controller('viewEditController', {$scope: $scope})); 
-    
+
     var c = this;
     c.extendConfig({
         unloadWarning: 'You are editing this decoration record, and will lose any unsaved changes.'
@@ -47,8 +47,12 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
 	$scope.dec = Object.create($scope.record);
 	$scope.shadowDec = angular.copy($scope.dec);
 
+    $scope.relatedDec = [];     // 
+
     $scope.state = Object.create(c.state);      // inherit the proto
+    $scope.state.setReloadOnIdChange(false);          // No! we have stuff that listens then grabs the new data
     $scope.state.isDecorationLoaded = false;
+    $scope.state.areRelatedDecorationsLoaded = false;
     $scope.state.lowerUrl = undefined;
     $scope.state.higherUrl = undefined;
     
@@ -82,47 +86,66 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
 		console.warn('Cannot cancel - dec record was never loaded');
 	};
     
+    $scope.navToDecoration = navToDecoration;
     $scope.delete = deleteDecoration;
 
 	// Read the url
     if (c.loadWorkflowPath()){
-        if ($scope.state.path.id){
-            retrieveDecoration($scope.state.path.id).then(function(scopeDec){
-                $scope.dec = scopeDec;
-                $scope.shadowDec = angular.copy($scope.dec);
-                $scope.state.isDecorationLoaded = true;
-                
-                if ($scope.dec.lowerId) $scope.state.lowerUrl = ['#!', $scope.dec.lowerId, 'view', 'details'].join('/');
-                if ($scope.dec.higherId) $scope.state.higherUrl = ['#!', $scope.dec.higherId, 'view', 'details'].join('/');
-                                
-            }).catch(function(err){
-                console.warn(err);
-            });
-        }
-		else {
-			console.warn('Decoration ID not specified');
-		}
+        $scope.$watch('state.path.id', function(newValue){
+            if (newValue){
+                retrieveDecoration($scope.state.path.id).then(function(scopeDec){
+                    $scope.dec = scopeDec;
+                    $scope.shadowDec = angular.copy($scope.dec);
+                    $scope.state.isDecorationLoaded = true;
+                }).catch(function(err){
+                    console.warn(err);
+                });
+            }
+            else {
+                console.warn('Decoration ID not specified');
+            }
+        });
     }
 
     //==================
-    // Fetch reference data for decorations
-    // ONLY AFTER decoration has been initially retrieved
-    // so that $scope.dec would already exist
+    // Fetch reference data for decorations, need this for choosing a parent
     //==================
     
     flAPI('refData').get('decorationTiers').then(function(response){
         $scope.formData.decorationTiers = response.data || [];
-        
         flAPI('decoration').getAll().then(function(response){
             $scope.formData.existingDecorations = response.data.decorations;
         });
-        
     });
     
     $scope.$watch('dec.data.parent_id', function(newValue){
-        retrieveDecorationRelationship(newValue).then(function(parentInfo){
-            angular.extend($scope.dec, parentInfo);
-        });
+        if (newValue) {
+            console.log('dec.data.parent_id newvalue is ', newValue);
+            retrieveDecorationRelationship(newValue).then(function(parentInfo){
+                angular.extend($scope.dec, parentInfo);
+            });
+        }
+    });
+
+    $scope.$watch('dec.lowerId', function(newValue){
+        console.log('dec.lowerId newValue', newValue);
+        if (newValue){
+            $scope.state.lowerUrl = flResource('decoration').single().setFragment([newValue, 'view', 'details']).getLink();
+            $scope.state.lowerHashUri = [newValue, 'view', 'details'].join('/');
+        }
+        else {
+            $scope.state.lowerUrl = null;
+            $scope.state.lowerHashUri = null;
+        }
+    });
+    $scope.$watch('dec.higherId', function(newValue){
+        console.log('dec.higherId newValue', newValue);
+        if (newValue){
+            $scope.state.higherUrl = flResource('decoration').single().setFragment([newValue, 'view', 'details']).getLink();
+        }
+        else {
+            $scope.state.higherUrl = null;
+        }
     });
 
     
@@ -130,35 +153,33 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
     // Function decs
     
 	function retrieveDecoration(decorationId){
-        return flAPI('decoration')
-            .get([decorationId])
-            .then(function(response){
+        if (decorationId) {
+            return flAPI('decoration').get([decorationId]).then(function(response){
                 // Process then store in VM
-                var dec = response.data.decoration;
+                var decData = response.data.decoration;
                 var lowerDec = response.data.lowerDecoration;
                 var higherDec = response.data.higherDecoration;
-                // var children = response.data.children;
-                // var siblings = response.data.siblings;
-                processDecoration(dec);         // by reference
-                var baseResponse = {
-                    id: dec.dec_id,
+                processDecoration(decData);         // by reference
+                var decorationBase = {
+                    id: decData.dec_id,
                     lowerId: lowerDec && lowerDec.dec_id,
                     higherId: higherDec && higherDec.dec_id,
-                    // children: 
-                    // siblings: 
-                    data: dec
+                    data: decData,
                 };
-                if (dec.parent_id){
-                    // Retrieve the relationships
-                    return retrieveDecorationRelationship(dec.parent_id).then(function(parentInfo){
-                        return angular.extend(baseResponse, parentInfo);
-                    });
-                }
-                else {
-                    return baseResponse;                
-                }
-            })
-            .catch(function(response){
+                console.log('Decoration ' + decorationId + ' is', decorationBase);
+
+                // Retrieve the whole family of decorations here
+                var parentId = decData.parent_id ? decData.parent_id : decData.dec_id;
+                return retrieveDecorationRelationship(parentId, decData.dec_id).then(function(relations){
+                    if (relations.familyDecorations && relations.familyDecorations.length > 1) {
+                        $scope.state.areRelatedDecorationsLoaded = true;        // There must have been more
+                    }
+                    return angular.extend(decorationBase, relations);
+                }).catch(function(error){
+                    console.error('Relationships could not be retrieved', error);
+                    return decorationBase;
+                });
+            }).catch(function(response){
                 if (response.status == 404){
                     $scope.dec.errorNotFound = true;
                 }
@@ -166,17 +187,24 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
                     $scope.dec.errorServerSide = true;
                 }
             });
+        }
 	}
-    function retrieveDecorationRelationship(parentId){
+    function retrieveDecorationRelationship(parentId, decId){
         // Get the parent, also the surrounding siblings if any
-        return flAPI('decoration').get([parentId])
-            .then(function(response){
-                var dec = response.data.decoration;
-                processDecoration(dec);
+        return flAPI('decoration').get([parentId]).then(function(response){
+            var parentDec = response.data.decoration;
+            return flAPI('decoration').get([parentId, 'children']).then(function(response){
+                var childDecs = response.data.decorations;
+                var familyDecs = [ parentDec ].concat(childDecs);
+                angular.forEach(familyDecs, function(dec){
+                    processDecoration(dec);
+                })
                 return {
-                    parentDecoration: dec
-                }
+                    parentDecoration: parentId != decId ? parentDec : null,
+                    familyDecorations: familyDecs,
+                };
             });
+        }); 
     }
 	function processDecoration(dec){
         c.util.convertToDateObjects(['date_commence', 'date_conclude', 'created_at', 'updated_at', 'deleted_at'], dec);
@@ -188,7 +216,8 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
                 decoration: {}
             };
             angular.forEach($scope.dec.data, function(value, key){
-                if (!angular.equals($scope.shadowDec[key], value)){
+                // Dirty only 
+                if (!angular.equals($scope.shadowDec.data[key], value)){
                     payload.decoration[key] = value;
                 }
             });
@@ -219,6 +248,13 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
         }).catch(function(){
             $scope.state.deletionFailed = true;
         });
+    }
+
+    function navToDecoration(decorationId){
+        if (decorationId){
+            $scope.state.path.id = decorationId;
+            $scope.state.path.mode = 'view';
+        }
     }
     
     // End function decs
@@ -256,7 +292,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 		if ($scope.$flow.files.length > 0){			// If any upload took place
 			$scope.image.resetToDefault();		// Revert it to the default
             
-			// reloadMemberImage();
+			// reloadDecorationImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
             
 			$timeout(function(){
@@ -272,7 +308,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	
 	$scope.deleteLast = function(){
 		flAPI('decoration').delete([$scope.dec.id, 'picture']).then(function(response){
-			//reloadMemberImage();
+			//reloadDecorationImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
 			console.warn('ERROR: Last picture could not be rewound');
@@ -281,7 +317,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	};
 	$scope.deleteAll = function(){
 		flAPI('decoration').delete([$scope.dec.id, 'picture'], {params: { remove: 'all' }}).then(function(response){
-			//reloadMemberImage();
+			//reloadDecorationImage();
             $rootScope.$broadcast('flares::displayPictureChanged');
 		}, function(response){
 			console.warn('ERROR: Picture could not be deleted');
@@ -299,14 +335,14 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
     
     
     $scope.$watch('dec.id', function(newValue){
-        reloadMemberImage();
+        reloadDecorationImage();
         updateUploaderDestination();
 	});
         
     // If the modal uploads a new pic, make sure all other pictureControllers update
     $scope.$on('flares::displayPictureChanged', function(){
         if ($scope.dec.id){
-            reloadMemberImage();            
+            reloadDecorationImage();            
         }
     });
     
@@ -314,7 +350,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
 	// ===========================
     // Function decs
     
-    function reloadMemberImage(){
+    function reloadDecorationImage(){
 		// var memberPictureRequestUrl = '/api/member/'+$scope.member.regt_num+'/picture';
 		// $http.get(memberPictureRequestUrl+'/exists').then(function(response){
         var decID = $scope.dec.id;

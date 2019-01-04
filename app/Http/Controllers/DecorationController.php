@@ -115,17 +115,26 @@ class DecorationController extends Controller
     public function update(Request $request, $id)
 	{
         $updated = false;
+        DB::beginTransaction();
 		try {
 			if ($request->has('decoration')) {
-				$updated = Decoration::updateOrCreate(['dec_id' => $id], $request->input('decoration'));
+                $postData = $request->input('decoration');
+                // Update the original record
+                $updated = Decoration::updateOrCreate(['dec_id' => $id], $postData);
+                // If precedence has been changed, then update the precedence for children decs as well
+                if (isset($postData['precedence'])) {
+                    $updated->related()->update(['precedence' => $postData['precedence']]);
+                }
+                DB::commit();
+                return response()->json([
+                    'id' => $updated->dec_id,
+                ]);
 			} else {
 				throw new \Exception('Post data incorrect format', ResponseCodes::ERR_POSTDATA_FORMAT);
 			}
-			return response()->json([
-                'id' => $updated
-            ]);
 		}
 		catch (\Exception $ex){
+            DB::rollBack();
             return response()->json([
                 'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
             ], 400);
@@ -212,6 +221,14 @@ class DecorationController extends Controller
             ], 500);
             
         }
+    }
+
+    public function children(Request $request, $id)
+    {
+        $childrenDecs = Decoration::ordered()->where('parent_id', $id)->get();
+        return response()->json([
+            'decorations' => $childrenDecs,
+        ]);
     }
 
 }

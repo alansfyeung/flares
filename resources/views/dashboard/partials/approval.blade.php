@@ -32,7 +32,7 @@
         <tbody>
             <tr ng-repeat="appr in approvals" class="dashboard-approval-row" ng-click="selectApproval(appr)">
                 <td>@{{appr.requested_decoration.name}}</td>
-                <td title="@{{appr.requester.forums_username}}">@{{appr.requester.last_name}}, @{{appr.requester.first_name}}</td>
+                <td title="Forums username: @{{appr.requester.forums_username}}">@{{appr.requester.last_name}}, @{{appr.requester.first_name}}</td>
                 <td>@{{appr.created_at | date:'shortDate'}}</td>
                 <td>
                     <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"

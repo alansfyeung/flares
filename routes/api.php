@@ -47,6 +47,7 @@ Route::get('decoration/{decorationId}/badge', 'DecorationBadgeController@exists'
 Route::get('decoration/{decorationId}/badge/new', 'DecorationBadgeController@chunkCheck');
 Route::post('decoration/{decorationId}/badge/new', 'DecorationBadgeController@store');
 Route::delete('decoration/{decorationId}/badge', 'DecorationBadgeController@destroy');
+Route::get('decoration/{decorationId}/children', 'DecorationController@children');                                          // TBA: repurpose
 Route::resource('decoration', 'DecorationController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
 // Decoration Approval API
