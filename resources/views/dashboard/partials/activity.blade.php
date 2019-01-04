@@ -1,39 +1,35 @@
 {{-- Activity log, for insertion into dashboard --}}
-<section ng-if="state.activityLoaded">
-{{-- 
-    <table class="table table-striped" ng-show="state.approvalsRemaining">
+<section id="dashboardActivityLog" ng-if="state.activityLogLoaded">
+    <table class="table table-hover" ng-show="activityLog">
         <colgroup>
+            <col style="width: 80px;">
+            <col style="width: 80px;">
+            <col style="width: 100px;">
             <col>
-            <col>
-            <col style="width: 120px;">
-            <col style="width: 140px;">
-            <col style="width: 60px;">
         </colgroup>
         <thead>
             <tr>
-                <td>Requester</td>
-                <td>Decoration</td>
-                <td>Date lodged</td>
-                <td>Status</td>
-                <td></td>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Outcome</th>
+                <th>Text</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="appr in approvals" class="dashboard-approval-row" ng-click="selectApproval(appr)">
-                <td>{{approval.requester}}</td>
-                <td>{{approval.requestedDecoration.name}}</td>
-                <td>{{approval.created_at | date:'shortDate'}}</td>
-                <td>{{approval.statusName}}</td>
-                <td>
-                    <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
-                        ng-href="{{ route('approval::approveDecoration') }}#!/@{{approval.dec_appr_id}}/edit">
-                        <span class="glyphicon glyphicon-share text-muted"></span>
-                    </a>
-                </td>
+            <tr ng-repeat="entry in activityLog" class="dashboard-approval-row" ng-click="selectLog(entry.log_type, entry.log_id)">
+                <td>@{{entry.log_type}}</td>
+                <td>@{{entry.log_date | date:'shortDate'}}</td>
+                <td>@{{entry.log_outcome}}</td>
+                <td><small>@{{entry.log_text}}</small></td>
             </tr>
         </tbody>
     </table>
---}}
+
+    <hr>
+    <div class="row">
+        <div class="col-sm-6"><button class="btn btn-default" ng-click="loadMoreLog()">Load more</button></div>
+        <div class="col-sm-6 text-right text-muted">@{{state.activityLogCounter}} log entries loaded</div>
+    </div>
 
 </section>
-<div class="alert alert-warning" ng-hide="state.activityLoaded">Activity Log TBC</div>
+<!-- <div class="alert alert-warning" ng-hide="state.activityLoaded">Activity Log TBC</div> -->

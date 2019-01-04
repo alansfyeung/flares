@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Member;
 use App\Decoration;
@@ -15,55 +16,59 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Return all statistics
+        $numDecorations = Decoration::all()->count();
+        $numActive = Member::all()->where('is_enrolled', 1)->count();
+		$numInactive = Member::all()->where('is_enrolled', 0)->count();
+		$numDischarged = Member::onlyTrashed()->count();
+        $numTotal = Member::withTrashed()->count();
+        
 		return response()->json([
-			'member' => $this->numMembers(),
-            'decoration' => $this->numDecorations(),
+			'member' => [
+                'num' => $numDecorations,
+            ],
+            'decoration' => [
+                'numActive' => $numActive,
+                'numInactive' => $numInactive,
+                'numDischarged' => $numDischarged,
+                'numTotal' => $numTotal
+            ],
 		]);
     }
 
-    public function activity()
+    public function activityLog(Request $request)
     {
-        // To be continued
-        return response()->json([]);
-    }
+        $limit = intval($request->query('limit'));
+        $offset = intval($request->query('offset'));
+        
+        // Retrieve and combine
+        $decorationApprovalsQuery = DB::table('decoration_approvals')
+            ->select(DB::raw("'APPR' as log_type"), 'decoration_approvals.dec_appr_id as log_id', 'decoration_approvals.decision_date as log_date')
+            ->addSelect(DB::raw("(CASE WHEN decoration_approvals.is_approved <> 0 THEN 'Approved' ELSE 'Declined' END) as log_outcome"))
+            ->addSelect(DB::raw("CONCAT('Dec: ', decorations.shortcode, ', Member: ', decoration_approvals.regt_num, ', Appr: ', users.username) as log_text"))
+            ->join('users', 'users.user_id', '=', 'decoration_approvals.user_id')
+            ->join('decorations', 'decorations.dec_id', '=', 'decoration_approvals.dec_id')
+            ->whereNotNull('decoration_approvals.is_approved');
+        $membersQuery = DB::table('members')
+            ->select(DB::raw("'MBR' as log_type"), 'members.regt_num as log_id', 'members.created_at as log_date', DB::raw("'Added' as log_outcome"))
+            ->addSelect(DB::raw("CONCAT('Forums name ', members.forums_username) as log_text"));
 
-    /** 
-     * Return only a specific dashboard stat, by name
-     *
-     * @return Response
-     */
-    public function show($categoryName)
-    {
-        $stats = [];
-		switch ($categoryName){
-			case 'member':
-			case 'members':
-				$stats['member'] = $this->numMembers();
-				return response()->json($stats);
-		}
+        $query = $membersQuery;
+        $query->union($decorationApprovalsQuery);
+
+        $query->orderBy('log_date', 'desc');
+        if ($limit > 0){
+            $query->take($limit);
+        }
+        else {
+            $query->take(100);      // Should provide a default for take. 
+        }
+        if ($offset > 0){
+            $query->skip($offset);
+        }
+
+        return response()->json($query->get());
     }
     
-    private function numDecorations()
-    {
-        return [
-            'num' => Decoration::all()->count(),
-        ];
-    }
-	
-	private function numMembers()
-    {
-		$numActive = Member::all()->where('is_enrolled', 1)->count();
-		$numInactive = Member::all()->where('is_enrolled', 0)->count();
-		$numDischarged = Member::onlyTrashed()->count();
-		$numTotal = Member::withTrashed()->count();
-		return [
-			'numActive' => $numActive,
-			'numInactive' => $numInactive,
-			'numDischarged' => $numDischarged,
-			'numTotal' => $numTotal
-		];
-	}
-	
+
 
 }

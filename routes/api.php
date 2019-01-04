@@ -18,8 +18,8 @@ Route::get('version', function () {
 });
 
 // Dashboard API
-Route::resource('dashboard', 'DashboardController', ['only' => ['index', 'show']]);
-// Route::resource('dashboard/activity', 'DashboardController@activity');
+Route::get('dashboard/log', 'DashboardController@activityLog');
+Route::resource('dashboard', 'DashboardController', ['only' => ['index']]);
 
 
 // Member API -- note that Search alias route MUST go before the resourceful route

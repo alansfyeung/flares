@@ -128,7 +128,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
     });
 
     $scope.$watch('dec.lowerId', function(newValue){
-        console.log('dec.lowerId newValue', newValue);
         if (newValue){
             $scope.state.lowerUrl = flResource('decoration').single().setFragment([newValue, 'view', 'details']).getLink();
             $scope.state.lowerHashUri = [newValue, 'view', 'details'].join('/');
@@ -139,7 +138,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
         }
     });
     $scope.$watch('dec.higherId', function(newValue){
-        console.log('dec.higherId newValue', newValue);
         if (newValue){
             $scope.state.higherUrl = flResource('decoration').single().setFragment([newValue, 'view', 'details']).getLink();
         }
@@ -166,8 +164,6 @@ flaresApp.controller('decorationViewEditController', function($scope, $window, $
                     higherId: higherDec && higherDec.dec_id,
                     data: decData,
                 };
-                console.log('Decoration ' + decorationId + ' is', decorationBase);
-
                 // Retrieve the whole family of decorations here
                 var parentId = decData.parent_id ? decData.parent_id : decData.dec_id;
                 return retrieveDecorationRelationship(parentId, decData.dec_id).then(function(relations){
@@ -379,7 +375,7 @@ flaresApp.controller('pictureController', function($scope, $rootScope, $http, $t
         var decID = $scope.dec.id;
         if ($scope.$flow && decID){
             $scope.$flow.opts.target = flResource().raw(['/api', 'decoration', $scope.dec.id, 'badge', 'new']);
-            console.log('Updated uploader target %s', $scope.$flow.opts.target);
+            console.debug('Updated uploader target %s', $scope.$flow.opts.target);
             $scope.uploader.hasUploadTarget = true;
         }
         else {

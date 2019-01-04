@@ -94,8 +94,7 @@
                 element.click(function (e) {
                     e.preventDefault();
                     $(element).tab('show');		// Show the BS3 tab
-
-                    if (scope.state) {
+                    if (scope.state && scope.state.path) {
                         scope.$apply(function () {
                             scope.state.path.tab = attr.ariaControls;
                         });

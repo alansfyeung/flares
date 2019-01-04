@@ -8088,11 +8088,11 @@ textarea {
   margin-bottom: 30px;
 }
 
-#dashboardApprovals table {
+#dashboardApprovals table, #dashboardActivityLog table {
   font-size: .9em;
 }
 
-#dashboardApprovals .badge {
+#dashboardApprovals .badge, #dashboardActivityLog .badge {
   vertical-align: .1em;
   background: #d9534f;
 }

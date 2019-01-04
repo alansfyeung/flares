@@ -7,20 +7,42 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     $scope.state = {
         approvalsLoaded: false,
         approvalsRemaining: false,
-        activityLoaded: false,
+        activityLogLoaded: false,
+        activityLogCounter: 0,
     };
 
+    var activityLogPerLoad = 20;
+    
     $scope.stats = {};       // Need to initialize?
+    $scope.activityLog = [];
     $scope.approvals = [];
     
-    retrieveDashboardData();
+    retrieveDashboardStats();
+    retrieveActivityLog();
     retrievePendingApprovalList();
 
     $scope.selectApproval = function(approval){
         $window.location.href = flResource('approval')
             .setFragment([approval.dec_appr_id, 'edit'])
             .getLink();
-    };    
+    };
+    $scope.selectLog = function(logType, logId) {
+        switch(logType) {
+            case 'APPR':
+                $window.location.href = flResource('approval')
+                    .setFragment([logId, 'view'])
+                    .getLink();
+                break;
+            case 'MBR':
+                $window.location.href = flResource('member')
+                    .setFragment([logId, 'view', 'details'])
+                    .getLink();
+                break;
+        }
+    }
+    $scope.loadMoreLog = function(){
+        retrieveActivityLog();
+    }
 
     // ==================
     // Functions 
@@ -46,14 +68,31 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
         });
     }
 
-    function retrieveDashboardData() {
+    function retrieveDashboardStats() {
         flAPI('dashboard').getAll().then(function (resp) {
             $scope.stats = resp.data;
         });
-        flAPI('dashboard').get(['activity']).then(function (resp) {
-            $scope.activity = resp.data;
-            // Data is not going to be homogenous though. 
-            // TBC
+    }
+
+    function retrieveActivityLog() {
+        flAPI('dashboard').get(['log'], {
+            params: {
+                offset: $scope.state.activityLogCounter,
+                limit: activityLogPerLoad,
+            },
+        }).then(function (resp) {
+            if (resp.data && angular.isArray(resp.data)) {
+                let newLogData = resp.data;
+                angular.forEach(newLogData, function(value){
+                    value.log_date = new Date(value.log_date);
+                });
+                $scope.activityLog = $scope.activityLog.concat(newLogData);
+                $scope.state.activityLogLoaded = true;
+                $scope.state.activityLogCounter += newLogData.length;
+            }
+            else {
+                console.warn('No data available in response', resp);
+            }
         });
     }
 
