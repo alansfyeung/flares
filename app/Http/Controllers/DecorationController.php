@@ -15,10 +15,10 @@ use App\Http\Custom\ResponseCodes;
 class DecorationController extends Controller
 {		
 
-	private $tmpDir;			// Use the PHP default
-	
 	public function __construct(){
-		$this->tmpDir = sys_get_temp_dir();
+        
+        $this->middleware('modifyDecorations', ['except' => ['index', 'show', 'children']]);
+
 	}
     
     /**

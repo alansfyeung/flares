@@ -30,7 +30,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
-            'bindings',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'api' => [
             'throttle:60,1',
@@ -59,5 +59,6 @@ class Kernel extends HttpKernel
         'clientCredentials' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+        'modifyDecorations' => \App\Http\Middleware\ModifyDecorations::class,
     ];
 }
