@@ -46,18 +46,14 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-xs-6">
-                                    <figure class="dashboard-stat" ng-cloak>
-                                        <figcaption class="stat-caption">Posted Strength</figcaption>
-                                        <div class="stat-figure">@{{stats.member.numActive}}</div>						
-                                    </figure>
-                                </div>
-                                <div class="col-xs-6">
-                                    <figure class="dashboard-stat" ng-cloak>
-                                        <figcaption class="stat-caption">In system</figcaption>
-                                        <div class="stat-figure">@{{stats.member.numTotal}}</div>
-                                    </figure>
-                                </div>
+                                <figure class="dashboard-stat col-xs-6" ng-cloak>
+                                    <figcaption class="stat-caption">Posted Strength</figcaption>
+                                    <div class="stat-figure">@{{stats.member.numActive}}</div>						
+                                </figure>
+                                <figure class="dashboard-stat col-xs-6" ng-cloak>
+                                    <figcaption class="stat-caption">In system</figcaption>
+                                    <div class="stat-figure">@{{stats.member.numTotal}}</div>
+                                </figure>
                             </div>
                         </div>
                         <div class="list-group">
@@ -73,10 +69,16 @@
                             <h3 class="panel-title">Decorations</h3>
                         </div>
                         <div class="panel-body">
-                            <figure class="dashboard-stat" ng-cloak>
-                                <figcaption class="stat-caption">Decorations</figcaption>
-                                <div class="stat-figure">@{{stats.decoration.num}}</div>
-                            </figure>
+                            <div class="row">
+                                <figure class="dashboard-stat col-xs-6" ng-cloak>
+                                    <figcaption class="stat-caption">Definitions</figcaption>
+                                    <div class="stat-figure">@{{stats.decoration.num}}</div>
+                                </figure>
+                                <figure class="dashboard-stat col-xs-6" ng-cloak>
+                                    <figcaption class="stat-caption">Awarded</figcaption>
+                                    <div class="stat-figure">@{{stats.decoration.numAwarded}}</div>
+                                </figure>
+                            </div>
                         </div>
                         <div class="list-group">
                             <a href="{{url('/decorations')}}" class="list-group-item">Manage decorations</a>

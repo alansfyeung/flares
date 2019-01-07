@@ -4,17 +4,21 @@
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="{{url('/members/new')}}" name="menu.member.new">Add new</a></li>
-              <!-- <li role="separator" class="divider"></li> -->
+            @if (Auth::user()->hasAccessLevel('create'))
+            <li><a href="{{url('/members/new')}}" name="menu.member.new">Add new</a></li>
+            @endif
+            <!-- <li role="separator" class="divider"></li> -->
             <li><a href="{{url('/members')}}" name="menu.member.search">Advanced search</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Decorations <span class="caret"></span></a>
           <ul class="dropdown-menu">
+            @if (Auth::user()->hasAccessLevel('create'))
             <li><a href="{{ route('decoration::new') }}">Create new</a></li>
             <li><a href="{{ route('decoration::index') }}">Manage collection</a></li>
             <li role="separator" class="divider"></li>
+            @endif
             <li><a href="{{ route('public::decorationList') }}">Public gallery  &nbsp;<span class="glyphicon glyphicon-share text-muted"></span></a></li>
           </ul>
         </li> 
@@ -30,6 +34,7 @@
             <li><a href="{{url('/activities/awol')}}" name="menu.activity.awol">All AWOLs</a></li>
           </ul>
         </li> --}}
+        @if (Auth::user()->hasAccessLevel('admin'))
         <li class="dropdown">
           <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -37,6 +42,7 @@
             <li><a href="{{url('/users/patokens')}}">PA Tokens</a></li>
           </ul>
         </li>
+        @endif
     </ul>
     @if (Auth::check())
     <ul class="nav navbar-nav navbar-right">

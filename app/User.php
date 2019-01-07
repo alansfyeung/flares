@@ -41,8 +41,35 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     // Relationships
-    public function userSSO() {
+    public function userSSO() 
+    {
 		return $this->hasMany('App\UserSSO', 'user_id');
-	}
+    }
+    
+    /**
+     * Convenience matcher
+     * @param accessLevelName A name to fuzzy match on
+     */
+    public function hasAccessLevel($accessLevelName) 
+    {
+        switch (strtolower((string) $accessLevelName)) {
+            case 'assign':
+            case ((string) User::ACCESS_ASSIGN):
+                return $this->access_level >= User::ACCESS_ASSIGN;
+            case 'create':
+            case ((string) User::ACCESS_CREATE):
+                return $this->access_level >= User::ACCESS_CREATE;
+            case 'admin':
+            case ((string) User::ACCESS_ADMIN):
+                return $this->access_level >= User::ACCESS_ADMIN;
+            case 'none':
+            case ((string) User::ACCESS_NONE):
+                return $this->access_level >= User::ACCESS_NONE;
+            default:
+            case 'readonly':
+            case ((string) User::ACCESS_READONLY):
+                return $this->access_level >= User::ACCESS_READONLY;
+        }
+    }
 
 }

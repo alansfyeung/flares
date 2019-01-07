@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Member;
 use App\Decoration;
+use App\MemberDecoration;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
@@ -17,20 +18,22 @@ class DashboardController extends Controller
     public function index()
     {
         $numDecorations = Decoration::all()->count();
-        $numActive = Member::all()->where('is_enrolled', 1)->count();
-		$numInactive = Member::all()->where('is_enrolled', 0)->count();
-		$numDischarged = Member::onlyTrashed()->count();
-        $numTotal = Member::withTrashed()->count();
+        $numDecorationsAwarded = MemberDecoration::all()->count();
+        $numMembersActive = Member::all()->where('is_enrolled', 1)->count();
+		// $numInactive = Member::all()->where('is_enrolled', 0)->count();
+		// $numDischarged = Member::onlyTrashed()->count();
+        $numMembersTotal = Member::withTrashed()->count();
         
 		return response()->json([
 			'member' => [
-                'num' => $numDecorations,
+                'numActive' => $numMembersActive,
+                // 'numInactive' => $numInactive,
+                // 'numDischarged' => $numDischarged,
+                'numTotal' => $numMembersTotal,
             ],
             'decoration' => [
-                'numActive' => $numActive,
-                'numInactive' => $numInactive,
-                'numDischarged' => $numDischarged,
-                'numTotal' => $numTotal
+                'num' => $numDecorations,
+                'numAwarded' => $numDecorationsAwarded,
             ],
 		]);
     }
