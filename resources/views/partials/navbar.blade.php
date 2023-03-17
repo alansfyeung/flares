@@ -1,4 +1,5 @@
 {{-- Navbar for insertion into primary.blade --}}
+@if (Auth::check())
 <div class="collapse navbar-collapse" id="navbar-collapsible">
     <ul class="nav navbar-nav">
         <li class="dropdown">
@@ -44,7 +45,6 @@
         </li>
         @endif
     </ul>
-    @if (Auth::check())
     <ul class="nav navbar-nav navbar-right">
         <li title="{{Auth::user()->email}}">
             <a data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{Auth::user()->username}} <span class="caret"></span></a>
@@ -57,5 +57,5 @@
             </ul>
         </li>
     </ul>
-    @endif
 </div>
+@endif
