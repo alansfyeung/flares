@@ -22,8 +22,13 @@ RUN chmod -R a+rwx ./storage ./bootstrap/cache
 RUN composer install
 
 RUN cp .env.example .env
+RUN php artisan key:generate
+RUN sed -ri -e 's#DB_HOST=.*$#DB_HOST=host.docker.internal#' .env
+RUN sed -ri -e 's#DB_DATABASE=.*$#DB_DATABASE=flares_dev#' .env
+RUN sed -ri -e 's#DB_USERNAME=.*$#DB_USERNAME=flares_dev#' .env
+RUN sed -ri -e 's#DB_PASSWORD=.*$#DB_PASSWORD=flares_dev#' .env
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN sed -ri -e 's#/var/www/html#${APACHE_DOCUMENT_ROOT}#g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's#/var/www/html#${APACHE_DOCUMENT_ROOT}#g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 

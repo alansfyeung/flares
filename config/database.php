@@ -64,6 +64,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'modes'  => [], // MySQL 8+
         ],
 
         'pgsql' => [
