@@ -81,6 +81,7 @@
     {{-- Angular app js, if required --}}
     @section('ng-scripts')
     <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-locale_en-au.js"></script>
     <script src="assets/js/ui-bootstrap-0.14.2.min.js"></script>
     @show
     @stack('ng-scripts')
