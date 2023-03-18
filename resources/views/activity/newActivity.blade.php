@@ -37,7 +37,7 @@
                         </ul>
                       </div><!-- /btn-group -->
                 </div>
-                <span id="descActivityName" class="help-block">Enter the exercise name, location name or common name for this activity. <strong>Don't include</strong> the activity type again; for example, Hampton 03-2015 <strike>Bivouac</strike>, Tuesday Night <strike>Parade</strike></span>
+                <span id="descActivityName" class="help-block">Enter the exercise name, location name or common name for this activity. <strong>Don't include</strong> the activity type again; for example, Hampton 03-2015 <s>Bivouac</s>, Tuesday Night <s>Parade</s></span>
             </div>
         </div>
          <div class="form-group">
