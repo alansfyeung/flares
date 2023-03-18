@@ -18,9 +18,6 @@ class UserController extends Controller
     public function indexTable()
     {
         $users = User::all();
-        $accessLevels = [
-
-        ];
         return view('user.index', [
             'users' => $users, 
             'get_access_level_label' => function ($accessLevel) {
