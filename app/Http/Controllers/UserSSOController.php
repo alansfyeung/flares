@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Passport;
 
 use App\User;
 use App\UserSSO;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
 
@@ -30,7 +28,7 @@ class UserSSOController extends Controller
             // Simple validations
             $this->validate($request, [
                 'user.forums_username' => 'required',
-                'user.access_level' => 'sometimes|max:'.User::ACCESS_ASSIGN,     // Their userlevel must not be higher than assign/approve
+                'user.access_level' => 'sometimes|max:'.User::ACCESS_CREATE,     // Their userlevel must not be higher than create
             ]);
 
             $postDataUser = $request->input('user', []);
@@ -48,14 +46,26 @@ class UserSSOController extends Controller
                 $postDataUser['access_level'] = User::ACCESS_ASSIGN;
             }
             $postDataUser['allow_sso'] = 1;
-            $postDataUser['password'] = 'x';            // This can't be authenticated against
             
             try {
-                $newUser = User::create($postDataUser);
+                // Check if this user actually was just deactivated or something
+                $existingUser = User::where('username', $postDataUser['username'])->first();
+                if ($existingUser) {
+                    $existingUser->access_level = $postDataUser['access_level'];
+                    $existingUser->save();
+                    $user = $existingUser;
+                } 
+                else {
+                    $newUser = new User($postDataUser);
+                    $newUser->password = 'x';  // This field is guarded
+                    $newUser->save();
+                    $user = $newUser;
+                }
                 return response()->json([
-                    'user_id' => $newUser->user_id,
-                    'username' => $newUser->username, 
-                    'forums_username' => $newUser->forums_username, 
+                    'user_id' => $user->user_id,
+                    'username' => $user->username, 
+                    'forums_username' => $user->forums_username, 
+                    'access_level' => $user->access_level, 
                 ]);
             } catch (\Exception $ex) {
                 return response()->json([
@@ -68,8 +78,6 @@ class UserSSOController extends Controller
                 'error' => ['code' => ResponseCodes::ERR_POSTDATA_MISSING, 'reason' => 'New user postdata missing'],
             ], 400);
         }
-        
-		
     }
 
     /**
@@ -83,12 +91,12 @@ class UserSSOController extends Controller
     {
         $deleted = false;
         try {
-            $member = Member::findOrFail($id);
-            $member->access_level = User::ACCESS_NONE;
-            $deleted = $member->save();
+            $user = User::findOrFail($id);
+            $user->access_level = User::ACCESS_NONE;
+            $deleted = $user->save();
             return response()->json([
 				'success' => $deleted,
-			]);            
+			]);
         } catch (\Exception $ex){
             return response()->json([
                 'error' => ['code' => $ex->getCode(), 'reason' => $ex->getMessage()]
