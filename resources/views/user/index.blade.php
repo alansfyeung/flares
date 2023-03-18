@@ -1,7 +1,7 @@
 {{-- Search all members --}}
 @extends('layouts.template')
 
-@section('title', 'Admin Users')
+@section('title', 'System Users')
 
 @section('heading')
 <h1>Admin Users</h1>
@@ -9,24 +9,24 @@
 
 @section('content')
 
-<h2>Currently registered admin users</h2>
+<h2>Currently registered system users</h2>
 <div class="table-wrapper">
     <table class="table table-striped">
         <colgroup>
             <col style="width: 40px">
             <col>
-            <col style="width: 120px;">
-            <col style="width: 120px;">
             <col style="width: 60px;">
+            <col style="width: 200px;">
+            <col style="width: 120px;">
         </colgroup>
         <tbody>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Username</th>
+                    <th>SSO?</th>
                     <th>Access Level</th>
                     <th>Added on</th>
-                    <th>SSO?</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,9 +41,9 @@
                         <span class="text-muted">({{$user->email or '--'}})</span>
                         @endif
                     </td>
-                    <td>{{$user->access_level}}</td>
+                    <td>{{$user->allow_sso ? 'yes' : 'no'}}</td>
+                    <td>{{$get_access_level_label($user->access_level)}}</td>
                     <td>{{date('d-M-Y', strtotime($user->created_at))}}</td>
-                    <td>{{$user->allow_sso or 'no'}}</td>
                 </tr>
                 @endforeach
             </tbody> 
@@ -51,8 +51,9 @@
     </table>
 </div>
 
-<h3>Registering new users</h3>
-<div class="well">
-    <p>New users can be added or modified via CLI using <code>php artisan create:user</code>, <code>php artisan users:reset</code>, etc</p>
-</div>
+<hr>
+
+<h3>Flares User registration</h3>
+<p>Creating <strong>Forums SSO (single-sign on) users</strong> is highly encouraged - this links an existing forums account. To do this, go to Forums > ACP > .MODS > Flares SSO Users.</p>
+<p>Otherwise, new non-SSO users can be added or modified via CLI using <code>php artisan create:user</code>, <code>php artisan users:reset</code>, etc</p>
 @endsection

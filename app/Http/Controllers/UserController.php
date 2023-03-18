@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use DB;
 use Hash;
 use App\User;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Custom\ResponseCodes;
 
@@ -19,7 +18,28 @@ class UserController extends Controller
     public function indexTable()
     {
         $users = User::all();
-        return view('user.index', ['users' => $users]);
+        $accessLevels = [
+
+        ];
+        return view('user.index', [
+            'users' => $users, 
+            'get_access_level_label' => function ($accessLevel) {
+                switch ($accessLevel) {
+                    case User::ACCESS_NONE:
+                        return "None [{$accessLevel}]";
+                    case User::ACCESS_READONLY:
+                        return "Read Only [{$accessLevel}]";
+                    case User::ACCESS_ASSIGN:
+                        return "Assign [{$accessLevel}]";
+                    case User::ACCESS_CREATE:
+                        return "Assign & Create [{$accessLevel}]";
+                    case User::ACCESS_ADMIN:
+                        return "Super Admin [{$accessLevel}]";
+                    default:
+                        return "Unknown [{$accessLevel}]";
+                }
+            }
+        ]);
     }
 
     /**
