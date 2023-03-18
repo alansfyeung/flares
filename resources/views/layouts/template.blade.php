@@ -27,7 +27,7 @@
 						<span class="glyphicon glyphicon-menu-hamburger"></span>
                     </button>
                     @show
-					<a class="navbar-brand" href="{{url('/')}}">
+					<a class="navbar-brand" href="{{ Auth::check() ? url('/') : url()->current()}}">
 						<img alt="206 FLARES" src="{{{ asset('assets/img/flareslogo.png') }}}" style="height: 20px;">
 					</a>
 				</div>
