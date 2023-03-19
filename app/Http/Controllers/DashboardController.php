@@ -8,10 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Member;
 use App\Decoration;
 use App\MemberDecoration;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Custom\ResponseCodes;
-
 
 class DashboardController extends Controller
 {
@@ -20,16 +17,20 @@ class DashboardController extends Controller
         $numDecorations = Decoration::all()->count();
         $numDecorationsAwarded = MemberDecoration::all()->count();
         $numMembersActive = Member::all()->where('is_enrolled', 1)->count();
-		// $numInactive = Member::all()->where('is_enrolled', 0)->count();
-		// $numDischarged = Member::onlyTrashed()->count();
         $numMembersTotal = Member::withTrashed()->count();
+        $numNewMembersThisYear = Member::all()->where('created_at', '>=', date('Y-01-01'))->count();
+        $numNewMembersThisMonth = Member::all()->where('created_at', '>=', date('Y-m-01'))->count();
+        $latestMember = Member::query()
+            ->whereRaw('CAST(regt_num AS UNSIGNED) = (' . Member::query()->selectRaw('MAX(CAST(regt_num AS UNSIGNED))')->toSql() . ')')
+            ->first();
         
 		return response()->json([
 			'member' => [
                 'numActive' => $numMembersActive,
-                // 'numInactive' => $numInactive,
-                // 'numDischarged' => $numDischarged,
+                'numNewThisYear' => $numNewMembersThisYear,
+                'numNewThisMonth' => $numNewMembersThisMonth,
                 'numTotal' => $numMembersTotal,
+                'latestRegtNumber' => $latestMember ? $latestMember->regt_num : 'Unknown',
             ],
             'decoration' => [
                 'num' => $numDecorations,

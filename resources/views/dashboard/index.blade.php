@@ -45,16 +45,26 @@
                             <h3 class="panel-title">Member management</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="row">
-                                <figure class="dashboard-stat col-xs-6" ng-cloak>
-                                    <figcaption class="stat-caption">Posted Strength</figcaption>
-                                    <div class="stat-figure">@{{stats.member.numActive}}</div>						
-                                </figure>
-                                <figure class="dashboard-stat col-xs-6" ng-cloak>
-                                    <figcaption class="stat-caption">In system</figcaption>
-                                    <div class="stat-figure">@{{stats.member.numTotal}}</div>
-                                </figure>
-                            </div>
+                            <figure class="row dashboard-inline-stat" ng-cloak>
+                                <figcaption class="stat-caption col-xs-8">Active members</figcaption>
+                                <div class="stat-figure col-xs-4">@{{stats.member.numActive}}</div>						
+                            </figure>
+                            <figure class="row dashboard-inline-stat" ng-cloak>
+                                <figcaption class="stat-caption col-xs-8">Total members</figcaption>
+                                <div class="stat-figure col-xs-4">@{{stats.member.numTotal}}</div>
+                            </figure>
+                            <figure class="row dashboard-inline-stat" ng-cloak>
+                                <figcaption class="stat-caption col-xs-8">Added this month</figcaption>
+                                <div class="stat-figure col-xs-4">@{{stats.member.numNewThisMonth}}</div>
+                            </figure>
+                            <figure class="row dashboard-inline-stat" ng-cloak>
+                                <figcaption class="stat-caption col-xs-8">Added this year</figcaption>
+                                <div class="stat-figure col-xs-4">@{{stats.member.numNewThisYear}}</div>
+                            </figure>
+                            <figure class="row dashboard-inline-stat" ng-cloak>
+                                <figcaption class="stat-caption col-xs-8">Latest Regt Number</figcaption>
+                                <div class="stat-figure col-xs-4">@{{stats.member.latestRegtNumber}}</div>
+                            </figure>
                         </div>
                         <div class="list-group">
                             <a href="{{url('members')}}" class="list-group-item">View/search members</a>
@@ -70,11 +80,11 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <figure class="dashboard-stat col-xs-6" ng-cloak>
-                                    <figcaption class="stat-caption">Definitions</figcaption>
+                                <figure class="dashboard-big-stat col-xs-6" ng-cloak>
+                                    <figcaption class="stat-caption">Available</figcaption>
                                     <div class="stat-figure">@{{stats.decoration.num}}</div>
                                 </figure>
-                                <figure class="dashboard-stat col-xs-6" ng-cloak>
+                                <figure class="dashboard-big-stat col-xs-6" ng-cloak>
                                     <figcaption class="stat-caption">Awarded</figcaption>
                                     <div class="stat-figure">@{{stats.decoration.numAwarded}}</div>
                                 </figure>

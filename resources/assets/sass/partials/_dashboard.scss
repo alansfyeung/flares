@@ -16,16 +16,32 @@
     margin-bottom: 20px;
 }
 
-.dashboard-stat {
+.dashboard-big-stat {
 	text-align: center;
+    .stat-caption {
+        color: #aaa;
+    }
+    .stat-figure {
+        font-size: 2.8em;
+        line-height: 1;
+        font-weight: bold;
+    }
+    .stat-caption + .stat-figure {
+        margin-top: .25em;
+    }
 }
-.dashboard-stat .stat-caption {
-	color: #aaa;
-}
-.dashboard-stat .stat-figure {
-	font-size: 3em;
-	line-height: 1;
-	font-weight: bold;
+
+.dashboard-inline-stat {
+    .stat-caption {
+        display: inline-block;
+        vertical-align: top;
+        color: #aaa;
+    }
+    .stat-figure {
+        vertical-align: top;
+        font-weight: bold;
+        text-align: right;
+    }
 }
 
 .dashboard-approval-row td {
