@@ -44,6 +44,14 @@
     }
 }
 
-.dashboard-approval-row td {
-    cursor: pointer;
+.dashboard-approval-row {
+    td {
+        vertical-align: middle;
+    }
+    td.clickable-cell {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
 }

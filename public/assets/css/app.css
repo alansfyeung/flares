@@ -8133,7 +8133,15 @@ textarea {
 }
 
 .dashboard-approval-row td {
+  vertical-align: middle;
+}
+
+.dashboard-approval-row td.clickable-cell {
   cursor: pointer;
+}
+
+.dashboard-approval-row td.clickable-cell:hover {
+  text-decoration: underline;
 }
 
 .activity-fullname {

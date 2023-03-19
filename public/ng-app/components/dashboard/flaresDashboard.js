@@ -9,6 +9,8 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
         approvalsRemaining: false,
         activityLogLoaded: false,
         activityLogCounter: 0,
+        allApprovalsChecked: false,
+        showApprovalBulkActions: false,
     };
 
     var activityLogPerLoad = 20;
@@ -21,7 +23,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     retrieveActivityLog();
     retrievePendingApprovalList();
 
-    $scope.goToSingleApproval = function(approval){
+    $scope.navToSingleApproval = function(approval){
         $window.location.href = flResource('approval')
             .setFragment([approval.dec_appr_id, 'edit'])
             .getLink();
@@ -39,7 +41,25 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
             'width=800, height=600'
         );
     };
-    $scope.selectLog = function(logType, logId) {
+    $scope.changeApprovalCheckAll = function() {
+        var isChecked = $scope.state.allApprovalsChecked;
+        for (var approval of $scope.approvals) {
+            approval.checked = isChecked ? true : false;
+        }
+        $scope.state.showApprovalBulkActions = isChecked;
+    };
+    $scope.changeApprovalCheck = function(approval) {
+        var isChecked = approval.checked;
+        if (!isChecked) {
+            $scope.state.allApprovalsChecked = false;
+        }
+        // Check if any are checked, and only if so, then show bulk actions
+        $scope.state.showApprovalBulkActions = 
+            $scope.approvals.reduce(function (anyChecked, approval) {
+                return anyChecked || approval.checked;
+            }, false);
+    };
+    $scope.navToLog = function(logType, logId) {
         switch(logType) {
             case 'APPR':
                 $window.location.href = flResource('approval')
@@ -70,6 +90,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
                     approval.statusName = 'Pending';        // Hardcode to 'pending'.
                     approval.created_at = new Date(approval.created_at);
                     approval.updated_at = new Date(approval.updated_at);
+                    approval.checked = false;       // Initially unchecked by default
                 });
                 $scope.state.approvalsRemaining = $scope.approvals.length > 0;
             }

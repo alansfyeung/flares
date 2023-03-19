@@ -6,16 +6,19 @@
 
     <header class="dashboard-tabcontent-header" ng-show="state.approvalsRemaining">
         <div class="pull-right">
-            <span class="glyphicon glyphicon-th-list"></span>
+            <span class="glyphicon glyphicon-comment"></span>
             <span ng-show="approvals.length > 0">@{{approvals.length}}</span>
             <span ng-hide="approvals.length > 0">No</span>
             <span>approval<span ng-hide="approvals.length == 1">s</span> pending</span>
         </div>
         <h4>Pending requests</h4>
     </header>
+
+    <div class="well" ng-if="state.showApprovalBulkActions">Bulk approval actions go here</div>
     
     <table class="table table-hover" ng-show="state.approvalsRemaining">
         <colgroup>
+            <col style="width: 40px; text-align: center;">
             <col style="width: 200px;">
             <col>
             <col style="width: 140px;">
@@ -23,6 +26,9 @@
         </colgroup>
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" ng-model="state.allApprovalsChecked" ng-change="changeApprovalCheckAll()">
+                </th>
                 <th>Requester</th>
                 <th>Decoration</th>
                 <th>Date lodged</th>
@@ -30,9 +36,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="appr in approvals" class="dashboard-approval-row" ng-click="goToSingleApproval(appr)">
+            <tr ng-repeat="appr in approvals" class="dashboard-approval-row">
+                <td>
+                    <input type="checkbox" ng-model="appr.checked" ng-change="changeApprovalCheck(appr)">
+                </td>
                 <td title="Forums username: @{{appr.requester.forums_username}}">@{{appr.requester.last_name}}, @{{appr.requester.first_name}}</td>
-                <td>@{{appr.requested_decoration.name}}</td>
+                <td class="clickable-cell" ng-click="navToSingleApproval(appr)">@{{appr.requested_decoration.name}}</td>
                 <td>@{{appr.created_at | date:'shortDate'}} (@{{appr.created_at | timeAgo}})</td>
                 <td>
                     <span class="btn btn-default btn-block btn-xs" ng-click="openSingleApprovalInWindow(appr, $event)">

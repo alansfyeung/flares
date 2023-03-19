@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="entry in activityLog" class="dashboard-approval-row" ng-click="selectLog(entry.log_type, entry.log_id)">
+            <tr ng-repeat="entry in activityLog" class="dashboard-approval-row" ng-click="navToLog(entry.log_type, entry.log_id)">
                 <td>@{{entry.log_type}}</td>
                 <td>@{{entry.log_date | date:'shortDate'}}</td>
                 <td>@{{entry.log_outcome}}</td>
