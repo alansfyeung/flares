@@ -6,8 +6,8 @@
 
     <header class="dashboard-tabcontent-header" ng-show="state.approvalsRemaining">
         <div class="pull-right">
-            <!-- <span class="glyphicon glyphicon-th-list"></span> -->
-            <span class="badge" ng-show="approvals.length > 0"> @{{approvals.length}}</span>
+            <span class="glyphicon glyphicon-th-list"></span>
+            <span ng-show="approvals.length > 0">@{{approvals.length}}</span>
             <span ng-hide="approvals.length > 0">No</span>
             <span>approval<span ng-hide="approvals.length == 1">s</span> pending</span>
         </div>
