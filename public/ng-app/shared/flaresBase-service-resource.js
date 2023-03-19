@@ -14,6 +14,7 @@
             this.urlPrefix = flApiPathRoot + (opts.prefix || '');
             this.singular = opts.singular || '';
             this.plural = opts.plural || '';
+            this.query = {};
             this.frag = '';
             
             // By default, return the "one" endpoint
@@ -69,6 +70,15 @@
             console.warn('FlaresLinkBuilder.addFragment() is marked for deprecation. Use .setFragment() instead.');
             return this.setFragment(fragParts);
         };
+
+        FlaresLinkBuilder.prototype.setQuery = function(queryParams){
+            this.query = queryParams;
+            return this;
+        };
+        FlaresLinkBuilder.prototype.addQuery = function(queryParams){
+            Object.assign(this.query, queryParams);
+            return this;
+        };
         
         FlaresLinkBuilder.prototype.setUrl = function(urlParts){        // expect an array or a string
             if (angular.isArray(urlParts)){
@@ -86,7 +96,12 @@
         };
         
         FlaresLinkBuilder.prototype.getLink = function(){
-            return this.url + this.frag;
+            if (Object.keys(this.query).length > 0) {
+                return this.url + '?' + new URLSearchParams(this.query).toString() + this.frag;
+            }
+            else {
+                return this.url + this.frag;
+            }
         };
         FlaresLinkBuilder.prototype.build = FlaresLinkBuilder.prototype.getLink;
         

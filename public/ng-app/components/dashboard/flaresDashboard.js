@@ -21,10 +21,23 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
     retrieveActivityLog();
     retrievePendingApprovalList();
 
-    $scope.selectApproval = function(approval){
+    $scope.goToSingleApproval = function(approval){
         $window.location.href = flResource('approval')
             .setFragment([approval.dec_appr_id, 'edit'])
             .getLink();
+    };
+    $scope.openSingleApprovalInWindow = function(approval, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+        $window.open(
+            flResource('approval')
+                .setQuery({no_header: 1})
+                .setFragment([approval.dec_appr_id, 'edit'])
+                .getLink(), 
+            'Approve Decoration Request', 
+            'width=800, height=600'
+        );
     };
     $scope.selectLog = function(logType, logId) {
         switch(logType) {
@@ -40,9 +53,7 @@ flaresDashboard.controller('dashboardController', function ($scope, $window, flA
                 break;
         }
     }
-    $scope.loadMoreLog = function(){
-        retrieveActivityLog();
-    }
+    $scope.loadMoreLog = retrieveActivityLog;
 
     // ==================
     // Functions 

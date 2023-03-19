@@ -30,15 +30,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="appr in approvals" class="dashboard-approval-row" ng-click="selectApproval(appr)">
+            <tr ng-repeat="appr in approvals" class="dashboard-approval-row" ng-click="goToSingleApproval(appr)">
                 <td title="Forums username: @{{appr.requester.forums_username}}">@{{appr.requester.last_name}}, @{{appr.requester.first_name}}</td>
                 <td>@{{appr.requested_decoration.name}}</td>
                 <td>@{{appr.created_at | date:'shortDate'}} (@{{appr.created_at | timeAgo}})</td>
                 <td>
-                    <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
+                    <span class="btn btn-default btn-block btn-xs" ng-click="openSingleApprovalInWindow(appr, $event)">
+                        <span class="glyphicon glyphicon-new-window text-muted"></span>
+                    </span>
+                    <!-- <a class="btn btn-default btn-block btn-xs" target="_blank" ng-click="$event.stopPropagation()"
                         ng-href="{{ route('approval::approveDecoration') }}#!/@{{appr.dec_appr_id}}/edit">
-                        <span class="glyphicon glyphicon-share text-muted"></span>
-                    </a>
+                        <span class="glyphicon glyphicon-new-window text-muted"></span>
+                    </a> -->
                 </td>
             </tr>
         </tbody>

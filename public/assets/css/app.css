@@ -8477,6 +8477,10 @@ select.ng-dirty.ng-invalid,
   overflow-y: scroll;
 }
 
+.flares-main.no-header {
+  padding-top: 0;
+}
+
 .login-hr-device {
   margin: 2em auto;
   display: block;

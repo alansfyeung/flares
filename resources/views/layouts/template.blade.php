@@ -16,6 +16,7 @@
     <link rel="shortcut icon" href="{{{ asset('assets/icons/favicon.ico') }}}">
 </head>
 <body flow-prevent-drop>
+    @unless(Request::get('no_header'))
 	@section('header')
 	<header>
 		<nav class="navbar navbar-default navbar-fixed-top">
@@ -38,12 +39,13 @@
 		</nav>
 	</header>
 	@show
+    @endunless
     
     @section('main')
     @if(View::hasSection('ng-controller'))
-    <div id="main" class="flares-main" ng-controller="@yield('ng-controller')" ng-cloak>
+    <div id="main" class="flares-main {!! Request::get('no_header') ? 'no-header' : '' !!}" ng-controller="@yield('ng-controller')" ng-cloak>
     @else
-    <div id="main" class="flares-main">
+    <div id="main" class="flares-main {!! Request::get('no_header') ? 'no-header' : '' !!}">
     @endif
         <div class="page-header">
             <div class="container">
