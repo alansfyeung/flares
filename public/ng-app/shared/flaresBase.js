@@ -139,6 +139,79 @@
             return result;
         };
     });
+    flaresBase.filter('timeAgo', function () {
+        // Inspired by https://gist.github.com/rodyhaddad/5896883 
+        //time: the time
+        //local: compared to what time? default: now
+        return function (time, local) {
+            if (!time) {
+                return 'never';
+            }
+
+            if (!local) {
+                local = Date.now();
+            }
+
+            if (angular.isDate(time)) {
+                time = time.getTime();
+            } 
+            else if (typeof time === 'string') {
+                time = new Date(time).getTime();
+            }
+
+            if (angular.isDate(local)) {
+                local = local.getTime();
+            }
+            else if (typeof local === 'string') {
+                local = new Date(local).getTime();
+            }
+
+            if (typeof time !== 'number' || typeof local !== 'number') {
+                return;
+            }
+
+            var
+                offset = Math.abs((local - time) / 1000),
+                MINUTE = 60,
+                HOUR = 3600,
+                DAY = 86400,
+                WEEK = 604800,
+                MONTH = 2629744,
+                YEAR = 31556926;
+
+            if (offset <= MINUTE) {
+                return 'just now';
+            }
+            else {
+                var span;
+                if (offset < HOUR) {
+                    span = [ Math.round(Math.abs(offset / MINUTE)), 'm' ];
+                }
+                else if (offset < DAY) {
+                    span = [ Math.round(Math.abs(offset / HOUR)), 'h' ];
+                }
+                else if (offset < WEEK) {
+                    span = [ Math.round(Math.abs(offset / DAY)), 'd' ];
+                }
+                else if (offset < MONTH) {
+                    span = [ Math.round(Math.abs(offset / WEEK)), 'w' ];
+                }
+                else if (offset < YEAR) {
+                    span = [ Math.round(Math.abs(offset / MONTH)), 'm' ];
+                }
+                else {
+                    span = [ Math.round(Math.abs(offset / YEAR)), 'y' ];
+                }
+                span = span.join('');
+                if (time <= local) {
+                    return span + ' ago';
+                }
+                else {
+                    return 'in ' + span;
+                }
+            }
+        }
+    });
 
     // ==============
     // Run phase logic
