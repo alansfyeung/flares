@@ -66,7 +66,10 @@
 	@section('footer')
 	<footer>
 		<div class="container">
-			<h6>{{ $copyright or 'FLARES Falcon Leave Administration and Reporting System &copy; A. Yeung' }}</h6>
+			<h6>
+                FLARES Falcon Leave Administration and Reporting System 
+                {{ $copyright or '&copy; A. Yeung 2015-' . date('Y') }}
+            </h6>
 		</div>
 	</footer>
 	@show
